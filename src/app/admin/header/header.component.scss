@@ -1,0 +1,69 @@
+@use "variables" as *;
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    background: white;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-soft;
+    margin-bottom: 2rem;
+
+    .greeting {
+        font-size: 0.95rem;
+        color: $text-secondary;
+
+        strong {
+            color: $heading-color;
+            font-weight: 800;
+        }
+    }
+
+    .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 6px 6px 14px;
+        background: $bg-alt;
+        border-radius: $radius-full;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            background: $border-color;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            .name {
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: $heading-color;
+            }
+
+            .role {
+                font-size: 0.7rem;
+                color: $brand-primary;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: $brand-primary;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+    }
+}

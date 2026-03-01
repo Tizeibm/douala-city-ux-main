@@ -1,0 +1,66 @@
+<header class="header">
+  <div class="container nav-wrapper">
+    <!-- Brand (always visible) -->
+    <a routerLink="/accueil" class="brand">
+      <span class="logo"></span> Douala City
+    </a>
+
+    <!-- Mobile toggle (visible on small screens) -->
+    <button class="mobile-toggle" (click)="toggleMenu($event)">
+      <i class="fas" [ngClass]="menuOuvert ? 'fa-times' : 'fa-bars'"></i>
+    </button>
+
+    <!-- All nav content inside one collapsible container -->
+    <div class="nav-content" [ngClass]="{ 'open': menuOuvert }">
+      <nav class="menu">
+        <a routerLink="/accueil" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          (click)="toggleMobile()">Accueil</a>
+
+        <div class="submenu-container">
+          <span class="submenu-title" (click)="isAnnuaireOpen = !isAnnuaireOpen">Annuaire <i
+              class="fas fa-chevron-down"></i></span>
+          <div class="submenu" [class.open]="isAnnuaireOpen">
+            <a class="submenu-item" routerLink="/commerces" routerLinkActive="active"
+              (click)="toggleMobile()">Commerces</a>
+            <a class="submenu-item" routerLink="/institutions" routerLinkActive="active"
+              (click)="toggleMobile()">Institutions</a>
+            <a class="submenu-item" routerLink="/ecoles" routerLinkActive="active"
+              (click)="toggleMobile()">Éducation</a>
+            <a class="submenu-item" routerLink="/hopitaux" routerLinkActive="active" (click)="toggleMobile()">Santé</a>
+            <a class="submenu-item" routerLink="/services" routerLinkActive="active"
+              (click)="toggleMobile()">Services</a>
+            <a class="submenu-item" routerLink="/hebergement" routerLinkActive="active"
+              (click)="toggleMobile()">Hébergement</a>
+            <a class="submenu-item" routerLink="/transport" routerLinkActive="active"
+              (click)="toggleMobile()">Transport</a>
+            <a class="submenu-item" routerLink="/loisirs" routerLinkActive="active" (click)="toggleMobile()">Loisirs</a>
+            <a class="submenu-item" routerLink="/restauration" routerLinkActive="active"
+              (click)="toggleMobile()">Restauration</a>
+          </div>
+        </div>
+
+        <a routerLink="/annonces" routerLinkActive="active" (click)="toggleMobile()">Annonces</a>
+      </nav>
+
+      <!-- Auth / User section (inside collapsible) -->
+      <div class="nav-actions">
+        <div class="auth-buttons" *ngIf="!utilisateur">
+          <a routerLink="/inscription" (click)="toggleMobile()" class="cta cta-outline">S'inscrire</a>
+          <a routerLink="/login" (click)="toggleMobile()" class="cta cta-primary">Se connecter</a>
+        </div>
+
+        <div *ngIf="utilisateur" class="user-info">
+          <a routerLink="/dashboard-user" routerLinkActive="active" (click)="toggleMobile()">
+            <i class="fas fa-user-circle"></i>
+            {{utilisateur.nom}}
+          </a>
+          <a *ngIf="utilisateur?.role === 'ADMIN'" routerLink="/admin" routerLinkActive="active"
+            (click)="toggleMobile()">
+            🛠️ Admin
+          </a>
+          <button *ngIf="utilisateur.role === 'USER'" (click)="logout()">Déconnexion</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,83 @@
+<div class="auth-page">
+  <div class="auth-card auth-card-wide">
+    <div class="auth-header">
+      <a routerLink="/" class="auth-logo">
+        <span class="logo-icon">D</span>
+        DoualaCity
+      </a>
+      <h1>Créer un compte</h1>
+      <p>Particulier, commerçant ou institution — un seul compte pour tout gérer.</p>
+    </div>
+
+    <div *ngIf="messageSucces" class="alert-success">
+      <i class="fas fa-check-circle"></i> {{ messageSucces }}
+    </div>
+    <div *ngIf="messageErreur" class="alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{ messageErreur }}
+    </div>
+
+    <form class="auth-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nom complet</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Votre nom" [(ngModel)]="utilisateur.nom" name="nom" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Adresse email</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="vous@exemple.com" [(ngModel)]="utilisateur.email" name="email" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="••••••••" [(ngModel)]="utilisateur.motDePasse" name="motDePasse" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Téléphone</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="telephone" placeholder="6........" [(ngModel)]="utilisateur.telephone" name="Téléphone" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Type de compte</label>
+          <div class="input-wrapper">
+            <i class="fas fa-users"></i>
+            <select [(ngModel)]="utilisateur.role" name="role">
+              <option [ngValue]="utilisateur.role" disabled selected>Sélectionnez un rôle</option>
+              <option *ngFor="let r of roles" [ngValue]="r.role">{{ r.valeur }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="checkbox-group">
+        <input id="cgu" type="checkbox" />
+        <label for="cgu">J'accepte les <a href="#">Conditions Générales d'Utilisation</a></label>
+      </div>
+
+      <div class="form-actions">
+        <button (click)="inscrireUtilisateur()" class="btn-auth-primary" type="button">
+          Créer le compte
+        </button>
+        <a class="btn-auth-secondary" routerLink="/login">
+          Déjà un compte ? Se connecter
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

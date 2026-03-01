@@ -1,0 +1,88 @@
+<div class="admin-page-header">
+    <div class="title-section">
+        <h1>Rechercher une structure</h1>
+        <p>Utilisez les filtres avancés pour trouver n'importe quelle structure enregistrée.</p>
+    </div>
+</div>
+
+<div class="filter-form-card glass-surface animate-fade">
+    <form (ngSubmit)="applyFilters()">
+        <div class="form-group">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" [(ngModel)]="filters.nom" placeholder="Ex: Boulangerie...">
+        </div>
+
+        <div class="form-group">
+            <label for="categorie">Catégorie</label>
+            <select id="categorie" name="categorie" [(ngModel)]="filters.categorie" (change)="onCategorieChange()">
+                <option value="">Toutes</option>
+                <option *ngFor="let c of getCategories()" [value]="c">{{c}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="sousCategorie">Sous-Catégorie</label>
+            <select id="sousCategorie" name="sousCategorie" [(ngModel)]="filters.sousCategorie">
+                <option value="">Toutes</option>
+                <option *ngFor="let sc of getSousCategories()" [value]="sc">{{sc}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quartier">Quartier</label>
+            <input type="text" id="quartier" name="quartier" [(ngModel)]="filters.quartier" placeholder="Ex: Akwa">
+        </div>
+
+        <button class="btn btn-filter" type="submit">
+            <i class="fas fa-filter"></i> Filtrer
+        </button>
+    </form>
+</div>
+
+<div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+</div>
+
+<div *ngIf="!loading && filteredStructures.length === 0" class="empty-state">
+    <i class="fas fa-search"></i>
+    <p>Aucune structure ne correspond à ces critères.</p>
+</div>
+
+<div *ngIf="!loading && filteredStructures.length > 0" class="results-section">
+    <div class="section-header">
+        <h3>Résultats de recherche ({{filteredStructures.length}})</h3>
+    </div>
+
+    <div class="results-grid">
+        <article *ngFor="let structure of filteredStructures" class="structure-item-card glass-surface animate-fade">
+            <h4>{{structure.nom}}</h4>
+            <div class="info-row">
+                <span class="cat">{{structure.categorieNom}} / {{structure.sousCategorie}}</span>
+                <span class="email">{{structure.email}}</span>
+            </div>
+
+            <div class="loc-list" *ngIf="structure.localisation && structure.localisation.length > 0">
+                <div *ngFor="let loc of structure.localisation" class="loc-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ loc.address }} ({{ loc.quartier }})</span>
+                </div>
+            </div>
+
+            <button class="btn-consulter" (click)="consulter(structure)">
+                <i class="fas fa-external-link-alt"></i> Gérer la structure
+            </button>
+        </article>
+    </div>
+
+    <footer class="admin-footer" style="margin-top: 2rem; border-radius: 12px;">
+        <div class="pagination" *ngIf="totalPages > 1">
+            <button class="btn btn-pag" (click)="previousPage()" [disabled]="currentPage === 1">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="page-info">Page {{currentPage}} sur {{totalPages}}</span>
+            <button class="btn btn-pag" (click)="nextPage()" [disabled]="currentPage === totalPages">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </footer>
+</div>

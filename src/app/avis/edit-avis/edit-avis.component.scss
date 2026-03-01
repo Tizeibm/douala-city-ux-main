@@ -1,0 +1,55 @@
+.avis-form{
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+
+label{
+
+    display: block;
+    margin-top: 8rem;
+    font-weight: 600;
+}
+
+
+select, textarea{
+    width: 100%;
+    margin-top: .3rem;
+   padding: .4rem;
+}
+
+.form-actions{
+    margin-top: 1rem;
+    display: flex;
+    gap: .5rem;
+
+    button{
+        padding: .5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .btn-submit{
+        background: #28a745;
+        color: #fff;
+
+        &:hover{
+            background: #218838;
+        }
+    }
+
+    .btn-cancel{
+        background: #dc3545;
+        color: #fff;
+
+        &:hover{
+            background: #c82333;
+        }
+    }
+
+    .cancel{
+        background: #eee;
+    }
+}

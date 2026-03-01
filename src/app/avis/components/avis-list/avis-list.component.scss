@@ -1,0 +1,200 @@
+.avis-list-premium {
+    max-width: 800px;
+    margin: 1rem auto;
+    padding: 1.5rem;
+
+    .list-header {
+        margin-bottom: 1.5rem;
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #111827;
+
+            i {
+                color: #10b981;
+                margin-right: 8px;
+            }
+        }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #9ca3af;
+
+        i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+
+    .loading-state {
+        text-align: center;
+        padding: 3rem;
+        color: #10b981;
+    }
+
+    .avis-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .avis-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        border: 1px solid #f0f0f0;
+        transition: box-shadow 0.2s;
+
+        &:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .avis-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #f3f4f6;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                i {
+                    font-size: 1.5rem;
+                    color: #9ca3af;
+                }
+            }
+
+            .avis-meta {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+
+                .author-name {
+                    font-weight: 700;
+                    color: #111827;
+                    font-size: 0.95rem;
+                }
+
+                .avis-date {
+                    font-size: 0.8rem;
+                    color: #9ca3af;
+                }
+            }
+
+            .star-rating {
+                display: flex;
+                gap: 2px;
+
+                i {
+                    font-size: 0.9rem;
+                    color: #d1d5db;
+
+                    &.active {
+                        color: #f59e0b;
+                    }
+                }
+            }
+        }
+
+        .avis-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #4b5563;
+            margin-bottom: 12px;
+        }
+
+        .avis-status {
+            margin-bottom: 10px;
+
+            .badge {
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+
+                &.publie {
+                    background: #d1fae5;
+                    color: #065f46;
+                }
+
+                &.en_attente {
+                    background: #fef3c7;
+                    color: #92400e;
+                }
+
+                &.rejete {
+                    background: #fee2e2;
+                    color: #991b1b;
+                }
+
+                &.signale {
+                    background: #fce7f3;
+                    color: #9d174d;
+                }
+            }
+        }
+
+        .reponses-section {
+            margin-top: 12px;
+        }
+
+        .reponse-card {
+            background: #f0fdf4;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #10b981;
+
+            i {
+                color: #10b981;
+                margin-top: 3px;
+            }
+
+            div {
+                font-size: 0.9rem;
+                color: #374151;
+            }
+        }
+
+        .avis-actions {
+            .btn-reply {
+                background: transparent;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #6b7280;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+
+                &:hover {
+                    border-color: #10b981;
+                    color: #10b981;
+                }
+            }
+        }
+    }
+}

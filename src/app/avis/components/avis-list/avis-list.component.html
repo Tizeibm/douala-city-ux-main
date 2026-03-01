@@ -1,0 +1,54 @@
+<div class="avis-list-premium">
+    <div class="list-header">
+        <h3><i class="fas fa-comments"></i> Avis des clients</h3>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && avis.length === 0">
+        <i class="far fa-comment-dots"></i>
+        <p>Aucun avis pour le moment. Soyez le premier à partager votre expérience !</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+    </div>
+
+    <div class="avis-cards" *ngIf="!loading && avis.length > 0">
+        <div *ngFor="let a of avis" class="avis-card">
+            <div class="avis-header">
+                <div class="avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="avis-meta">
+                    <span class="author-name">{{ a.auteur || 'Anonyme' }}</span>
+                    <span class="avis-date" *ngIf="a.dateCreation">{{ a.dateCreation | date:'mediumDate' }}</span>
+                </div>
+                <div class="star-rating">
+                    <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= a.note"></i>
+                </div>
+            </div>
+
+            <p class="avis-body">{{ a.commentaire }}</p>
+
+            <div class="avis-status" *ngIf="a.status">
+                <span class="badge" [ngClass]="a.status.toLowerCase()">{{ a.status }}</span>
+            </div>
+
+            <div class="reponses-section" *ngIf="a.reponses && a.reponses.length > 0">
+                <div *ngFor="let reponse of a.reponses" class="reponse-card">
+                    <i class="fas fa-reply"></i>
+                    <div>
+                        <strong>Réponse :</strong> {{ reponse.contenu }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="avis-actions">
+                <button *ngIf="!a.reponses || a.reponses.length === 0" (click)="reply(a.id)" class="btn-reply">
+                    <i class="fas fa-reply"></i> Répondre
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,27 @@
+
+  <h2>Mes structures validées</h2>
+
+  <div *ngFor="let s of structures" class="structure-card">
+    <h3>{{ s.nom }}</h3>
+    <p>{{ s.description }}</p>
+
+    <h4>Services proposés :</h4>
+    <ul>
+      <li *ngFor="let serv of s.services">
+        {{ serv.nom }} - {{ serv.prix }} €
+      </li>
+    </ul>
+
+    <button (click)="addService(s)">Ajouter un service</button>
+  </div>
+
+
+<div *ngIf="selectedStructure" class="service-form">
+  <h3>Ajouter un service pour {{ selectedStructure.nom }}</h3>
+  <form #serviceForm="ngForm" (ngSubmit)="saveService()">
+    <input [(ngModel)]="newService.nom" name="nom" placeholder="Nom du service" required>
+    <input [(ngModel)]="newService.description" name="description" placeholder="Description">
+    <input [(ngModel)]="newService.prix" name="prix" placeholder="Prix" type="number" required>
+    <button type="submit">Enregistrer</button>
+  </form>
+

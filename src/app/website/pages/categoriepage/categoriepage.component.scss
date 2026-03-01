@@ -1,0 +1,14 @@
+#categories{
+    .category-card{
+        border-radius: 8px;
+        transition: background-color 0.3s;
+        &:hover{
+            background-color: ligthen(blue, 40%);
+        }
+    }
+
+    .category-icon{
+        font-size: 2rem;
+        color:rgb(0, 17, 255);
+    }
+}

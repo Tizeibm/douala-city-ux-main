@@ -1,0 +1,98 @@
+<div class="structure-details card">
+  <header class="sd-header">
+    <div class="sd-title">
+      <h1>{{ structure.nom }}</h1>
+       <div class="avis-moyenne"
+      *ngIf="totalAvis > 0">
+      <div class="stars">
+         <i *ngFor="let star of [1,2,3,4,5] " class="star"
+             [class.filled]="star <= moyenneAvis">&#9733;</i>
+      </div>
+
+        <span class="note">
+
+          {{moyenneAvis}}/5  ({{ totalAvis}} avis)
+
+        </span>
+        </div>
+
+         <div *ngIf="totalAvis === 0" class="no-avis">
+          <span>Aucun avis disponible</span>
+          </div>
+      <p class="sd-category">
+        <span class="cat">{{ structure.categorieNom }}</span>
+        <span *ngIf="structure.sousCategorie" class="subcat">/ {{ structure.sousCategorie }}</span>
+      </p>
+    </div>
+
+    <div class="sd-actions">
+      <button class="btn edit" (click)="onEdit()">
+        {{ editMode ? 'Fermer' : 'Modifier' }}
+      </button>
+    </div>
+  </header>
+
+  <section class="sd-main">
+    <div class="sd-left">
+      
+           <section class="accordion">
+    <button (click)="toggle('infos')"> Informations</button>
+     <div *ngIf ="open.infos">
+      <p>{{ structure.description }}</p>
+     </div>
+       <button (click)="toggle('horaires')">Horaires</button>
+        <div *ngIf ="open.horaires">
+      <div *ngFor="let h of structure.horaires">
+        {{ h.jourSemaine }} : {{ h.heureDeDebut }} → {{ h.heureDeFin }}
+      </div>
+     </div>
+      <button (click)="toggle('services')">Services</button>
+        <div *ngIf ="open.services">
+      <div *ngFor="let s of structure.services">
+          <strong>{{ s.nom }}</strong>
+          <p *ngIf="s.description" class="muted">{{ s.description }}</p>
+      </div>
+     </div>
+        <button (click)="toggle('localisations')">Localisations</button>
+        <div *ngIf ="open.localisations">
+      <div *ngFor="let loc of structure.localisation; let i = index" class="loc">
+          <p><strong>{{ loc.quartier }}</strong> — {{ loc.telephone }}</p>
+          <p><strong>{{ loc.address }}</strong></p>
+          <p class="coords">Lat: {{ loc.latitude || '-' }}, Lng: {{ loc.longitude || '-' }}</p>
+        </div>
+     </div>
+       </section>
+    </div>
+
+    <div class="sd-right">
+      <!-- Carte en lecture seule (app-map supporte readOnly/editable) -->
+      <app-carte 
+         [locations]="structure.localisation? structure.localisation: [ { latitude: 4.05, longitude: 9.7 } ]"
+            [editable]="true"
+            
+           >
+      </app-carte>
+
+      <h3>Photos</h3>
+      <div class="photos">
+        <div class="photo-main" *ngIf="structure.photoPrincipal">
+          <img [src]="structure.photoPrincipal" alt="Photo principale">
+        </div>
+        <div class="photo-grid">
+          <figure *ngFor="let p of structure.photos" class="thumb">
+            <img [src]="p.filePath" alt="Photo de la structure">
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Édition in-place : on affiche le composant enfant -->
+  <section *ngIf="editMode" class="sd-edit">
+    <app-edit-structure
+      [structure]="structure"
+      (structureUpdated)="onStructureUpdated($event)"
+      (cancelEdit)="onEdit()">
+    </app-edit-structure>
+  </section>
+</div>

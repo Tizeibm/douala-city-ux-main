@@ -1,0 +1,86 @@
+<div class="annonce-details-page">
+    <!-- Header / Navbar -->
+    <header class="detail-header">
+        <div class="container header-container">
+            <button class="btn-back" (click)="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                <span>Retour</span>
+            </button>
+            <div class="header-actions">
+                <button class="btn-action" (click)="share()" title="Partager">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="btn-action" title="Sauvegarder">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state flex justify-center items-center py-20">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="error-state container text-center py-20">
+        <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+        <h2 class="text-2xl font-bold text-gray-800">{{error}}</h2>
+        <button class="btn btn-primary mt-6" (click)="goBack()">Retourner</button>
+    </div>
+
+    <!-- Main Content -->
+    <main *ngIf="annonce && !loading && !error" class="container content-wrapper">
+        <article class="annonce-card">
+
+            <!-- Type Badge & Date -->
+            <div class="meta-header">
+                <div class="badge-type" [ngClass]="annonce.type.toLowerCase() || 'autres'">
+                    <i
+                        [class]="getAnnonceIcon(annonce.type) | slice:0:getAnnonceIcon(annonce.type).indexOf('text-') - 1"></i>
+                    {{ annonce.type || 'Annonce' }}
+                </div>
+                <div class="date-published">
+                    <i class="far fa-calendar-alt"></i> Publié le {{ annonce.dateCreation | date:'dd MMM yyyy à HH:mm'
+                    }}
+                </div>
+            </div>
+
+            <!-- Title Section -->
+            <h1 class="annonce-title">{{ annonce.titre }}</h1>
+
+            <div class="author-info">
+                <div class="avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="author-details">
+                    <span class="name">{{annonce.user?.name || annonce.user?.email || 'Utilisateur Anonyme'}}</span>
+                    <span class="role">Auteur</span>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="annonce-body">
+                <h3 class="section-heading">Description détaillée</h3>
+                <div class="description-content">
+                    {{ annonce.description }}
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="action-footer">
+                <div class="pricing-info" *ngIf="annonce.type === 'VENTE' || annonce.type === 'IMMOBILIER'">
+                    <span class="price-label">Prix indicatif:</span>
+                    <span class="price-value">Sur demande</span>
+                </div>
+
+                <button class="btn-contact-primary" (click)="contactAuthor()">
+                    <i class="fas fa-envelope mr-2"></i> Contacter l'auteur
+                </button>
+            </div>
+
+        </article>
+    </main>
+</div>

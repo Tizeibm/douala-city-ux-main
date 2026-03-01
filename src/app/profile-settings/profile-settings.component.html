@@ -1,0 +1,55 @@
+<div class="profile-container glass-card">
+    <header class="profile-header">
+        <div class="avatar-section">
+            <div class="avatar-large">
+                {{ utilisateur?.nom?.charAt(0) || 'U' }}
+            </div>
+            <div class="user-meta">
+                <h2>{{ utilisateur?.nom }}</h2>
+                <p>{{ utilisateur?.email }}</p>
+                <span class="role-badge">{{ utilisateur?.role }}</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="settings-grid">
+        <section class="settings-section">
+            <h3>Informations Personnelles</h3>
+            <form (ngSubmit)="onUpdateProfile()" class="profile-form">
+                <div class="form-group">
+                    <label>Nom complet</label>
+                    <input type="text" [value]="utilisateur?.nom" readonly>
+                    <small>Le nom ne peut pas être modifié pour le moment.</small>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" [value]="utilisateur?.email" readonly>
+                </div>
+
+                <button type="submit" class="btn btn-primary" [disabled]="loading">
+                    Enregistrer les modifications
+                </button>
+            </form>
+        </section>
+
+        <section class="settings-section danger-zone">
+            <h3>Compte & Sécurité</h3>
+            <p>Gérez vos options de sécurité et de déconnexion.</p>
+
+            <div class="action-buttons">
+                <button class="btn btn-outline" (click)="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Se déconnecter
+                </button>
+                <button class="btn btn-danger-soft">
+                    <i class="fas fa-trash-alt"></i>
+                    Supprimer le compte
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <div class="feedback-toast" *ngIf="successMessage">
+        {{ successMessage }}
+    </div>
+</div>

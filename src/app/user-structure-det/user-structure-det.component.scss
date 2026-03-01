@@ -1,0 +1,224 @@
+@use "variables" as *;
+
+.structure-details {
+  padding: 2.5rem;
+  animation: fadeIn 0.4s ease-out;
+
+  .sd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 1.5rem;
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: $heading-color;
+      margin: 0 0 0.5rem;
+      letter-spacing: -1px;
+    }
+
+    .cat {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: $brand-primary;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .subcat {
+      color: $text-secondary;
+      font-size: 0.9rem;
+    }
+
+    .sd-actions {
+      .btn.edit {
+        padding: 10px 24px;
+        border-radius: $radius-full;
+        font-weight: 700;
+        background: $brand-primary;
+        color: white;
+        border: none;
+        transition: all 0.2s;
+
+        &:hover {
+          background: $brand-dark;
+          transform: translateY(-1px);
+          box-shadow: $shadow-sm;
+        }
+      }
+    }
+  }
+}
+
+.sd-main {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3.5rem;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sd-left {
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    button {
+      width: 100%;
+      text-align: left;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid $border-color;
+      border-radius: $radius-md;
+      color: $heading-color;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &::after {
+        content: '\f078';
+        font-family: 'Font Awesome 5 Free';
+        font-size: 0.8rem;
+        opacity: 0.5;
+      }
+
+      &:hover {
+        background: white;
+        border-color: $brand-primary;
+        color: $brand-primary;
+      }
+    }
+
+    .accordion-content {
+      padding: 1rem 1.5rem 1.5rem;
+      color: $text-main;
+      font-size: 1rem;
+      line-height: 1.6;
+      animation: slideDown 0.3s ease-out;
+
+      strong {
+        color: $heading-color;
+      }
+
+      .muted {
+        color: $text-secondary;
+        font-size: 0.9rem;
+        margin-top: 4px;
+      }
+
+      .loc {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid $border-light;
+
+        &:last-child {
+          border: none;
+          margin: 0;
+        }
+
+        .coords {
+          font-family: monospace;
+          font-size: 0.85rem;
+          color: $brand-primary;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
+}
+
+.sd-right {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+
+  app-cartes {
+    height: 350px;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-md;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0 0 1rem;
+    color: $heading-color;
+  }
+
+  .photos {
+    .photo-main {
+      width: 100%;
+      height: 240px;
+      border-radius: $radius-lg;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      box-shadow: $shadow-sm;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+
+      .thumb {
+        height: 80px;
+        border-radius: $radius-sm;
+        overflow: hidden;
+        margin: 0;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: $brand-primary;
+          opacity: 0.9;
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

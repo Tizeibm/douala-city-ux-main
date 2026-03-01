@@ -1,0 +1,418 @@
+@use "sass:color";
+@use "variables" as *;
+
+/* === HEADER — CLEAN STICKY NAV (RESPONSIVE FIXED) === */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid $border-color;
+  box-shadow: $shadow-sm;
+}
+
+.nav-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: relative;
+  gap: 1.5rem;
+
+  @media (max-width: $bp-sm) {
+    gap: 0.5rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Brand / Logo */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: $heading-color;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+
+  .logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: $brand-primary;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+
+    &::after {
+      content: 'D';
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      font-family: $font-family;
+    }
+  }
+
+  &:hover .logo {
+    transform: scale(1.05) rotate(-2deg);
+  }
+}
+
+/* === NAV CONTENT — the collapsible wrapper === */
+.nav-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  justify-content: space-between;
+  margin-left: 2rem;
+}
+
+/* Menu links */
+.menu {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+
+  >a {
+    color: $text-secondary;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: $radius-full;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      color: $text-main;
+      background: $bg-alt;
+    }
+
+    &.active {
+      color: $brand-primary;
+      background: rgba(5, 150, 105, 0.06);
+      font-weight: 600;
+    }
+  }
+}
+
+/* Dropdown */
+.submenu-container {
+  position: relative;
+
+  .submenu-title {
+    cursor: pointer;
+    font-weight: 500;
+    color: $text-secondary;
+    padding: 8px 12px;
+    border-radius: $radius-full;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    user-select: none;
+
+    i {
+      font-size: 0.55rem;
+      transition: transform 0.2s;
+    }
+
+    &:hover {
+      color: $text-main;
+      background: $bg-alt;
+    }
+  }
+
+  .submenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 200px;
+    background: #fff;
+    border-radius: $border-radius;
+    box-shadow: $shadow-lg;
+    border: 1px solid $border-color;
+    padding: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+
+    &.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    a.submenu-item {
+      padding: 9px 14px;
+      color: $text-main;
+      font-size: 0.88rem;
+      border-radius: $radius-sm;
+      font-weight: 400;
+      transition: all 0.15s;
+      text-decoration: none;
+
+      &:hover {
+        background: $bg-alt;
+        color: $brand-primary;
+      }
+    }
+  }
+
+  &:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+/* Nav Actions (auth/user) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  .cta {
+    padding: 8px 16px;
+    border-radius: $radius-full;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .cta-outline {
+    background: transparent;
+    color: $text-main;
+    border: 1.5px solid $border-color;
+
+    &:hover {
+      border-color: $brand-primary;
+      color: $brand-primary;
+    }
+  }
+
+  .cta-primary {
+    background: $brand-primary;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background: $brand-dark;
+      transform: translateY(-1px);
+      box-shadow: $shadow-md;
+    }
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  a {
+    color: $brand-primary;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(5, 150, 105, 0.06);
+    padding: 7px 14px;
+    border-radius: $radius-full;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(5, 150, 105, 0.1);
+    }
+  }
+
+  button {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    border-radius: $radius-full;
+    background: transparent;
+    color: $text-secondary;
+    border: 1.5px solid $border-color;
+    font-weight: 500;
+    font-family: $font-family;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+      background: #FEF2F2;
+      color: $danger;
+      border-color: #FECACA;
+    }
+  }
+}
+
+/* Mobile Toggle */
+.mobile-toggle {
+  display: none;
+  background: transparent;
+  color: $text-main;
+  font-size: 1.3rem;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-sm;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $bg-alt;
+  }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE — Everything collapses
+   ============================================ */
+@media (max-width: $bp-md) {
+  .mobile-toggle {
+    display: flex;
+  }
+
+  .nav-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 16px 20px;
+    border-bottom: 1px solid $border-color;
+    box-shadow: $shadow-hover;
+    margin-left: 0;
+    gap: 0;
+
+    &.open {
+      display: flex;
+    }
+  }
+
+  /* Menu links stack vertically */
+  .menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+
+    >a {
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: $radius-sm;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Submenu becomes inline accordion */
+  .submenu-container {
+    .submenu-title {
+      width: 100%;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: $radius-sm;
+      font-size: 0.95rem;
+    }
+
+    .submenu {
+      position: static;
+      box-shadow: none;
+      border: none;
+      background: $bg-alt;
+      border-radius: $radius-sm;
+      margin-top: 4px;
+      padding: 4px;
+      opacity: 0;
+      visibility: hidden;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.25s ease;
+
+      &.open {
+        opacity: 1;
+        visibility: visible;
+        max-height: 500px;
+      }
+
+      a.submenu-item {
+        padding: 10px 16px;
+      }
+    }
+
+    /* Disable desktop hover, use click */
+    &:hover .submenu {
+      opacity: 0;
+      visibility: hidden;
+      max-height: 0;
+    }
+
+    &:hover .submenu.open {
+      opacity: 1;
+      visibility: visible;
+      max-height: 500px;
+    }
+  }
+
+  /* Divider before actions */
+  .nav-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid $border-light;
+    width: 100%;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+
+    .cta {
+      width: 100%;
+      text-align: center;
+      padding: 12px;
+      font-size: 0.95rem;
+    }
+  }
+
+  .user-info {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+
+    a,
+    button {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+      padding: 12px;
+    }
+  }
+}

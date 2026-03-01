@@ -1,0 +1,175 @@
+<div class="premium-details" *ngIf="structure">
+  <!-- Hero Section with Layered Visuals -->
+  <section class="premium-hero">
+    <div class="hero-canvas"
+      [style.backgroundImage]="'url(' + (structure.photoPrincipal || '/assets/images/placeholder.jpg') + ')'">
+    </div>
+    <div class="hero-vignette"></div>
+
+    <div class="container hero-container">
+      <div class="hero-main-card animate-fade-in">
+        <nav class="breadcrumb-premium">
+          <a routerLink="/accueil">Accueil</a>
+          <i class="fas fa-chevron-right"></i>
+          <span>{{structure.categorieNom}}</span>
+        </nav>
+
+        <h1 class="structure-name-hero">{{structure.nom}}</h1>
+
+        <div class="hero-stats">
+          <div class="stat-item rating" *ngIf="totalAvis > 0">
+            <span class="rating-value">{{moyenneAvis}}</span>
+            <div class="star-wrapper">
+              <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= moyenneAvis"></i>
+            </div>
+            <span class="reviews-link" (click)="scrollToReviews()">({{totalAvis}} avis)</span>
+          </div>
+          <div class="stat-item status" [class.open]="true">
+            <span class="status-dot"></span>
+            Ouvert • Ferme à 18:00
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" (click)="donnerAvis()">
+            <i class="fas fa-star"></i> Écrire un avis
+          </button>
+          <button class="btn btn-outline-white" (click)="share()">
+            <i class="fas fa-share-alt"></i> Partager
+          </button>
+          <button class="btn btn-outline-white icon-only" title="Enregistrer">
+            <i class="far fa-bookmark"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Router Outlet for Child Routes (ajouterAvis, avisList) -->
+  <div class="container child-route-container">
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="container main-layout mt-xl">
+    <!-- Left Column: Primary Content -->
+    <div class="content-primary">
+
+      <!-- Photos Gallery (Simulated row) -->
+      <section class="detail-section" *ngIf="structure.photos && structure.photos.length > 0">
+        <h2 class="detail-title">Photos</h2>
+        <div class="photo-grid">
+          <div *ngFor="let p of structure.photos" class="photo-item">
+            <img [src]="getPhotoUrl(p)" [alt]="structure.nom">
+          </div>
+        </div>
+      </section>
+
+      <!-- Description Section -->
+      <section class="detail-section">
+        <h2 class="detail-title">À propos de {{structure.nom}}</h2>
+        <div class="description-text">
+          {{structure.description}}
+        </div>
+      </section>
+
+      <!-- Services / Specialties -->
+      <section class="detail-section" *ngIf="structure.services && structure.services.length > 0">
+        <h2 class="detail-title">Services & Spécialités</h2>
+        <div class="services-premium-grid">
+          <div class="service-premium-card" *ngFor="let s of structure.services">
+            <div class="service-icon"><i class="fas fa-check"></i></div>
+            <div class="service-details">
+              <span class="service-name">{{s.nom}}</span>
+              <span class="service-price" *ngIf="s.prix">{{s.prix | number}} FCFA</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reviews Section -->
+      <section id="reviews" class="detail-section">
+        <div class="section-header-flex">
+          <h2 class="detail-title">Avis & Témoignages</h2>
+          <button class="btn btn-link" (click)="consulterAvis()">Voir tout <i
+              class="fas fa-chevron-right ml-2"></i></button>
+        </div>
+
+        <div class="reviews-summary-card" *ngIf="totalAvis > 0">
+          <div class="big-rating">{{moyenneAvis}}</div>
+          <div class="rating-info">
+            <div class="stars big">
+              <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= moyenneAvis"></i>
+            </div>
+            <span class="count-text">Basé sur {{totalAvis}} avis clients</span>
+          </div>
+        </div>
+
+        <div class="empty-reviews" *ngIf="totalAvis === 0">
+          <i class="far fa-comment-dots fa-3x mb-3 opacity-20"></i>
+          <p>Aucun avis pour le moment. Partagez votre expérience avec la communauté !</p>
+          <button class="btn btn-outline mt-3" (click)="donnerAvis()">Donner mon avis</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Sidebar info -->
+    <aside class="content-sidebar">
+      <div class="sticky-sidebar">
+
+        <!-- Quick Info Card -->
+        <div class="sidebar-info-card">
+          <div class="info-row" *ngFor="let l of structure.localisation">
+            <i class="fas fa-map-marker-alt icon"></i>
+            <div class="info-content">
+              <span class="label">Adresse</span>
+              <span class="value">{{l.adresse || l.address}}<span *ngIf="l.quartier">, {{l.quartier}}</span></span>
+              <a href="https://www.google.com/maps?q={{l.latitude}},{{l.longitude}}" target="_blank"
+                class="action-link">Itinéraire <i class="fas fa-external-link-alt"></i></a>
+            </div>
+          </div>
+
+          <div class="info-row" *ngFor="let l of structure.localisation">
+            <i class="fas fa-phone-alt icon"></i>
+            <div class="info-content">
+              <span class="label">Téléphone</span>
+              <a href="tel:{{l.telephone}}" class="value link">{{l.telephone}}</a>
+            </div>
+          </div>
+
+          <div class="info-row" *ngIf="structure.email">
+            <i class="fas fa-envelope icon"></i>
+            <div class="info-content">
+              <span class="label">Email</span>
+              <a href="mailto:{{structure.email}}" class="value link">{{structure.email}}</a>
+            </div>
+          </div>
+
+          <div class="info-row" *ngIf="structure.website">
+            <i class="fas fa-globe icon"></i>
+            <div class="info-content">
+              <span class="label">Site Web</span>
+              <a [href]="structure.website" target="_blank" class="value link">Consulter le site</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hours Card -->
+        <div class="sidebar-info-card mt-md" *ngIf="structure.horaires && structure.horaires.length > 0">
+          <h3 class="sidebar-title"><i class="far fa-clock mr-xs"></i> Horaires</h3>
+          <div class="hours-grid">
+            <div class="hour-line" *ngFor="let h of structure.horaires">
+              <span class="day">{{h.jourSemaine || h.jour}}</span>
+              <span class="time">{{h.heureDeDebut || h.heureOuverture}} - {{h.heureDeFin || h.heureFermeture}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Card -->
+        <div class="sidebar-map-card mt-md" *ngIf="structure.localisation && structure.localisation.length > 0">
+          <app-carte [locations]="structure.localisation" [editable]="false" mapId="structDetailMap">
+          </app-carte>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

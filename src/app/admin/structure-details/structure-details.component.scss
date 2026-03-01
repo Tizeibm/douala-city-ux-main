@@ -1,0 +1,121 @@
+// simple card layout for details
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  padding: 16px;
+  max-width: 1200px;
+  margin: 12px auto;
+  font-family: Inter, Roboto, system-ui, -apple-system;
+}
+
+.sd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .sd-title {
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      line-height: 1.1;
+    }
+    .sd-category {
+      margin: 4px 0 0;
+      color: #666;
+      font-size: 0.9rem;
+
+      .cat { font-weight: 600; }
+      .subcat { color: #999; margin-left: 6px; }
+    }
+  }
+
+  .sd-actions {
+    .btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .edit { background:#0d6efd; color: #fff; }
+  }
+}
+
+.sd-main {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 18px;
+  align-items: start;
+
+  .sd-left {
+    .sd-desc { margin: 8px 0 16px; color:#333; }
+    h3 { margin: 12px 0 8px; font-size:1rem; }
+    .services-list, .horaires-list { list-style: none; margin:0; padding:0; }
+    .services-list li, .horaires-list li { padding:8px 0; border-bottom: 1px dashed #eee; }
+    .localisations .loc { padding:6px 0; border-bottom: 1px solid #fafafa; }
+    .coords { color:#777; font-size:0.9rem; }
+  }
+
+  .sd-right {
+    app-map { display:block; width:100%; height: 260px; margin-bottom:12px; border-radius:8px; overflow:hidden; }
+    .photos { .photo-main img { width:100%; height:160px; object-fit:cover; border-radius:8px; } 
+             .photo-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-top:8px;
+               .thumb img{ width:100%; height:80px; object-fit:cover; border-radius:6px;}
+               figcaption{ font-size:0.8rem; color:#555; margin-top:4px; }
+             }
+    }
+  }
+}
+
+.sd-edit { margin-top: 18px; padding-top: 12px; border-top: 1px solid #f1f3f5; }
+
+
+#map{
+    height: 300px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.avis-moyenne{
+ 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stars{
+  color: #ccc;
+ 
+}
+
+.star{
+font-size: 20px;
+}
+
+.star.filled{
+color: #f4b400;
+}
+
+.no-avis{
+  font-style: italic;
+  color: #999;
+}
+.accordion button{
+
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: #f3f4f6;
+  text-align: left;
+  font-weight: 600;
+  
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+  &:active{
+    transform: scale(0.96);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+}

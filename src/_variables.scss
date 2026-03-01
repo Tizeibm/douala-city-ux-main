@@ -1,0 +1,78 @@
+@use "sass:color";
+
+/* === DOUALA CITY — USER-FRIENDLY DIRECTORY DESIGN SYSTEM ===
+   Inspired by Yelp, PagesJaunes & Google Business
+   Philosophy: Clean, warm, trustworthy, highly readable */
+
+/* 1. Color Palette — Warm Emerald & Coral */
+$brand-primary: #059669;
+/* Emerald green — trust, growth, Cameroon */
+$brand-secondary: #F97316;
+/* Warm orange — energy, CTAs, warmth of Douala */
+$brand-dark: #047857;
+/* Darker green for hover states */
+
+$bg-color: #FFFFFF;
+/* Pure white — max readability */
+$bg-alt: #F9FAFB;
+/* Very light gray — section alternation */
+$surface-color: #FFFFFF;
+/* White cards */
+
+$text-main: #111827;
+/* Near-black for body text */
+$text-secondary: #6B7280;
+/* Medium gray for muted text */
+$heading-color: #111827;
+/* Same as text-main — strong hierarchy via weight/size */
+
+$border-color: #E5E7EB;
+/* Light gray borders */
+$border-light: #F3F4F6;
+
+$success: #10B981;
+$warning: #F59E0B;
+$danger: #EF4444;
+$info: #3B82F6;
+
+$star-color: #FBBF24;
+/* Gold for ratings */
+
+/* 2. Typography */
+$font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+
+/* 3. Spacing & Radius — Friendly & Rounded */
+$border-radius: 12px;
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-full: 999px;
+
+/* 4. Shadows — Subtle & Elevated */
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+$shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+
+/* Legacy Variables */
+$primary-color: $brand-primary;
+$secondary-color: $brand-secondary;
+$light-color: $bg-alt;
+$dark-color: $text-main;
+
+$bg: $bg-color;
+$surface: $surface-color;
+$text: $text-main;
+$muted: $text-secondary;
+$primary: $brand-primary;
+$primary-600: $brand-dark;
+$accent: $brand-secondary;
+$radius: $border-radius;
+$shadow: $shadow-soft;
+
+$bp-lg: 1024px;
+$bp-md: 900px;
+$bp-sm: 768px;
+$bp-xs: 520px;

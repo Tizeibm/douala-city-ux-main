@@ -1,0 +1,60 @@
+<div class="chatbot-container" [class.open]="isOpen" [class.expanded]="isExpanded"
+    [style.transform]="!isExpanded ? 'translate(' + dragPos.x + 'px, ' + dragPos.y + 'px)' : 'none'">
+    <!-- Floating Button -->
+    <button class="chatbot-toggle" (mousedown)="onMouseDown($event)" (touchstart)="onMouseDown($event)"
+        (click)="toggleChat($event)" [style.cursor]="isDragging ? 'grabbing' : 'grab'"
+        [attr.aria-label]="isOpen ? 'Fermer le chat' : 'Ouvrir le chat'">
+        <i class="fas" [class.fa-comment-dots]="!isOpen" [class.fa-times]="isOpen"></i>
+        <span class="notification-badge" *ngIf="!isOpen && messages.length > 1">1</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div class="chatbot-window">
+        <div class="chatbot-header">
+            <div class="header-info">
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h3>Assistant DoualaCity</h3>
+                    <span class="status">En ligne</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" (click)="toggleExpand($event)" title="Agrandir/Réduire">
+                    <i class="fas" [class.fa-expand-arrows-alt]="!isExpanded"
+                        [class.fa-compress-arrows-alt]="isExpanded"></i>
+                </button>
+                <button class="header-btn close-btn" (click)="toggleChat()" title="Fermer">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="chatbot-messages" #scrollContainer>
+            <div *ngFor="let msg of messages" class="message" [class.user]="msg.sender === 'user'"
+                [class.bot]="msg.sender === 'bot'">
+                <div class="message-content">
+                    {{ msg.content }}
+                </div>
+                <div class="message-time">
+                    {{ msg.timestamp | date:'shortTime' }}
+                </div>
+            </div>
+
+            <div class="message bot typing" *ngIf="isTyping">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="chatbot-input">
+            <input type="text" [(ngModel)]="userInput" (keyup.enter)="sendMessage()"
+                placeholder="Posez votre question..." [disabled]="isTyping">
+            <button (click)="sendMessage()" [disabled]="!userInput.trim() || isTyping">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,209 @@
+@use "variables" as *;
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.5rem 1rem;
+    background: white;
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px 2.5rem;
+
+        .logo {
+            height: 32px;
+            width: auto;
+        }
+
+        span {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: $heading-color;
+            letter-spacing: -0.5px;
+
+            &::after {
+                content: '.';
+                color: $brand-primary;
+            }
+        }
+
+        @media (max-width: $bp-lg) {
+            display: none;
+        }
+    }
+
+    .nav-groups {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        flex: 1;
+    }
+
+    .nav-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .group-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: $text-secondary;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            padding-left: 12px;
+
+            @media (max-width: $bp-lg) {
+                display: none;
+            }
+        }
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: $radius-md;
+        color: $text-secondary;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        i {
+            font-size: 1.25rem;
+            width: 24px;
+            display: flex;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        &:hover {
+            background: $bg-alt;
+            color: $brand-primary;
+
+            i {
+                transform: scale(1.1);
+            }
+        }
+
+        &.active {
+            background: rgba(5, 150, 105, 0.08);
+            color: $brand-primary;
+            font-weight: 700;
+
+            i {
+                color: $brand-primary;
+            }
+        }
+
+        &.add-highlight {
+            background: linear-gradient(135deg, $brand-primary, $brand-dark);
+            color: white;
+            margin-top: 8px;
+            box-shadow: $shadow-soft;
+
+            i {
+                color: white;
+            }
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: $shadow-md;
+            }
+
+            &.active {
+                background: $brand-dark;
+            }
+        }
+
+        @media (max-width: $bp-lg) {
+            justify-content: center;
+            padding: 12px;
+
+            span {
+                display: none;
+            }
+        }
+    }
+
+    .footer-group {
+        margin-top: auto;
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background: $border-light;
+        margin: 1rem 0;
+    }
+
+    @media (max-width: $bp-sm) {
+        flex-direction: row;
+        padding: 0;
+
+        .sidebar-brand {
+            display: none;
+        }
+
+        .nav-groups {
+            flex-direction: row;
+            justify-content: space-around;
+            width: 100%;
+            gap: 0;
+        }
+
+        .nav-group {
+            flex-direction: row;
+            flex: 1;
+            justify-content: space-around;
+
+            .group-label {
+                display: none;
+            }
+        }
+
+        .nav-item {
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px 4px;
+            font-size: 0.65rem;
+            border-radius: 0;
+            flex: 1;
+            height: 100%;
+            justify-content: center;
+
+            i {
+                font-size: 1.2rem;
+                margin: 0;
+                width: auto;
+            }
+
+            span {
+                display: block;
+                font-weight: 600;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            &.add-highlight {
+                margin: 0;
+                background: transparent;
+                color: $brand-primary;
+                box-shadow: none;
+                border: none;
+
+                i {
+                    color: $brand-primary;
+                }
+            }
+        }
+
+        .sidebar-divider {
+            display: none;
+        }
+    }
+}

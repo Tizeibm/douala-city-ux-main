@@ -1,0 +1,17 @@
+.categories{
+    padding: 3rem;
+
+    .category-grid{
+        display:grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+        .category{
+            background: #ececec;
+            padding: 1rem;
+            border-radius: 1px;
+            text-align:center;
+            font-weight: bold;
+        }
+    }
+}

@@ -1,0 +1,51 @@
+<aside class="sidebar">
+   <div class="sidebar-brand">
+      <img src="assets/images/logo.png" alt="Douala City" class="logo">
+      <span>Business</span>
+   </div>
+
+   <div class="sidebar-back-link">
+      <a routerLink="/accueil" class="nav-item">
+         <i class="fas fa-arrow-left"></i>
+         <span>Retour au site</span>
+      </a>
+   </div>
+
+   <nav>
+      <ul>
+         <li>
+            <a routerLink="/admin/structures" routerLinkActive="active">
+               <i class="fas fa-layer-group"></i>
+               <span>Entreprises</span>
+            </a>
+         </li>
+         <li>
+            <a routerLink="/admin/validation" routerLinkActive="active">
+               <i class="fas fa-user-check"></i>
+               <span>Validation</span>
+            </a>
+         </li>
+         <li>
+            <a routerLink="/admin/statistiques" routerLinkActive="active">
+               <i class="fas fa-chart-line"></i>
+               <span>Statistiques</span>
+            </a>
+         </li>
+         <li>
+            <a routerLink="/admin/filtres" routerLinkActive="active">
+               <i class="fas fa-filter"></i>
+               <span>Filtres</span>
+            </a>
+         </li>
+      </ul>
+
+      <ul class="footer-nav">
+         <li>
+            <a routerLink="/admin/login" class="logout-btn">
+               <i class="fas fa-sign-out-alt"></i>
+               <span>Déconnexion</span>
+            </a>
+         </li>
+      </ul>
+   </nav>
+</aside>

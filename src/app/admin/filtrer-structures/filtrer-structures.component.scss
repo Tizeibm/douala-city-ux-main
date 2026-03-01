@@ -1,0 +1,137 @@
+@use "../admin-shared" as *;
+
+.filter-form-card {
+    margin-bottom: 2rem;
+    padding: 2rem;
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        align-items: flex-end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: $text-secondary;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid $border-color;
+            border-radius: $radius-sm;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+
+            &:focus {
+                outline: none;
+                border-color: $brand-primary;
+                box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+            }
+        }
+    }
+
+    .btn-filter {
+        height: 42px;
+        background: $brand-primary;
+        color: white;
+        border: none;
+        border-radius: $radius-sm;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        &:hover {
+            background: $brand-dark;
+            transform: translateY(-1px);
+        }
+    }
+}
+
+.results-section {
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+}
+
+.structure-item-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h4 {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: $heading-color;
+        margin: 0;
+    }
+
+    .info-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .cat {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: $brand-primary;
+        }
+
+        .email {
+            font-size: 0.85rem;
+            color: $text-secondary;
+        }
+    }
+
+    .loc-list {
+        border-top: 1px solid $border-light;
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .loc-item {
+            font-size: 0.85rem;
+            color: $text-main;
+            display: flex;
+            gap: 8px;
+
+            i {
+                color: $brand-primary;
+            }
+        }
+    }
+
+    .btn-consulter {
+        margin-top: auto;
+        width: 100%;
+        padding: 10px;
+        background: $bg-alt;
+        color: $text-main;
+        border: 1px solid $border-color;
+        border-radius: $radius-sm;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            background: $border-color;
+        }
+    }
+}

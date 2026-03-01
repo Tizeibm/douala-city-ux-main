@@ -1,0 +1,42 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <a routerLink="/" class="auth-logo">
+        <span class="logo-icon">D</span>
+        DoualaCity
+      </a>
+      <h1>Connexion</h1>
+      <p>Accédez à votre espace personnel</p>
+    </div>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm" novalidate class="auth-form">
+      <div class="form-group">
+        <label for="email">Adresse email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input id="email" type="email" placeholder="vous@exemple.com" [(ngModel)]="email" name="email" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input id="password" type="password" placeholder="••••••••" [(ngModel)]="password" name="password" required />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-auth-primary" [disabled]="loginForm.invalid">
+        Se connecter
+      </button>
+    </form>
+
+    <p *ngIf="erreur" class="alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{erreur}}
+    </p>
+
+    <div class="auth-footer">
+      <p>Pas encore de compte ? <a routerLink="/inscription">Créer un compte</a></p>
+    </div>
+  </div>
+</div>

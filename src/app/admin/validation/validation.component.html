@@ -1,0 +1,61 @@
+<div class="admin-page-header">
+   <div class="title-section">
+      <h1>Validation des structures</h1>
+      <p>Examinez et approuvez les nouvelles structures soumises par les utilisateurs.</p>
+   </div>
+</div>
+
+<div *ngIf="loading" class="loading-state">
+   <div class="spinner"></div>
+</div>
+
+<div *ngIf="!loading && entreprises.length > 0" class="admin-content-card glass-surface">
+   <div class="table-container">
+      <table class="modern-table">
+         <thead>
+            <tr>
+               <th>Structure</th>
+               <th>Propriétaire</th>
+               <th>Date de soumission</th>
+               <th>Actions</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr *ngFor="let e of entreprises">
+               <td>
+                  <div class="structure-info">
+                     <div class="details">
+                        <span class="name">{{e.nom}}</span>
+                        <span class="email">{{e.email}}</span>
+                     </div>
+                  </div>
+               </td>
+               <td>
+                  <div class="user-info-cell">
+                     <span class="user-name">{{e.user?.nom}}</span>
+                     <span class="user-email">{{e.user?.email}}</span>
+                  </div>
+               </td>
+               <td>
+                  <span class="date-text">En attente</span>
+               </td>
+               <td>
+                  <div class="action-buttons">
+                     <button class="btn btn-validate" (click)="valider(e.id)" title="Approuver">
+                        <i class="fas fa-check"></i>
+                     </button>
+                     <button class="btn btn-reject" (click)="rejeter(e.id)" title="Rejeter">
+                        <i class="fas fa-times"></i>
+                     </button>
+                  </div>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</div>
+
+<div *ngIf="!loading && entreprises.length === 0" class="empty-state">
+   <i class="fas fa-clipboard-check"></i>
+   <p>Aucune structure en attente de validation.</p>
+</div>

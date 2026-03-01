@@ -1,0 +1,47 @@
+<div class="add-annonce-container container mt-xl animate-fade">
+    <div class="glass-form-card">
+        <div class="card-header">
+            <h1 class="title"><i class="fas fa-bullhorn mr-sm primary"></i> Créer une annonce</h1>
+            <p class="subtitle">Diffusez votre actualité, promotion ou événement à toute la ville de Douala.</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" class="mt-md">
+            <!-- Type Selector -->
+            <div class="form-group">
+                <label>Type d'annonce</label>
+                <div class="type-selector grid cols-3 gap-sm">
+                    <button type="button" *ngFor="let type of annonceTypes" class="type-btn"
+                        [class.active]="annonce.type === type" (click)="annonce.type = type">
+                        <i class="fas" [ngClass]="{
+                            'fa-shopping-cart': type === 'VENTE',
+                            'fa-tag': type === 'PROMOTION',
+                            'fa-home': type === 'IMMOBILIER',
+                            'fa-calendar-alt': type === 'EVENEMENT',
+                            'fa-concierge-bell': type === 'SERVICES',
+                            'fa-briefcase': type === 'EMPLOI',
+                            'fa-ellipsis-h': type === 'AUTRES'
+                        }"></i>
+                        <span>{{type}}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group mt-md">
+                <label>Description de l'annonce</label>
+                <textarea [(ngModel)]="annonce.description" name="description" class="input" rows="6"
+                    placeholder="Décrivez votre annonce ici (détails, conditions, dates...)" required></textarea>
+                <p class="help-text">Soyez clair et concis pour attirer l'attention.</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions mt-xl">
+                <button type="button" class="btn secondary" (click)="onCancel()" [disabled]="loading">Annuler</button>
+                <button type="submit" class="btn btn-primary" [disabled]="loading || !annonce.description">
+                    <span *ngIf="!loading">Publier l'annonce</span>
+                    <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

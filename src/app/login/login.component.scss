@@ -1,0 +1,205 @@
+@use "variables" as *;
+
+/* === LOGIN PAGE — CLEAN CENTERED AUTH === */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(170deg, #ECFDF5 0%, #F0FDF4 30%, #FFF7ED 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: #fff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    border: 1px solid $border-color;
+    padding: 40px;
+    animation: fadeUp 0.4s ease-out;
+
+    @media (max-width: $bp-xs) {
+        padding: 28px 20px;
+        border-radius: $border-radius;
+    }
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+
+    .auth-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: $heading-color;
+        margin-bottom: 24px;
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: $brand-primary;
+            color: #fff;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $heading-color;
+        margin-bottom: 6px;
+    }
+
+    p {
+        color: $text-secondary;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: $text-main;
+        font-size: 0.9rem;
+    }
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    i {
+        position: absolute;
+        left: 14px;
+        color: #9CA3AF;
+        font-size: 0.9rem;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1.5px solid $border-color;
+        border-radius: $border-radius;
+        font-size: 0.95rem;
+        font-family: $font-family;
+        color: $text-main;
+        background: #fff;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &::placeholder {
+            color: #9CA3AF;
+        }
+
+        &:focus {
+            border-color: $brand-primary;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.08);
+        }
+    }
+}
+
+.btn-auth-primary {
+    width: 100%;
+    padding: 13px;
+    background: $brand-primary;
+    color: #fff;
+    border: none;
+    border-radius: $border-radius;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: $font-family;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+
+    &:hover {
+        background: $brand-dark;
+        transform: translateY(-1px);
+        box-shadow: $shadow-md;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background: #D1D5DB;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.alert-error {
+    background: #FEF2F2;
+    color: #991B1B;
+    padding: 10px 14px;
+    border: 1px solid #FECACA;
+    border-radius: $radius-sm;
+    font-size: 0.85rem;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i {
+        font-size: 0.9rem;
+    }
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid $border-light;
+
+    p {
+        color: $text-secondary;
+        font-size: 0.9rem;
+        margin: 0;
+
+        a {
+            color: $brand-primary;
+            font-weight: 600;
+
+            &:hover {
+                color: $brand-dark;
+            }
+        }
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

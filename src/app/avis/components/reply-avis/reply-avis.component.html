@@ -1,0 +1,14 @@
+<h3>Répondre à l'avis</h3>
+<div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+<form (ngSubmit)="submit()" #f="ngForm">
+  <div class="form-group">
+    <label for="reponse">Réponse:</label>
+    <textarea id="reponse" [(ngModel)]="contenu" name="contenu" class="form-control" required rows="4"></textarea>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary" [disabled]="!f.valid || loading">
+      {{ loading ? 'Envoi...' : 'Envoyer' }}
+    </button>
+    <button type="button" (click)="cancel()" [disabled]="loading">Annuler</button>
+  </div>
+</form>

@@ -1,0 +1,57 @@
+@use "variables" as *;
+
+.admin-dashboard {
+    display: flex;
+    background: $bg-alt;
+    min-height: 100vh;
+
+    @media (max-width: $bp-sm) {
+        flex-direction: column;
+    }
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 0;
+
+    @media (max-width: $bp-sm) {
+        padding: 1.25rem;
+        padding-bottom: 100px;
+    }
+}
+
+app-header {
+    margin-bottom: 2rem;
+}
+
+app-content {
+    flex: 1;
+    background: white;
+    border-radius: $radius-xl;
+    border: 1px solid $border-color;
+    box-shadow: $shadow-soft;
+    padding: 2.5rem;
+    overflow: hidden;
+    position: relative;
+
+    @media (max-width: $bp-md) {
+        padding: 1.5rem;
+        border-radius: $radius-lg;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, $brand-primary, #10b981);
+    }
+}

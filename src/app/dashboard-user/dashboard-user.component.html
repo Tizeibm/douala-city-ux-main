@@ -1,0 +1,24 @@
+<div class="dashboard-wrapper">
+  <aside class="dashboard-sidebar">
+    <app-sidebar-user></app-sidebar-user>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="content-header">
+      <div class="welcome-section">
+        <h1>Tableau de Bord</h1>
+        <p>Bienvenue, <span>{{ utilisateur?.nom }}</span>. Retrouvez ici la gestion de vos structures.</p>
+      </div>
+      <div class="action-section">
+        <button routerLink="structures/ajout" class="btn btn-primary btn-sm">
+          <i class="fas fa-plus"></i>
+          Nouvelle Structure
+        </button>
+      </div>
+    </header>
+
+    <div class="content-body glass-surface">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

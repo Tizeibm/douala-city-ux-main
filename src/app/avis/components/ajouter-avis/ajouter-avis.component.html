@@ -1,0 +1,46 @@
+<div class="avis-side-panel">
+    <div class="panel-header">
+        <div class="header-text">
+            <h2>Évaluer</h2>
+            <p>Partagez votre avis</p>
+        </div>
+        <button class="btn-close" (click)="onCancel()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="panel-body">
+        <div class="alert alert-error animate-slide-down" *ngIf="errorMessage">
+            <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+        </div>
+        <div class="alert alert-success animate-slide-down" *ngIf="successMessage">
+            <i class="fas fa-check-circle"></i> {{ successMessage }}
+        </div>
+
+        <form (ngSubmit)="submitAvis()" #avisForm="ngForm">
+            <div class="form-section">
+                <label>Quelle note attribuez-vous ?</label>
+                <div class="star-picker">
+                    <div class="stars">
+                        <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= rating"
+                            (click)="setRating(star)">
+                        </i>
+                    </div>
+                    <span class="rating-label">{{rating}}/5</span>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label for="commentaire">Votre expérience détaillée</label>
+                <textarea id="commentaire" [(ngModel)]="commentaire" name="commentaire" rows="6"
+                    placeholder="Qu'est-ce qui vous a plu ou déplu ?" required class="modern-textarea"></textarea>
+            </div>
+
+            <div class="panel-footer">
+                <button type="submit" class="btn-submit-premium" [disabled]="!avisForm.valid || loading">
+                    <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                    {{loading ? 'Envoi...' : 'Publier mon avis'}}
+                </button>
+                <button type="button" class="btn-secondary-modern" (click)="onCancel()">Plus tard</button>
+            </div>
+        </form>
+    </div>
+</div>

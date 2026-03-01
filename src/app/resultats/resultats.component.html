@@ -1,0 +1,71 @@
+<main class="search-page">
+  <header class="category-header">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a routerLink="/accueil">Accueil</a>
+        <span class="sep">/</span>
+        <span class="current">Résultats de recherche</span>
+      </nav>
+      <div class="header-main">
+        <h1 class="page-title">
+          <span *ngIf="searchQuery">Résultats pour "{{searchQuery}}"</span>
+          <span *ngIf="!searchQuery">Toutes les structures</span>
+          <span *ngIf="searchZone" class="text-secondary" style="font-size: 1.2rem; display: block;">à
+            {{searchZone}}</span>
+        </h1>
+        <p class="results-count">{{totalFound}} trouvailles</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div *ngIf="loading" class="text-center p-xl">
+      <i class="fas fa-spinner fa-spin fa-3x color-primary"></i>
+      <p class="mt-md">Recherche en cours...</p>
+    </div>
+
+    <div *ngIf="!loading && totalFound === 0" class="empty-state">
+      <i class="fas fa-search-minus mb-md" style="font-size: 3rem; opacity: 0.2;"></i>
+      <h2>Désolé, nous n'avons rien trouvé.</h2>
+      <p>Essayez avec d'autres mots-clés ou explorez nos catégories.</p>
+      <div class="mt-lg">
+        <a routerLink="/accueil" class="btn">Retour à l'accueil</a>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && totalFound > 0" class="search-results-layout">
+      <!-- Results Columns -->
+      <div class="results-grid-wrapper">
+
+        <!-- Structures Section -->
+        <section class="results-section" *ngIf="structures.length > 0">
+          <h2 class="section-label"><i class="fas fa-building mr-2"></i> Établissements & Commerces</h2>
+          <div class="grid cols-2 gap-md mt-md">
+            <app-structure-card *ngFor="let s of structures" [structure]="s"></app-structure-card>
+          </div>
+        </section>
+
+        <!-- Announcements Section -->
+        <section class="results-section mt-xl" *ngIf="annonces.length > 0">
+          <h2 class="section-label"><i class="fas fa-bullhorn mr-2"></i> Annonces classées</h2>
+          <div class="grid cols-1 gap-sm mt-md">
+            <article *ngFor="let a of annonces" class="premium-annonce-card horizontal"
+              [routerLink]="['/annonce', a.id]" style="cursor: pointer;">
+              <div class="card-type-icon" [ngClass]="a.type | lowercase">
+                <i class="fas" [ngClass]="getAnnonceIcon(a.type)"></i>
+              </div>
+              <div class="card-content">
+                <div class="card-meta">{{a.type}} • {{a.dateCreation | date:'shortDate'}}</div>
+                <h3 class="card-title">{{a.description}}</h3>
+              </div>
+              <div class="card-action">
+                <button class="btn btn-sm secondary">Voir</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>

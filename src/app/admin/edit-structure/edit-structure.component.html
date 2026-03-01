@@ -1,0 +1,166 @@
+<div class="edit-structure card">
+  <header class="edit-header">
+    <h2>Modifier : {{ structure.nom }}</h2>
+  </header>
+
+  <form *ngIf="structureForm" [formGroup]="structureForm" class="edit-form">
+
+    <div class="stepper">
+      <div [class]="step === 1 ? 'step active' : 'step'" [class.completed]="step > 1"> 1 </div>
+      <div class="line"> </div>
+      <div [class]="step === 2 ? 'step active' : 'step'" [class.completed]="step > 2"> 2 </div>
+      <div class="line"> </div>
+      <div [class]="step === 3 ? 'step active' : 'step'" [class.completed]="step > 3"> 3 </div>
+      <div class="line"> </div>
+      <div [class]="step === 4 ? 'step active' : 'step'" [class.completed]="step > 4"> 4 </div>
+      <div class="line"> </div>
+      <div [class]="step === 5 ? 'step active' : 'step'" [class.completed]> 5 </div>
+    </div>
+
+    <div *ngIf="step === 1">
+
+      <section class="form-row row-top">
+
+        <div class="col">
+          <label>Nom</label>
+          <input formControlName="nom" placeholder="Nom de la structure">
+
+        </div>
+        <div class="col">
+          <label>Catégorie</label>
+          <select formControlName="categorieNom" class="form-control">
+            <option *ngFor="let c of getCategories()" [value]="c"> {{ c }} </option>
+          </select>
+        </div>
+        <div class="col">
+          <label style="margin-top:8px;">Sous-catégorie</label>
+
+          <select formControlName="sousCategorie" class="form-control">
+            <option *ngFor="let sc of getSousCategories()" [value]="sc"> {{ sc }} </option>
+          </select>
+
+        </div>
+
+      </section>
+
+      <section class="form-row">
+        <label>Description</label>
+        <textarea formControlName="description" rows="3"></textarea>
+      </section>
+    </div>
+    <!-- Services (FormArray of objects) -->
+    <div *ngIf="step === 2">
+
+      <section class="form-row">
+        <h3>Services offerts</h3>
+        <div formArrayName="services" class="services-array">
+          <div *ngFor="let s of services.controls; let i = index" [formGroupName]="i" class="service-row">
+            <input formControlName="nom" placeholder="Nom du service" />
+            <input formControlName="description" placeholder="Description (optionnelle)" />
+            <input formControlName="prix" placeholder="Prix" />
+            <button type="button" class="btn small danger" (click)="removeService(i) ">Supprimer</button>
+          </div>
+        </div>
+        <button type="button" class="btn small" (click)="
+        addService()">+ Ajouter un service</button>
+      </section>
+
+    </div>
+
+
+    <!-- Localisations + map (multiple) -->
+    <div *ngIf="step === 3">
+
+      <section class="form-row">
+        <h3>Localisations</h3>
+        <div formArrayName="localisation">
+          <div *ngFor="let loc of localisation.controls; let i = index" [formGroupName]="i" class="loc-row">
+            <app-carte [locations]="[loc.getRawValue()]" [editable]="true" [mapId]="'map-' + i"
+              (locationSelected)="onLocationSelected($event, i)" (locationRemoved)="onLocationRemoved($event)">
+            </app-carte>
+            <div class="loc-fields">
+              <input formControlName="quartier" placeholder="Quartier" />
+              <input formControlName="telephone" placeholder="Téléphone" />
+              <input formControlName="address" placeholder="adresse" />
+              <input formControlName="latitude" placeholder="Latitude" value={{loc.value.latitude}} readonly />
+              <input formControlName="longitude" placeholder="Longitude" value="{{loc.value.longitude}}" readonly />
+            </div>
+
+
+            <button type="button" class="btn small danger" (click)="removeLocalisation(i)">Supprimer</button>
+
+          </div>
+
+        </div>
+
+
+
+        <button type="button" class="btn small" (click)="addLocalisation()">+ Ajouter une localisation</button>
+      </section>
+
+    </div>
+
+
+    <!-- Horaires -->
+    <div *ngIf="step === 4">
+
+      <section class="form-row">
+        <h3>Horaires</h3>
+        <div formArrayName="horaires">
+          <div *ngFor="let h of horaires.controls; let i = index" [formGroupName]="i" class="horaire-row">
+            <select formControlName="jourSemaine" class="form-control">
+              <option value=""> -- choisir un jour -- </option>
+              <option *ngFor="let j of joursSemaine" [value]="j"> {{ j }} </option>
+            </select>
+            <input type="time" formControlName="heureDeDebut" />
+            <input type="time" formControlName="heureDeFin" />
+            <button type="button" class="btn small danger" (click)="removeHoraire(i)">Supprimer</button>
+          </div>
+        </div>
+        <button type="button" class="btn small" (click)="addHoraire()">+ Ajouter un horaire</button>
+
+      </section>
+
+    </div>
+
+    <!-- Photos (objects) -->
+
+    <div *ngIf="step === 5">
+
+      <section class="form-row">
+        <h3>Photos</h3>
+        <div formArrayName="photos" class="photos-array">
+          <input type="file" multiple accept="image/*" (change)="addPhoto($event)" class="file-input" />
+
+          <div *ngFor="let p of photos.controls; let i = index" [formGroupName]="i" class="photo-row">
+            <img *ngIf="p.value.filePath" [src]="p.value.filePath" alt="aperçu" width="120" height="100" />
+            <p>{{ p.value.originalFileName }}</p>
+            <button type="button" class="btn small danger" (click)="removePhoto(i)" width="120"
+              height="100">Supprimer</button>
+          </div>
+        </div>
+
+        <div class="main-photo">
+          <label>Photo principale</label>
+          <input type="file" accept="image/*" (change)="addPhotoP($event)" class="file-input" />
+          <img *ngIf="structureForm.value.photoPrincipale" [src]="structureForm.value.photoPrincipale"
+            class="main-thumb" width="120" height="100" />
+          <button *ngIf="structureForm.value.photoPrincipale" type="button" class="btn small danger"
+            (click)="removePhotop()" width="120" height="100">Supprimer</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="actions">
+
+      <button class="btn-prev" (click)="prev()" *ngIf="step > 1">Retour</button>
+      <button class="btn-next" (click)="next()" *ngIf="step < 5">suivant</button>
+      <button class="btn cancel" (click)="onCancel()">Annuler</button>
+      <button class="btn save" *ngIf="step === 5" (click)="onSubmit()">Enregistrer</button>
+    </div>
+
+  </form>
+  <p class="success" *ngIf="successMessage">
+    {{successMessage}}
+  </p>
+</div>

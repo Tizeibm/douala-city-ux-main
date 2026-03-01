@@ -1,0 +1,13 @@
+<div class="toast-wrapper">
+    <div *ngIf="toast" [ngClass]="toast.type" class="toast">
+        <span class="icon">
+            <i class="fas" [ngClass]="toast.type"></i>
+        </span>
+         <div class="content" >
+             <p class="message" >
+            {{toast.message}}
+             </p>
+         </div>
+        <button class="close" (click)="close()">&times;</button>
+    </div>
+</div>

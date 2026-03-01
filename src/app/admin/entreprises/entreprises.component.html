@@ -1,0 +1,79 @@
+<div class="admin-page-header">
+    <div class="title-section">
+        <h1>Gestion des Entreprises</h1>
+        <p>Gérez et visualisez toutes les structures validées sur la plateforme.</p>
+    </div>
+    <div class="header-actions">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher une structure..." [(ngModel)]="search" class="search-input">
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <span>Chargement des entreprises...</span>
+</div>
+
+<div *ngIf="!loading && filteredStructures.length > 0" class="admin-content-card glass-surface">
+    <div class="table-container">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Structure</th>
+                    <th>Propriétaire</th>
+                    <th>Catégorie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let e of filteredStructures">
+                    <td>
+                        <div class="structure-info">
+                            <div class="avatar-sm">
+                                <img *ngIf="e.photoPrincipal" [src]="e.photoPrincipal">
+                                <i *ngIf="!e.photoPrincipal" class="fas fa-building"></i>
+                            </div>
+                            <div class="details">
+                                <span class="name">{{e.nom}}</span>
+                                <span class="email">{{e.email}}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="user-info-cell">
+                            <span class="user-name">{{e.user?.nom}}</span>
+                            <span class="user-email">{{e.user?.email}}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="category-badge">{{e.categorieNom}}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-action-view" (click)="consulter(e)" title="Détails">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="admin-footer">
+        <div class="pagination" *ngIf="totalPages > 1">
+            <button class="btn btn-pag" (click)="previousPage()" [disabled]="currentPage === 1">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="page-info">Page {{currentPage}} sur {{totalPages}}</span>
+            <button class="btn btn-pag" (click)="nextPage()" [disabled]="currentPage === totalPages">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </footer>
+</div>
+
+<div *ngIf="!loading && filteredStructures.length === 0" class="empty-state">
+    <i class="fas fa-search"></i>
+    <p>Aucune structure ne correspond à votre recherche.</p>
+</div>

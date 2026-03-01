@@ -1,0 +1,971 @@
+openapi: 3.0.3
+info:
+  title: DoualaCity API
+  description: Documentation Complète de l'API DoualaCity (incluant gestion des structures, annonces, avis, horaires, localisations, messagerie AI, statistiques et utilisateurs).
+  version: 1.0.0
+servers:
+  - url: /
+    description: DoualaCity
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    # --- ENUMS ---
+    AnnonceType:
+      type: string
+      enum: [VENTE, PROMOTION, IMMOBILIER, EVENEMENT, SERVICES, EMPLOI, AUTRES]
+    AvisStatus:
+      type: string
+      enum: [EN_ATTENTE, PUBLIE, REJETE, SIGNALE]
+    JourSemaine:
+      type: string
+      enum: [LUNDI, MARDI, MERCREDI, JEUDI, VENDREDI, SAMEDI, DIMANCHE]
+    Role:
+      type: string
+      enum: [ADMIN, USER, ENTREPRISE]
+    TypeRepondant:
+      type: string
+      enum: [STRUCTURE, ADMIN, UTILISATEUR]
+    Status:
+      type: string
+      enum: [EN_ATTENTE, VALIDE, REFUSEE]
+
+    # --- DTOs ---
+    AuthRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          example: password123
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        userDto:
+          $ref: "#/components/schemas/UserDto"
+    RegisterRequest:
+      type: object
+      properties:
+        nom:
+          type: string
+          example: Jean Dupont
+        email:
+          type: string
+        motDePasse:
+          type: string
+        telephone:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+    RegisterResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        userDto:
+          $ref: "#/components/schemas/UserDto"
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nom:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nom:
+          type: string
+        email:
+          type: string
+
+    StructureRequest:
+      type: object
+      properties:
+        nom:
+          type: string
+        email:
+          type: string
+        categorieNom:
+          type: string
+        sousCategorie:
+          type: string
+        website:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+    StructureResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nom:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        website:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        categorieNom:
+          type: string
+        sousCategorie:
+          type: string
+        horaires:
+          type: array
+          items:
+            $ref: "#/components/schemas/HoraireResponse"
+        services:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceResponse"
+        localisations:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocalisationResponse"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AnnonceRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+    AnnonceReponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        description:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        # photos is omitted or assumed complex
+
+    AvisStrucutureRequest:
+      type: object
+      properties:
+        structure:
+          type: string
+          format: uuid
+        auteur:
+          type: string
+          format: uuid
+        note:
+          type: integer
+        commentaire:
+          type: string
+        anonyme:
+          type: boolean
+    AvisStructureResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        note:
+          type: integer
+        commentaire:
+          type: string
+        status:
+          $ref: "#/components/schemas/AvisStatus"
+        anonyme:
+          type: boolean
+        signalements:
+          type: integer
+
+    ReponseAvisRequest:
+      type: object
+      properties:
+        avis:
+          type: string
+          format: uuid
+        auteur:
+          type: string
+          format: uuid
+        contenu:
+          type: string
+        typeRepondant:
+          $ref: "#/components/schemas/TypeRepondant"
+    ReponseAvisResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        contenu:
+          type: string
+        visible:
+          type: boolean
+        typeRepondant:
+          $ref: "#/components/schemas/TypeRepondant"
+
+    HoraireRequest:
+      type: object
+      properties:
+        jourSemaine:
+          $ref: "#/components/schemas/JourSemaine"
+        heureDeDebut:
+          type: string
+          format: time
+        heureDeFin:
+          type: string
+          format: time
+        ouvertWeekend:
+          type: boolean
+    HoraireResponse:
+      type: object
+      properties:
+        jourSemaine:
+          $ref: "#/components/schemas/JourSemaine"
+        heureDeDebut:
+          type: string
+          format: time
+        heureDeFin:
+          type: string
+          format: time
+        ouvertWeekend:
+          type: boolean
+
+    LocalisationRequest:
+      type: object
+      properties:
+        address:
+          type: string
+        quartier:
+          type: string
+        telephone:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    LocalisationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        address:
+          type: string
+        quartier:
+          type: string
+        telephone:
+          type: string
+        structureId:
+          type: string
+          format: uuid
+
+    ServicesRequest:
+      type: object
+      properties:
+        nom:
+          type: string
+        description:
+          type: string
+        prix:
+          type: string
+    ServiceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nom:
+          type: string
+        structureId:
+          type: string
+          format: uuid
+        description:
+          type: string
+        prix:
+          type: string
+
+    StatisticsDto:
+      type: object
+      properties:
+        totalStructures:
+          type: integer
+        totalValideStructures:
+          type: integer
+        totalWaitingStructures:
+          type: integer
+        totalAnnonces:
+          type: integer
+        totalUserAccounts:
+          type: integer
+        totalEnterpriseAccounts:
+          type: integer
+        totalAccounts:
+          type: integer
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        messageRole:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+security:
+  - bearerAuth: []
+
+paths:
+  # --- AUTH ---
+  /api/auth/user/register:
+    post:
+      tags: [Authentification]
+      summary: Inscription utilisateur
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+
+  /api/auth/user/login:
+    post:
+      tags: [Authentification]
+      summary: Connexion utilisateur
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRequest"
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  # --- STRUCTURES ---
+  /api/structures:
+    post:
+      tags: [Structures]
+      summary: Créer une structure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StructureRequest"
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StructureResponse"
+
+  /api/structures/public:
+    get:
+      tags: [Structures]
+      summary: Lister toutes les structures
+      security: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/{id}:
+    put:
+      tags: [Structures]
+      summary: Mettre à jour une structure
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StructureRequest"
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StructureResponse"
+    delete:
+      tags: [Structures]
+      summary: Supprimer une structure
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Supprimé
+
+  /api/structures/public/{structureId}:
+    get:
+      tags: [Structures]
+      summary: Obtenir une structure par ID
+      security: []
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StructureResponse"
+
+  /api/structures/status:
+    get:
+      tags: [Structures]
+      summary: Lister par statut
+      parameters:
+        - name: s
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Status"
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/valider/{id}:
+    patch:
+      tags: [Structures]
+      summary: Valider une structure
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/rejeter/{id}:
+    patch:
+      tags: [Structures]
+      summary: Rejeter une structure
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/mesStrucuture:
+    get:
+      tags: [Structures]
+      summary: Obtenir les structures de l'utilisateur connecté
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/public/categorie:
+    get:
+      tags: [Structures]
+      summary: Obtenir par catégorie
+      security: []
+      parameters:
+        - name: categorie
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/public/sousCategorie:
+    get:
+      tags: [Structures]
+      summary: Obtenir par sous-catégorie
+      security: []
+      parameters:
+        - name: sousCategorie
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  /api/structures/public/status:
+    get:
+      tags: [Structures]
+      summary: Obtenir structures validées
+      security: []
+      responses:
+        "200":
+          description: Succès
+
+  # --- ANNONCES ---
+  /api/annonce/{userId}:
+    post:
+      tags: [Annonces]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnnonceRequest"
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnonceReponse"
+
+  /api/annonce/update/{annonceId}/{userId}:
+    put:
+      tags: [Annonces]
+      parameters:
+        - name: annonceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnnonceRequest"
+      responses:
+        "200":
+          description: Succès
+
+  /api/annonce/public:
+    get:
+      tags: [Annonces]
+      security: []
+      parameters:
+        - name: size
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Succès
+
+  # --- AVIS ---
+  /api/avis:
+    post:
+      tags: [Avis]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AvisStrucutureRequest"
+      responses:
+        "200":
+          description: Succès
+
+  /api/avis/publier:
+    post:
+      tags: [Avis]
+      parameters:
+        - name: avisId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+
+  /api/avis/public:
+    get:
+      tags: [Avis]
+      security: []
+      parameters:
+        - name: structureId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+
+  # --- CHAT ---
+  /api/chat/public/send:
+    post:
+      tags: [ChatBot]
+      security: []
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: conversationId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: userMessage
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /api/chat/public/conversation/{conversationId}/messages:
+    get:
+      tags: [ChatBot]
+      security: []
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+
+  # --- HORAIRES ---
+  /api/horaires/{structureId}:
+    post:
+      tags: [Horaires]
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/HoraireRequest"
+      responses:
+        "204":
+          description: Succès
+    put:
+      tags: [Horaires]
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/HoraireRequest"
+      responses:
+        "204":
+          description: Succès
+
+  /api/horaires/{structureId}/{horaireId}:
+    delete:
+      tags: [Horaires]
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: horaireId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Succès
+
+  /api/horaires/public/{structureId}:
+    get:
+      tags: [Horaires]
+      security: []
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HoraireResponse"
+
+  # --- LOCALISATION ---
+  /api/localisation/{structureId}:
+    post:
+      tags: [Localisation]
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/LocalisationRequest"
+      responses:
+        "204":
+          description: Succès
+
+  /api/localisation/public/{structureId}/location:
+    get:
+      tags: [Localisation]
+      security: []
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LocalisationResponse"
+
+  # --- PHOTOS ---
+  /api/photos/{structureId}/upload:
+    post:
+      tags: [Photos]
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                File:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Uploaded
+
+  /api/photos/public/{structureId}:
+    get:
+      tags: [Photos]
+      security: []
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Liste des photos
+
+  # --- SERVICES ---
+  /api/services/{structureId}/services/batch:
+    post:
+      tags: [Services]
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/ServicesRequest"
+      responses:
+        "200":
+          description: Succès
+
+  /api/services/public/structure/{structureId}:
+    get:
+      tags: [Services]
+      security: []
+      parameters:
+        - name: structureId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceResponse"
+
+  # --- STATISTICS ---
+  /api/statistics:
+    get:
+      tags: [Statistics]
+      summary: Statistiques globales
+      responses:
+        "200":
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatisticsDto"
