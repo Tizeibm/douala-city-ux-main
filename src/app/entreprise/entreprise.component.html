@@ -35,6 +35,9 @@
             <button class="btn btn-view" (click)="$event.stopPropagation(); consulter(entreprise)">
                <i class="fas fa-eye"></i> Gérer
             </button>
+            <button class="btn btn-edit-soft" (click)="$event.stopPropagation(); modifier(entreprise)">
+               <i class="fas fa-edit"></i> Modifier
+            </button>
             <button class="btn btn-delete-soft" (click)="$event.stopPropagation(); supprimer(entreprise.id)">
                <i class="fas fa-trash-alt"></i>
             </button>

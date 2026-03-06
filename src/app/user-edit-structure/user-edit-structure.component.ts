@@ -88,10 +88,101 @@ export class UserEditStructureComponent implements OnInit {
   }
 
 
-  next() {
-
+  async next() {
     this.haptic.stepChange();
-    this.step++;
+
+    // Save current step data before moving next
+    const success = await this.saveStep(this.step);
+    if (success) {
+      this.step++;
+    }
+  }
+
+  async saveStep(step: number): Promise<boolean> {
+    const token = localStorage.getItem('token');
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const formValue = this.structureForm.value;
+
+    return new Promise((resolve) => {
+      this.feedback.showLoader();
+
+      if (step === 1) {
+        // Step 1: Info General & Photos
+        const structureData = {
+          nom: formValue.nom,
+          description: formValue.description,
+          categorieNom: formValue.categorieNom,
+          sousCategorie: formValue.sousCategorie,
+          photoPrincipal: formValue.photoPrincipale
+        };
+
+        this.entreprisesService.updateStructure(structureData, token, id).subscribe({
+          next: () => {
+            // Handle photos here as well
+            this.saveNewPhotos(token, id);
+            if (this.pendingMainPhoto) {
+              this.entreprisesService.updateMainPhoto(this.pendingMainPhoto, token, id).subscribe();
+            }
+            this.feedback.hideLoader();
+            resolve(true);
+          },
+          error: () => {
+            this.feedback.error('Erreur lors de la mise à jour des informations');
+            this.feedback.hideLoader();
+            resolve(false);
+          }
+        });
+      } else if (step === 2) {
+        // Step 2: Horaires
+        const mappedHoraires = formValue.horaires.map((h: any) => ({
+          id: h.id,
+          jourSemaine: h.jourSemaine,
+          heureDeDebut: h.heureDeDebut.includes(':') && h.heureDeDebut.split(':').length === 2 ? h.heureDeDebut + ':00' : h.heureDeDebut,
+          heureDeFin: h.heureDeFin.includes(':') && h.heureDeFin.split(':').length === 2 ? h.heureDeFin + ':00' : h.heureDeFin
+        }));
+
+        this.entreprisesService.saveHorairesBatch(mappedHoraires, id.toString()).subscribe({
+          next: () => {
+            this.feedback.hideLoader();
+            resolve(true);
+          },
+          error: () => {
+            this.feedback.error('Erreur lors de l\'enregistrement des horaires');
+            this.feedback.hideLoader();
+            resolve(false);
+          }
+        });
+      } else if (step === 3) {
+        // Step 3: Services
+        this.entreprisesService.saveServicesBatch(formValue.services, id.toString()).subscribe({
+          next: () => {
+            this.feedback.hideLoader();
+            resolve(true);
+          },
+          error: () => {
+            this.feedback.error('Erreur lors de l\'enregistrement des services');
+            this.feedback.hideLoader();
+            resolve(false);
+          }
+        });
+      } else {
+        this.feedback.hideLoader();
+        resolve(true);
+      }
+    });
+  }
+
+  saveNewPhotos(token: any, id: number) {
+    const photosNonSavees = this.photos.value.map((photo: any, index: number) => ({ photo, index })).filter((item: any) => !item.photo.id);
+    photosNonSavees.forEach((item: any) => {
+      const file = this.pendingFiles.get(item.index);
+      if (file) {
+        this.entreprisesService.savePhoto(file, token, id).subscribe({
+          next: (res: Photo) => this.photoState.addphotos(res),
+          error: (err: any) => console.error('Erreur ajout photo', err)
+        });
+      }
+    });
   }
 
   prev() {
@@ -449,239 +540,37 @@ export class UserEditStructureComponent implements OnInit {
     if (this.structureForm.invalid) {
       this.haptic.error();
       this.structureForm.markAllAsTouched();
+      this.feedback.hideLoader();
       return;
     }
     this.haptic.tap();
     const token = localStorage.getItem('token');
-    const formValue = this.structureForm.value;
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const structureData = {
 
-      nom: formValue.nom,
-      email: formValue.email,
-      description: formValue.description,
-      categorieNom: formValue.categorieNom,
-      sousCategorie: formValue.sousCategorie,
-      photoPrincipal: formValue.photoPrincipale
-    };
+    // Final save for localization
+    const mappedLocalisations = this.localisation.value.map((loc: any) => ({
+      id: loc.id,
+      address: loc.address,
+      quartier: loc.quartier,
+      telephone: loc.telephone,
+      latitude: loc.latitude,
+      longitude: loc.longitude
+    }));
 
-    // 1️⃣ Enregistrer ou mettre à jour la structure
-    this.entreprisesService.updateStructure(structureData, token, id).subscribe({
-      next: (structureRes) => {
-        const structureId = structureRes.id; // <-- récupère l'ID généré (ou déjà existant)
-
-        // 2️⃣ Enregistrer les localisations SANS structureId
-        const localisationsNonSavees = this.localisation.value.filter((loc: any) => !loc.id);
-
-        localisationsNonSavees.forEach((loc: any) => {
-          const localisationJSON = {
-            quartier: loc.quartier,
-            address: loc.address,
-            telephone: loc.telephone,
-            latitude: loc.latitude,
-            longitude: loc.longitude
-          };
-
-          this.entreprisesService.saveLocalisation(localisationJSON, token, id).subscribe({
-            next: (res) => {
-              this.localisationState.addLocalisation(res);
-
-            },
-            error: (err) => console.error('Erreur ajout localisation', err)
-          });
-        });
-
-        // 3️⃣ Mettre à jour les localisations déjà existantes
-        const localisationsSavees = this.localisation.value.filter((loc: any) => loc.id);
-        localisationsSavees.forEach((loc: any) => {
-          const locJSON = {
-            id: loc.id,
-            quartier: loc.quartier,
-            address: loc.address,
-            telephone: loc.telephone,
-            latitude: loc.latitude,
-            longitude: loc.longitude
-
-          };
-
-          this.entreprisesService.editLocalisation(locJSON, locJSON.id, token, id).subscribe({
-            next: () => {
-              this.localisationState.updateLocalisation(locJSON);
-              console.log('Localisation mise à jour')
-            },
-            error: (err) => console.error('Erreur update localisation', err)
-          });
-        });
-
-
-        const servicesNonSavees = this.services.value.filter((serv: any) => !serv.id);
-
-        servicesNonSavees.forEach((serv: any) => {
-          const serviceJSON = {
-            nom: serv.nom,
-            description: serv.description,
-            prix: serv.prix
-          };
-
-          this.entreprisesService.saveService(serviceJSON, token, id).subscribe({
-            next: (res) => {
-              this.servstate.addService(res);
-
-            },
-            error: (err) => console.error('Erreur ajout service', err)
-          });
-        });
-
-        // 3️⃣ Mettre à jour les localisations déjà existantes
-        const servicesSavees = this.services.value.filter((loc: any) => loc.id);
-        servicesSavees.forEach((serv: any) => {
-          const servJSON = {
-            id: serv.id,
-            nom: serv.nom,
-            description: serv.description,
-            prix: serv.prix
-          };
-
-
-
-          this.entreprisesService.editService(servJSON, servJSON.id, token, id).subscribe({
-            next: () => {
-              this.servstate.updateService(servJSON);
-              console.log('service mis à jour')
-            },
-            error: (err) => console.error('Erreur update service', err)
-          });
-
-
-
-
-        });
-
-        const photosNonSavees = this.photos.value.map((photo: any, index: number) => ({ photo, index })).filter((item: any) => !item.photo.id);
-
-        photosNonSavees.forEach((item: any) => {
-          const file = this.pendingFiles.get(item.index);
-          if (file) {
-            this.entreprisesService.savePhoto(file, token, id).subscribe({
-              next: (res: Photo) => {
-                this.photoState.addphotos(res);
-              },
-              error: (err: any) => console.error('Erreur ajout photo', err)
-            });
-          }
-        });
-
-        // Handle main photo if changed
-        if (this.pendingMainPhoto) {
-          this.entreprisesService.updateMainPhoto(this.pendingMainPhoto, token, id).subscribe({
-            next: (res: any) => console.log('Photo principale mise à jour'),
-            error: (err: any) => console.error('Erreur update photo principale', err)
-          });
-        }
-
-        // 3️⃣ Mettre à jour les localisations déjà existantes
-        /*  const photoSavees = this.photos.value.filter((pho: any) => pho.id);
-          photoSavees.forEach((photo: any) => {
-            const PhoJSON = {
-              id: photo.id,
-              filePath: photo.filePath,
-          originalFileName: photo.originalFileName,
-          storedFileName: photo.storedFileName,
-          fileSize: photo.fileSize,
-          contentType: photo.contentType,
-          uploadDate: photo.uploadDate,
-      thumbnailPath: photo.thumbnailPath
-    
-            };
-    
-            
-    
-            this.entreprisesService.editPhoto(PhoJSON, PhoJSON.id, token, id).subscribe({
-              next: () => {
-                this.photoState.updatePhoto(PhoJSON);
-                console.log('photo mise à jour')
-              },
-              error: (err) => console.error('Erreur update photo', err)
-            });
-    
-    
-    
-    
-          }); */
-
-
-
-        const HorairesNonSavees = this.horaires.value.filter((hor: any) => !hor.id);
-
-
-        HorairesNonSavees.forEach((hor: any) => {
-
-          const HoraireJSON = {
-            jourSemaine: hor.jourSemaine,
-            heureDeDebut: hor.heureDeDebut,
-            heureDeFin: hor.heureDeFin
-          };
-
-          console.log(HoraireJSON);
-
-          this.entreprisesService.saveHoraire(HoraireJSON, token, id).subscribe({
-            next: (res) => {
-              console.log(res);
-              this.horState.addHoraire(res);
-
-            },
-            error: (err) => console.error('Erreur ajout horaire', err)
-          });
-        });
-
-        // 3️⃣ Mettre à jour les horaires déjà existantes
-        const horairesSavees = this.horaires.value.filter((hor: any) => hor.id);
-        horairesSavees.forEach((hor: any) => {
-          console.log(hor);
-          const HorJSON = {
-            id: hor.id,
-            jourSemaine: hor.jourSemaine,
-            heureDeDebut: hor.heureDeDebut,
-            heureDeFin: hor.heureDeFin
-
-          };
-
-
-          console.log(HorJSON);
-          this.entreprisesService.editHoraire(HorJSON, HorJSON.id, token, id).subscribe({
-            next: () => {
-              this.horState.updateHoraire(HorJSON);
-              console.log('horaire mis à jour');
-            },
-            error: (err) => console.error('Erreur update horaire', err)
-          });
-
-
-
-
-        });
-        console.log(structureRes);
+    this.entreprisesService.saveLocalisationsBatch(mappedLocalisations, id.toString()).subscribe({
+      next: () => {
         this.feedback.success('Structure mise à jour avec succès');
         this.feedback.hideLoader();
         this.haptic.success();
-        this.structureUpdated.emit(structureRes);
-
-
+        // Emit updated structure (fetch fresh data if needed, but for now emit original with some updates)
+        this.structureUpdated.emit(this.structureForm.value);
       },
       error: (err) => {
-        this.feedback.error('Erreur lors de la mise à jour de la structure');
+        this.feedback.error('Erreur lors de la sauvegarde finale des localisations');
         this.feedback.hideLoader();
-        console.error('Erreur update structure', err)
+        console.error('Erreur update localisation batch', err);
       }
     });
-    /* this.structureService.getEntreprisesById(token, id).subscribe(struct =>
-             {
-               console.log(struct);
-             
-              this.structureUpdated.emit(struct);
-    
-             });    */
-
   }
 
   addPhoto(event: any): void {
@@ -717,8 +606,6 @@ export class UserEditStructureComponent implements OnInit {
     return `${timestamp}_${Math.random().toString(36).substring(2, 8)}.${extension}`;
   }
 
-
-
   updateLocalisation(index: number): void {
     const group = this.localisation.at(index) as FormGroup;
     const loc = group.value;
@@ -733,9 +620,6 @@ export class UserEditStructureComponent implements OnInit {
   }
 
   onCancel() {
-
+    this.cancelEdit.emit();
   }
-
-
-
 }

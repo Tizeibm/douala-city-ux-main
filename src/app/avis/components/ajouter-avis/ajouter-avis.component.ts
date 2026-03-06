@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
 import { AvisService } from '../../services/avis.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
@@ -17,9 +18,9 @@ export class AjouterAvisComponent implements OnInit {
   loading = false;
   errorMessage = '';
   successMessage = '';
-  structureId: string | null = null;
-
+  @Input() structureId: string | null = null;
   @Output() closePanel = new EventEmitter<void>();
+
 
   constructor(
     private avisService: AvisService,
@@ -29,12 +30,18 @@ export class AjouterAvisComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Check current route for id (if embedded) or parent route (if routed)
-    this.structureId = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id') || null;
+    // Priority: @Input > Route :id > Route parent :id
+    if (!this.structureId) {
+      this.structureId = this.route.snapshot.paramMap.get('id') ||
+        this.route.parent?.snapshot.paramMap.get('id') ||
+        null;
+    }
+
     if (!this.authService.isLoggedIn()) {
       this.errorMessage = 'Vous devez être connecté pour donner un avis.';
     }
   }
+
 
   setRating(star: number) {
     this.rating = star;
@@ -56,31 +63,33 @@ export class AjouterAvisComponent implements OnInit {
     this.errorMessage = '';
 
     const nouvelAvis: any = {
-      note: this.rating,
-      commentaire: this.commentaire,
-      structureId: this.structureId,
-      auteurId: userId,
+      note: Math.round(this.rating),
+      commentaire: this.commentaire.trim(),
+      structure: this.structureId,
+      auteur: userId,
       anonyme: false
     };
 
-    console.log('Sending Avis:', nouvelAvis);
+    console.log('[AjouterAvis] Submitting Review:', nouvelAvis);
 
     this.avisService.addAvis(nouvelAvis).subscribe({
       next: (response) => {
-        this.successMessage = 'Votre avis a été envoyé avec succès ! Il sera visible après validation par l\'administration.';
+        console.log('[AjouterAvis] Success:', response);
+        this.successMessage = 'Votre avis a été envoyé avec succès ! Il sera visible après validation.';
         this.loading = false;
         this.commentaire = '';
         this.avisService.notifyAvisAdded();
         setTimeout(() => {
           this.closePanel.emit();
-        }, 3000);
+        }, 2000);
       },
       error: (error) => {
-        console.error('Full Error Object:', error);
+        console.error('[AjouterAvis] Error Details:', error);
+        let detail = '';
         if (error.status === 400 && error.error) {
-          console.error('Validation Errors:', error.error);
+          detail = typeof error.error === 'string' ? error.error : JSON.stringify(error.error);
         }
-        this.errorMessage = `Erreur lors de l'ajout de l'avis (${error.status || 'Inconnue'}). ${error.error?.message || ''}`;
+        this.errorMessage = `Erreur (${error.status || 'Inconnue'}). ${error.message || ''} ${detail}`.substring(0, 100);
         this.loading = false;
       }
     });

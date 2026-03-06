@@ -1,200 +1,508 @@
-.avis-list-premium {
-    max-width: 800px;
-    margin: 1rem auto;
-    padding: 1.5rem;
+.avis-modern-component {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
 
-    .list-header {
-        margin-bottom: 1.5rem;
+    /* Distribution Summary */
+    .avis-stats-summary {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 2rem;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        border: 1px solid #f3f4f6;
 
-        h3 {
-            font-size: 1.3rem;
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+    }
+
+    .summary-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid #f3f4f6;
+        padding-right: 1rem;
+
+        @media (max-width: 640px) {
+            border-right: none;
+            border-bottom: 1px solid #f3f4f6;
+            padding-right: 0;
+            padding-bottom: 1.5rem;
+        }
+
+        .avg-score {
+            font-size: 3.5rem;
             font-weight: 800;
             color: #111827;
+            line-height: 1;
+        }
+
+        .stars-row {
+            margin: 10px 0;
+            color: #e5e7eb;
+
+            i.active {
+                color: #fbbf24;
+            }
+        }
+
+        .total-count {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+    }
+
+    .distribution-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .dist-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #f9fafb;
+            }
+
+            &.active-filter {
+                background: #f0fdf4;
+                border: 1px solid #d1fae5;
+            }
+
+            .star-label {
+                width: 40px;
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: #4b5563;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                i {
+                    font-size: 0.75rem;
+                    color: #fbbf24;
+                }
+            }
+
+            .progress-container {
+                flex: 1;
+                height: 8px;
+                background: #f3f4f6;
+                border-radius: 4px;
+                overflow: hidden;
+
+                .progress-bar {
+                    height: 100%;
+                    background: #fbbf24;
+                    border-radius: 4px;
+                }
+            }
+
+            .count-label {
+                width: 30px;
+                font-size: 0.85rem;
+                color: #9ca3af;
+                text-align: right;
+            }
+        }
+    }
+
+    /* Filter Pills */
+    .filter-pills {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        padding-bottom: 8px;
+
+        .pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4b5563;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+
+            &:hover {
+                border-color: #10b981;
+                color: #10b981;
+            }
+
+            &.active {
+                background: #10b981;
+                color: #fff;
+                border-color: #10b981;
+            }
+
+            &.clear {
+                background: #f3f4f6;
+                border-color: #d1d5db;
+                color: #111827;
+            }
+        }
+    }
+
+    /* Comment Ergonomics */
+    .clamped {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .btn-read-more {
+        background: none;
+        border: none;
+        color: #10b981;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 0;
+        margin-top: 10px;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    /* Re-use Previous Premium UI Classes */
+    .list-header {
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 12px;
 
             i {
                 color: #10b981;
-                margin-right: 8px;
             }
         }
     }
 
     .empty-state {
         text-align: center;
-        padding: 3rem 2rem;
-        color: #9ca3af;
+        padding: 4rem 2rem;
+        background: #f9fafb;
+        border-radius: 20px;
+        border: 2px dashed #e5e7eb;
 
         i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            color: #d1d5db;
+            margin-bottom: 1.5rem;
             display: block;
         }
 
         p {
-            font-size: 1rem;
+            font-size: 1.1rem;
+            color: #6b7280;
+            font-weight: 500;
         }
     }
 
     .loading-state {
         text-align: center;
-        padding: 3rem;
+        padding: 4rem;
         color: #10b981;
+
+        p {
+            margin-top: 1rem;
+            color: #6b7280;
+        }
     }
 
     .avis-cards {
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 2rem;
     }
 
     .avis-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .avis-main-bubble {
         background: #fff;
-        border-radius: 14px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        border: 1px solid #f0f0f0;
-        transition: box-shadow 0.2s;
+        border-radius: 20px;
+        padding: 1.75rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f3f4f6;
+        transition: transform 0.2s, box-shadow 0.2s;
 
         &:hover {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
         }
+    }
 
-        .avis-header {
+    .avis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .author-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        .avatar-initials {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-
-            .avatar {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background: #f3f4f6;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                i {
-                    font-size: 1.5rem;
-                    color: #9ca3af;
-                }
-            }
-
-            .avis-meta {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-
-                .author-name {
-                    font-weight: 700;
-                    color: #111827;
-                    font-size: 0.95rem;
-                }
-
-                .avis-date {
-                    font-size: 0.8rem;
-                    color: #9ca3af;
-                }
-            }
-
-            .star-rating {
-                display: flex;
-                gap: 2px;
-
-                i {
-                    font-size: 0.9rem;
-                    color: #d1d5db;
-
-                    &.active {
-                        color: #f59e0b;
-                    }
-                }
-            }
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
         }
 
-        .avis-body {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #4b5563;
-            margin-bottom: 12px;
-        }
-
-        .avis-status {
-            margin-bottom: 10px;
-
-            .badge {
-                display: inline-block;
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 0.75rem;
-                font-weight: 700;
-                text-transform: uppercase;
-
-                &.publie {
-                    background: #d1fae5;
-                    color: #065f46;
-                }
-
-                &.en_attente {
-                    background: #fef3c7;
-                    color: #92400e;
-                }
-
-                &.rejete {
-                    background: #fee2e2;
-                    color: #991b1b;
-                }
-
-                &.signale {
-                    background: #fce7f3;
-                    color: #9d174d;
-                }
-            }
-        }
-
-        .reponses-section {
-            margin-top: 12px;
-        }
-
-        .reponse-card {
-            background: #f0fdf4;
-            padding: 12px 16px;
-            border-radius: 10px;
+        .avis-meta {
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 8px;
-            border-left: 3px solid #10b981;
+            flex-direction: column;
+
+            .author-name {
+                font-weight: 700;
+                color: #111827;
+                font-size: 1.05rem;
+            }
+
+            .avis-date {
+                font-size: 0.85rem;
+                color: #9ca3af;
+                margin-top: 2px;
+            }
+        }
+    }
+
+    .rating-display {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+
+        .stars {
+            display: flex;
+            gap: 3px;
 
             i {
-                color: #10b981;
-                margin-top: 3px;
+                color: #e5e7eb;
+
+                &.active {
+                    color: #fbbf24;
+                }
+            }
+        }
+
+        .note-pill {
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: #fffbeb;
+            color: #b45309;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+    }
+
+    .avis-content {
+        margin-bottom: 1.5rem;
+
+        .avis-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #4b5563;
+            margin: 0;
+            white-space: pre-line;
+        }
+    }
+
+    .avis-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #f3f4f6;
+        padding-top: 1.25rem;
+
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+
+            &.publie {
+                background: #d1fae5;
+                color: #065f46;
             }
 
-            div {
-                font-size: 0.9rem;
-                color: #374151;
+            &.signale {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            &.en_attente {
+                background: #fef3c7;
+                color: #92400e;
             }
         }
 
         .avis-actions {
-            .btn-reply {
-                background: transparent;
-                border: 2px solid #e5e7eb;
-                border-radius: 8px;
-                padding: 8px 16px;
-                font-size: 0.85rem;
-                font-weight: 600;
+            display: flex;
+            gap: 1rem;
+
+            .action-link {
+                background: none;
+                border: none;
                 color: #6b7280;
+                font-size: 0.9rem;
+                font-weight: 600;
                 cursor: pointer;
-                display: inline-flex;
+                display: flex;
                 align-items: center;
                 gap: 6px;
+                padding: 4px 8px;
+                border-radius: 6px;
+                transition: all 0.2s;
 
                 &:hover {
-                    border-color: #10b981;
-                    color: #10b981;
+                    background: #f3f4f6;
+                    color: #111827;
+                }
+
+                &.danger:hover {
+                    background: #fee2e2;
+                    color: #dc2626;
                 }
             }
         }
+    }
+
+    .responses-wrapper {
+        padding-left: 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: -10px;
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 0;
+            bottom: 1.5rem;
+            width: 2px;
+            background: #e5e7eb;
+            border-radius: 1px;
+        }
+    }
+
+    .response-bubble {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 1.25rem;
+        border: 1px solid #f1f5f9;
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #475569;
+            margin-bottom: 8px;
+
+            i {
+                color: #10b981;
+            }
+
+            strong {
+                margin-left: 4px;
+                color: #334155;
+            }
+        }
+
+        .response-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #475569;
+            margin: 0;
+        }
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.8s ease;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 640px) {
+    .responses-wrapper {
+        padding-left: 1rem;
+
+        &::before {
+            display: none;
+        }
+    }
+
+    .avis-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
     }
 }

@@ -41,7 +41,8 @@
         <section class="results-section" *ngIf="structures.length > 0">
           <h2 class="section-label"><i class="fas fa-building mr-2"></i> Établissements & Commerces</h2>
           <div class="grid cols-2 gap-md mt-md">
-            <app-structure-card *ngFor="let s of structures" [structure]="s"></app-structure-card>
+            <app-structure-card *ngFor="let s of structures" [structure]="s"
+              (view)="onStructureView($event)"></app-structure-card>
           </div>
         </section>
 

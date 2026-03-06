@@ -43,9 +43,9 @@
             </div>
             <div class="card-actions">
                 <!-- Update this to point to the edit route when we create it, but for now we just show it -->
-                <button class="action-btn edit-btn" title="Modifier (Bientôt disponible)">
+                <a [routerLink]="['/annonces/edit', annonce.id]" class="action-btn edit-btn" title="Modifier">
                     <i class="fas fa-edit"></i>
-                </button>
+                </a>
                 <button class="action-btn delete-btn" title="Supprimer" (click)="deleteAnnonce(annonce.id)">
                     <i class="fas fa-trash-alt"></i>
                 </button>

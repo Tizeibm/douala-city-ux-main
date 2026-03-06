@@ -14,18 +14,14 @@
       <div [class]="step === 3 ? 'step active' : 'step'" [class.completed]="step > 3"> 3 </div>
       <div class="line"> </div>
       <div [class]="step === 4 ? 'step active' : 'step'" [class.completed]="step > 4"> 4 </div>
-      <div class="line"> </div>
-      <div [class]="step === 5 ? 'step active' : 'step'" [class.completed]="step > 5"> 5 </div>
     </div>
 
-    <div *ngIf="step === 1">
-
+    <!-- Step 1: Info General & Photos -->
+    <div *ngIf="step === 1" class="animate-fade">
       <section class="form-row row-top">
-
         <div class="col">
           <label>Nom</label>
           <input formControlName="nom" placeholder="Nom de la structure">
-
         </div>
         <div class="col">
           <label>Catégorie</label>
@@ -35,131 +31,159 @@
         </div>
         <div class="col">
           <label style="margin-top:8px;">Sous-catégorie</label>
-
           <select formControlName="sousCategorie" class="form-control">
             <option *ngFor="let sc of getSousCategories()" [value]="sc"> {{ sc }} </option>
           </select>
-
         </div>
-
       </section>
 
       <section class="form-row">
         <label>Description</label>
         <textarea formControlName="description" rows="3"></textarea>
       </section>
-    </div>
-    <!-- Services (FormArray of objects) -->
-    <div *ngIf="step === 2">
 
-      <section class="form-row">
-        <h3>Services offerts</h3>
-        <div formArrayName="services" class="services-array">
-          <div *ngFor="let s of services.controls; let i = index" [formGroupName]="i" class="service-row">
-            <input formControlName="nom" placeholder="Nom du service" />
-            <input formControlName="description" placeholder="Description (optionnelle)" />
-            <input formControlName="prix" placeholder="Prix" />
-            <button type="button" class="btn small danger" (click)="removeService(i) ">Supprimer</button>
+      <section class="form-row mt-md">
+        <h3>Photos de la structure</h3>
+        <div formArrayName="photos" class="photos-array">
+          <div class="upload-controls mb-sm">
+            <label class="btn small btn-outline">
+              <i class="fas fa-plus"></i> Ajouter des photos
+              <input type="file" multiple accept="image/*" (change)="addPhoto($event)" hidden />
+            </label>
           </div>
-        </div>
-        <button type="button" class="btn small" (click)="
-        addService()">+ Ajouter un service</button>
-      </section>
 
-    </div>
-
-
-    <!-- Localisations + map (multiple) -->
-    <div *ngIf="step === 3">
-
-      <section class="form-row">
-        <h3>Localisations</h3>
-        <div formArrayName="localisation">
-          <div *ngFor="let loc of localisation.controls; let i = index" [formGroupName]="i" class="loc-row">
-            <app-cartes [locations]="[loc.getRawValue()]" [editable]="true" [mapId]="'map-' + i"
-              (locationSelected)="onLocationSelected($event, i)" (locationRemoved)="onLocationRemoved($event)">
-            </app-cartes>
-            <div class="loc-fields">
-              <input formControlName="quartier" placeholder="Quartier" />
-              <input formControlName="telephone" placeholder="Téléphone" />
-              <input formControlName="address" placeholder="adresse" />
-              <input formControlName="latitude" placeholder="Latitude" value={{loc.value.latitude}} readonly />
-              <input formControlName="longitude" placeholder="Longitude" value="{{loc.value.longitude}}" readonly />
+          <div class="photos-grid">
+            <div *ngFor="let p of photos.controls; let i = index" [formGroupName]="i" class="photo-card-edit">
+              <img *ngIf="p.value.filePath" [src]="p.value.filePath" alt="aperçu" />
+              <button type="button" class="btn-remove-photo" (click)="removePhoto(i)">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
-
-
-            <button type="button" class="btn small danger" (click)="removeLocalisation(i)">Supprimer</button>
-
           </div>
-
         </div>
 
-
-
-        <button type="button" class="btn small" (click)="addLocalisation()">+ Ajouter une localisation</button>
+        <div class="main-photo-upload mt-lg">
+          <label>Photo de couverture principale</label>
+          <div class="main-photo-preview">
+            <img *ngIf="structureForm.value.photoPrincipale" [src]="structureForm.value.photoPrincipale"
+              class="main-thumb" />
+            <div *ngIf="!structureForm.value.photoPrincipale" class="placeholder-main">
+              <i class="fas fa-image fa-2x"></i>
+              <span>Aucune photo</span>
+            </div>
+            <label class="btn x-small btn-primary mt-xs">
+              Modifier
+              <input type="file" accept="image/*" (change)="addPhotoP($event)" hidden />
+            </label>
+          </div>
+        </div>
       </section>
-
     </div>
 
-
-    <!-- Horaires -->
-    <div *ngIf="step === 4">
-
+    <!-- Step 2: Horaires -->
+    <div *ngIf="step === 2" class="animate-fade">
       <section class="form-row">
-        <h3>Horaires</h3>
-        <div formArrayName="horaires">
-          <div *ngFor="let h of horaires.controls; let i = index" [formGroupName]="i" class="horaire-row">
-            <select formControlName="jourSemaine" class="form-control">
-              <option value=""> -- choisir un jour -- </option>
+        <h3>Horaires d'ouverture</h3>
+        <div formArrayName="horaires" class="horaires-list-edit">
+          <div *ngFor="let h of horaires.controls; let i = index" [formGroupName]="i" class="horaire-row-edit">
+            <select formControlName="jourSemaine" class="form-control day-select">
+              <option value=""> -- jour -- </option>
               <option *ngFor="let j of joursSemaine" [value]="j"> {{ j }} </option>
             </select>
-            <input type="time" formControlName="heureDeDebut" />
-            <input type="time" formControlName="heureDeFin" />
-            <button type="button" class="btn small danger" (click)="removeHoraire(i)">Supprimer</button>
+            <div class="time-inputs">
+              <input type="time" formControlName="heureDeDebut" class="time-input" />
+              <span>à</span>
+              <input type="time" formControlName="heureDeFin" class="time-input" />
+            </div>
+            <button type="button" class="btn-icon danger" (click)="removeHoraire(i)"><i
+                class="fas fa-trash"></i></button>
+          </div>
+          <div *ngIf="horaires.length === 0" class="empty-state p-md text-center">
+            <i class="fas fa-clock fa-2x text-muted mb-xs"></i>
+            <p>Aucun horaire défini</p>
           </div>
         </div>
-        <button type="button" class="btn small" (click)="addHoraire()">+ Ajouter un horaire</button>
-
+        <button type="button" class="btn btn-outline small mt-md" (click)="addHoraire()">
+          <i class="fas fa-plus"></i> Ajouter un horaire
+        </button>
       </section>
-
     </div>
 
-    <!-- Photos (objects) -->
-
-    <div *ngIf="step === 5">
-
+    <!-- Step 3: Services -->
+    <div *ngIf="step === 3" class="animate-fade">
       <section class="form-row">
-        <h3>Photos</h3>
-        <div formArrayName="photos" class="photos-array">
-          <input type="file" multiple accept="image/*" (change)="addPhoto($event)" class="file-input" />
-
-          <div *ngFor="let p of photos.controls; let i = index" [formGroupName]="i" class="photo-row">
-            <img *ngIf="p.value.filePath" [src]="p.value.filePath" alt="aperçu" width="120" height="100" />
-            <p>{{ p.value.originalFileName }}</p>
-            <button type="button" class="btn small danger" (click)="removePhoto(i)" width="120"
-              height="100">Supprimer</button>
+        <h3>Services proposés</h3>
+        <div formArrayName="services" class="services-list-edit">
+          <div *ngFor="let s of services.controls; let i = index" [formGroupName]="i"
+            class="service-row-edit card-alt mb-sm p-sm">
+            <div class="grid cols-12 gap-sm">
+              <div class="col-span-8">
+                <input formControlName="nom" placeholder="Nom du service" class="form-control" />
+              </div>
+              <div class="col-span-4">
+                <input formControlName="prix" placeholder="Prix (ex: 500)" class="form-control" />
+              </div>
+            </div>
+            <textarea formControlName="description" placeholder="Description courte" rows="2"
+              class="form-control mt-xs"></textarea>
+            <button type="button" class="btn x-small btn-danger mt-xs" (click)="removeService(i)">Supprimer</button>
+          </div>
+          <div *ngIf="services.length === 0" class="empty-state p-md text-center">
+            <i class="fas fa-concierge-bell fa-2x text-muted mb-xs"></i>
+            <p>Aucun service répertorié</p>
           </div>
         </div>
-
-        <div class="main-photo">
-          <label>Photo principale</label>
-          <input type="file" accept="image/*" (change)="addPhotoP($event)" class="file-input" />
-          <img *ngIf="structureForm.value.photoPrincipale" [src]="structureForm.value.photoPrincipale"
-            class="main-thumb" width="120" height="100" />
-          <button *ngIf="structureForm.value.photoPrincipale" type="button" class="btn small danger"
-            (click)="removePhotop()" width="120" height="100">Supprimer</button>
-        </div>
+        <button type="button" class="btn btn-outline small mt-md" (click)="addService()">
+          <i class="fas fa-plus"></i> Ajouter un service
+        </button>
       </section>
     </div>
 
-    <div class="actions">
-
-      <button class="btn-prev" (click)="prev()" *ngIf="step > 1">Retour</button>
-      <button class="btn-next" (click)="next()" *ngIf="step < 5">suivant</button>
-      <button class="btn cancel" (click)="onCancel()">Annuler</button>
-      <button class="btn save" *ngIf="step === 5" (click)="onSubmit()">Enregistrer</button>
+    <!-- Step 4: Localisation -->
+    <div *ngIf="step === 4" class="animate-fade">
+      <section class="form-row">
+        <h3>Localisations & Carte</h3>
+        <div formArrayName="localisation">
+          <div *ngFor="let loc of localisation.controls; let i = index" [formGroupName]="i"
+            class="loc-edit-block mb-lg">
+            <div class="map-wrapper mb-sm">
+              <app-cartes [locations]="[loc.getRawValue()]" [editable]="true" [mapId]="'edit-map-' + i"
+                (locationSelected)="onLocationSelected($event, i)">
+              </app-cartes>
+            </div>
+            <div class="grid cols-2 gap-sm">
+              <input formControlName="quartier" placeholder="Quartier" class="form-control" />
+              <input formControlName="telephone" placeholder="Téléphone contact" class="form-control" />
+            </div>
+            <input formControlName="address" placeholder="Adresse complète / Indications" class="form-control mt-xs" />
+            <div class="coords mt-xs small text-muted">
+              Lat: {{loc.value.latitude | number:'1.4-4'}} | Lng: {{loc.value.longitude | number:'1.4-4'}}
+            </div>
+            <button type="button" class="btn x-small btn-danger mt-xs" (click)="removeLocalisation(i)">Supprimer ce
+              point</button>
+          </div>
+          <div *ngIf="localisation.length === 0" class="empty-state p-md text-center">
+            <i class="fas fa-map-marker-alt fa-2x text-muted mb-xs"></i>
+            <p>Aucun point géographique défini</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline small mt-md" (click)="addLocalisation()">
+          <i class="fas fa-plus"></i> Ajouter une adresse / agence
+        </button>
+      </section>
     </div>
 
-
+    <div class="actions mt-xl">
+      <button type="button" class="btn-prev" (click)="prev()" *ngIf="step > 1">
+        <i class="fas fa-arrow-left mr-xs"></i> Précédent
+      </button>
+      <button type="button" class="btn cancel" (click)="onCancel()" *ngIf="step === 1">Annuler</button>
+      <button type="button" class="btn-next" (click)="next()" *ngIf="step < 4">
+        Suivant <i class="fas fa-arrow-right ml-xs"></i>
+      </button>
+      <button type="button" class="btn save" *ngIf="step === 4" (click)="onSubmit()">
+        <i class="fas fa-check-circle mr-xs"></i> Enregistrer tout
+      </button>
+    </div>
   </form>
 </div>

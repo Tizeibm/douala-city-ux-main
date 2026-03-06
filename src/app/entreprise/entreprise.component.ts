@@ -149,6 +149,10 @@ export class EntrepriseComponent {
     this.router.navigate(['/dashboard-user/structures', entreprise.id]);
   }
 
+  modifier(s: Entreprise) {
+    this.router.navigate(['/dashboard-user/structures', s.id, 'modifier']);
+  }
+
   supprimer(id: any) {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem('token');

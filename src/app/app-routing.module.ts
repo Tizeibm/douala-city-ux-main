@@ -21,10 +21,13 @@ import { EditAvisComponent } from './avis/edit-avis/edit-avis.component';
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
 import { AddAnnonceComponent } from './annonces/components/add-annonce/add-annonce.component';
 import { AnnonceDetailsComponent } from './annonce-details/annonce-details.component';
+import { EditAnnonceComponent } from './annonces/components/edit-annonce/edit-annonce.component';
 import { CategoryListingComponent } from './website/pages/category-listing/category-listing.component';
 import { VueEnsembleComponent } from './dashboard-user/vue-ensemble/vue-ensemble.component';
 import { MesAnnoncesComponent } from './annonces/components/mes-annonces/mes-annonces.component';
 import { DashboardClientComponent } from './dashboard-client/dashboard-client.component';
+import { StructureEditPageComponent } from './dashboard-user/structure-edit-page/structure-edit-page.component';
+
 
 const routes: Routes = [
 
@@ -97,6 +100,12 @@ const routes: Routes = [
             path: 'creer',
             component: AddAnnonceComponent,
             title: 'Publier une annonce - Douala-city',
+            canActivate: [authGuard]
+          },
+          {
+            path: 'edit/:id',
+            component: EditAnnonceComponent,
+            title: 'Modifier l\'annonce - Douala-city',
             canActivate: [authGuard]
           }
         ]
@@ -180,6 +189,12 @@ const routes: Routes = [
             data: { mode: 'owner' },
             title: 'détails de votre structure - Douala-city'
           },
+          {
+            path: 'structures/:id/modifier',
+            component: StructureEditPageComponent,
+            title: 'Modifier votre structure - Douala-city'
+          },
+
           {
             path: 'profil',
             component: ProfileSettingsComponent,

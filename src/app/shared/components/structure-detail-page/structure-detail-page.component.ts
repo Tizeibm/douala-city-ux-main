@@ -53,6 +53,12 @@ export class StructureDetailPageComponent implements OnInit {
         // Determine mode from route data
         this.mode = this.route.snapshot.data['mode'] || 'public';
 
+        // Check for direct edit mode via query parameter
+        const directEdit = this.route.snapshot.queryParamMap.get('edit');
+        if (directEdit === 'true') {
+            this.editMode = true;
+        }
+
         const id = this.route.snapshot.paramMap.get('id');
         if (!id) return;
 

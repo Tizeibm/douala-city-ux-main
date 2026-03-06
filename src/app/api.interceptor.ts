@@ -26,7 +26,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     return next(clonedReq).pipe(
-        timeout(2000),
+        timeout(10000),
         catchError(err => {
             return throwError(() => err);
         })

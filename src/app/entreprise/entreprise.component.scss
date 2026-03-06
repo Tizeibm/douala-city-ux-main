@@ -196,6 +196,18 @@
                 }
             }
 
+            &.btn-edit-soft {
+                background: white;
+                color: $brand-primary;
+                border: 1px solid $brand-primary;
+
+                &:hover {
+                    background: rgba(5, 150, 105, 0.05);
+                    border-color: $brand-dark;
+                    color: $brand-dark;
+                }
+            }
+
             &.btn-delete-soft {
                 background: transparent;
                 color: $danger;

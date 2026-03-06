@@ -36,38 +36,67 @@
       <a routerLink="/resultats" [queryParams]="{q: 'Restaurant'}">Restaurant</a>
       <a routerLink="/resultats" [queryParams]="{q: 'Hôtel'}">Hôtel</a>
     </div>-->
-  </div>
-</section>
+    <section class="section emergency-section">
+      <div class="container">
+        <div class="emergency-card">
+          <div class="emergency-header">
+            <i class="fas fa-phone-alt emergency-icon"></i>
+            <div class="emergency-text">
+              <h2 class="emergency-title">Besoin d'aide immédiate ?</h2>
+              <p class="emergency-subtitle">Numéros d'urgence utiles à Douala</p>
+            </div>
+          </div>
+          <div class="emergency-numbers-grid">
+            <a href="tel:117" class="emergency-number-item">
+              <span class="num-label">Police Secours</span>
+              <span class="num-value">117</span>
+            </a>
+            <a href="tel:118" class="emergency-number-item">
+              <span class="num-label">Sapeurs-Pompiers</span>
+              <span class="num-value">118</span>
+            </a>
+            <a href="tel:119" class="emergency-number-item">
+              <span class="num-label">SAMU (Urgences Médicales)</span>
+              <span class="num-value">119</span>
+            </a>
+            <a href="tel:113" class="emergency-number-item">
+              <span class="num-label">Gendarmerie</span>
+              <span class="num-value">113</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section class="section categories-section">
-  <div class="container">
-    <h2 class="section-title">Explorez par catégorie</h2>
-    <div class="grid cols-4 categories-grid">
-      <a routerLink="/categories/commerces" class="category-card">
-        <div class="icon-wrapper">
-          <i class="fas fa-shopping-bag"></i>
-        </div>
-        <span class="label">Commerces</span>
-      </a>
-      <a routerLink="/categories/institutions" class="category-card">
-        <div class="icon-wrapper">
-          <i class="fas fa-landmark"></i>
-        </div>
-        <span class="label">Institutions</span>
-      </a>
-      <a routerLink="/categories/education" class="category-card">
-        <div class="icon-wrapper">
-          <i class="fas fa-graduation-cap"></i>
-        </div>
-        <span class="label">Écoles</span>
-      </a>
-      <a routerLink="/categories/sante" class="category-card">
-        <div class="icon-wrapper">
-          <i class="fas fa-hospital-user"></i>
-        </div>
-        <span class="label">Hôpitaux</span>
-      </a>
-      <!--<a routerLink="/categories/services" class="category-card">
+    <section class="section categories-section">
+      <div class="container">
+        <h2 class="section-title">Explorez par catégorie</h2>
+        <div class="grid cols-4 categories-grid">
+          <a routerLink="/categories/commerces" class="category-card">
+            <div class="icon-wrapper">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <span class="label">Commerces</span>
+          </a>
+          <a routerLink="/categories/institutions" class="category-card">
+            <div class="icon-wrapper">
+              <i class="fas fa-landmark"></i>
+            </div>
+            <span class="label">Institutions</span>
+          </a>
+          <a routerLink="/categories/education" class="category-card">
+            <div class="icon-wrapper">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="label">Écoles</span>
+          </a>
+          <a routerLink="/categories/sante" class="category-card">
+            <div class="icon-wrapper">
+              <i class="fas fa-hospital-user"></i>
+            </div>
+            <span class="label">Hôpitaux</span>
+          </a>
+          <!--<a routerLink="/categories/services" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-concierge-bell"></i>
         </div>
@@ -79,6 +108,6 @@
         </div>
         <span class="label">Loisirs</span>
       </a>-->
-    </div>
-  </div>
-</section>
+        </div>
+      </div>
+    </section>

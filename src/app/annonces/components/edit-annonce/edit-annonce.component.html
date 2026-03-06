@@ -1,0 +1,92 @@
+<div class="add-annonce-container container mt-xl animate-fade" *ngIf="annonce">
+    <div class="glass-form-card">
+        <div class="card-header">
+            <h1 class="title"><i class="fas fa-edit mr-sm primary"></i> Modifier l'annonce</h1>
+            <p class="subtitle">Mettez à jour les informations de votre annonce publiée.</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" class="form-grid">
+            <!-- Author Selection -->
+            <div class="form-group full-width" *ngIf="userStructures.length > 0">
+                <label>Publier en tant que</label>
+                <div class="author-selector flex gap-md">
+                    <label class="radio-card" [class.active]="!selectedStructureId">
+                        <input type="radio" name="author" [value]="null" [(ngModel)]="selectedStructureId" hidden>
+                        <i class="fas fa-user"></i>
+                        <span>Moi-même</span>
+                    </label>
+                    <label class="radio-card" *ngFor="let struct of userStructures"
+                        [class.active]="selectedStructureId === struct.id">
+                        <input type="radio" name="author" [value]="struct.id" [(ngModel)]="selectedStructureId" hidden>
+                        <i class="fas fa-building"></i>
+                        <span>{{struct.nom}}</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Type Selector -->
+            <div class="form-group">
+                <label>Type d'annonce</label>
+                <div class="type-selector grid cols-3 gap-sm">
+                    <button type="button" *ngFor="let type of annonceTypes" class="type-btn"
+                        [class.active]="annonce.type === type" (click)="annonce.type = type">
+                        <i class="fas" [ngClass]="{
+                            'fa-shopping-cart': type === 'VENTE',
+                            'fa-tag': type === 'PROMOTION',
+                            'fa-home': type === 'IMMOBILIER',
+                            'fa-calendar-alt': type === 'EVENEMENT',
+                            'fa-concierge-bell': type === 'SERVICES',
+                            'fa-briefcase': type === 'EMPLOI',
+                            'fa-ellipsis-h': type === 'AUTRES'
+                        }"></i>
+                        <span>{{type}}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group mt-md full-width">
+                <label>Description de l'annonce</label>
+                <textarea [(ngModel)]="annonce.description" name="description" class="input" rows="4"
+                    placeholder="Décrivez votre annonce ici (détails, conditions, dates...)" required></textarea>
+                <p class="help-text">Soyez clair et concis pour attirer l'attention.</p>
+            </div>
+
+            <!-- Photos Upload -->
+            <div class="form-group mt-md full-width">
+                <label>Photos (Optionnel)</label>
+                <div class="photo-upload-zone">
+                    <input type="file" id="photoInput" (change)="onFileSelected($event)" multiple accept="image/*"
+                        hidden>
+                    <label for="photoInput" class="upload-btn">
+                        <i class="fas fa-camera"></i>
+                        <span>Ajouter de nouvelles photos</span>
+                    </label>
+
+                    <div class="previews-grid mt-sm" *ngIf="photoPreviews.length > 0">
+                        <div class="preview-card" *ngFor="let preview of photoPreviews; let i = index">
+                            <img [src]="preview" alt="Preview">
+                            <button type="button" class="remove-btn" (click)="removePhoto(i)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions mt-xl">
+                <button type="button" class="btn secondary" (click)="onCancel()" [disabled]="loading">Annuler</button>
+                <button type="submit" class="btn btn-primary" [disabled]="loading || !annonce.description">
+                    <span *ngIf="!loading">Enregistrer les modifications</span>
+                    <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div *ngIf="!annonce" class="text-center p-xl">
+    <i class="fas fa-spinner fa-spin fa-3x primary"></i>
+    <p class="mt-md">Chargement de l'annonce...</p>
+</div>

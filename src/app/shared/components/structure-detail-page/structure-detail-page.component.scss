@@ -454,11 +454,16 @@
   border-radius: $radius-lg;
   overflow: hidden;
   box-shadow: $shadow-md;
-  height: 250px;
+  height: 300px; // Larger height for better visibility
+  width: 100%;
+  position: relative;
+  border: 1px solid $border-color;
 
-  .mini-map {
+  app-carte,
+  app-cartes {
     height: 100%;
     width: 100%;
+    display: block;
   }
 }
 

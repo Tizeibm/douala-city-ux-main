@@ -1,0 +1,23 @@
+<div class="edit-page-container">
+    <div class="container py-lg">
+        <div class="edit-header-section mb-xl">
+            <button class="btn btn-link btn-back mb-md" (click)="onCancel()">
+                <i class="fas fa-arrow-left mr-sm"></i> Retour à mes structures
+            </button>
+            <h1 class="page-title">Modification de votre structure</h1>
+            <p class="page-subtitle" *ngIf="structure">Mettez à jour les informations pour <strong>{{ structure.nom
+                    }}</strong></p>
+        </div>
+
+        <div *ngIf="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Chargement des données de la structure...</p>
+        </div>
+
+        <div *ngIf="!loading && structure" class="edit-wizard-wrapper card glass animate-fade-in">
+            <app-user-edit-structure [structure]="structure" (structureUpdated)="onStructureUpdated($event)"
+                (cancelEdit)="onCancel()">
+            </app-user-edit-structure>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EntrepriseService } from '../services/entreprises.service';
 import { AnnonceService } from '../annonces/services/annonce.service';
 import { Entreprise } from '../entreprise';
@@ -24,6 +24,7 @@ export class ResultatsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private entrepriseService: EntrepriseService,
     private annonceService: AnnonceService
   ) { }
@@ -63,5 +64,9 @@ export class ResultatsComponent implements OnInit {
       case 'EMPLOI': return 'fa-briefcase';
       default: return 'fa-bullhorn';
     }
+  }
+
+  onStructureView(structure: any) {
+    this.router.navigate(['/structdet', structure.id]);
   }
 }

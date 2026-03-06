@@ -33,6 +33,7 @@ import { MapComponent } from './map/map.component';
 import { StructureUserComponent } from './structure-user/structure-user.component';
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
 import { AddAnnonceComponent } from './annonces/components/add-annonce/add-annonce.component';
+import { EditAnnonceComponent } from './annonces/components/edit-annonce/edit-annonce.component';
 
 import { UserComponent } from './user/user.component';
 import { FiltrerStructuresComponent } from './admin/filtrer-structures/filtrer-structures.component';
@@ -50,6 +51,8 @@ import { MesAnnoncesComponent } from './annonces/components/mes-annonces/mes-ann
 import { DashboardClientComponent } from './dashboard-client/dashboard-client.component';
 import { SidebarClientComponent } from './dashboard-client/sidebar-client/sidebar-client.component';
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
+import { StructureEditPageComponent } from './dashboard-user/structure-edit-page/structure-edit-page.component';
+
 
 
 @NgModule({
@@ -83,7 +86,10 @@ import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-
     MesAnnoncesComponent,
     DashboardClientComponent,
     SidebarClientComponent,
-    CookieBannerComponent
+    CookieBannerComponent,
+    EditAnnonceComponent,
+    StructureEditPageComponent
+
 
 
   ],

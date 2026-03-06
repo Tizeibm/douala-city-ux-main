@@ -78,9 +78,15 @@
                         <h3>{{ struct.nom }}</h3>
                         <span class="badge badge-success"><i class="fas fa-check-circle"></i> Validée</span>
                     </div>
-                    <a [routerLink]="['/dashboard-user/structures', struct.id]" class="btn-icon" title="Gérer">
-                        <i class="fas fa-cog"></i>
-                    </a>
+                    <div class="card-actions">
+                        <a [routerLink]="['/dashboard-user/structures', struct.id]" class="btn-icon" title="Gérer">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                        <a [routerLink]="['/dashboard-user/structures', struct.id, 'modifier']" class="btn-icon edit"
+                            title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="stats-body" *ngIf="statsMap.get(struct.id!) as stats; else noStats">
