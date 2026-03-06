@@ -20,21 +20,23 @@
           <span class="submenu-title" (click)="isAnnuaireOpen = !isAnnuaireOpen">Annuaire <i
               class="fas fa-chevron-down"></i></span>
           <div class="submenu" [class.open]="isAnnuaireOpen">
-            <a class="submenu-item" routerLink="/commerces" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/commerces" routerLinkActive="active"
               (click)="toggleMobile()">Commerces</a>
-            <a class="submenu-item" routerLink="/institutions" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/institutions" routerLinkActive="active"
               (click)="toggleMobile()">Institutions</a>
-            <a class="submenu-item" routerLink="/ecoles" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/education" routerLinkActive="active"
               (click)="toggleMobile()">Éducation</a>
-            <a class="submenu-item" routerLink="/hopitaux" routerLinkActive="active" (click)="toggleMobile()">Santé</a>
-            <a class="submenu-item" routerLink="/services" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/sante" routerLinkActive="active"
+              (click)="toggleMobile()">Santé</a>
+            <a class="submenu-item" routerLink="/categories/services" routerLinkActive="active"
               (click)="toggleMobile()">Services</a>
-            <a class="submenu-item" routerLink="/hebergement" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/hebergement" routerLinkActive="active"
               (click)="toggleMobile()">Hébergement</a>
-            <a class="submenu-item" routerLink="/transport" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/transport" routerLinkActive="active"
               (click)="toggleMobile()">Transport</a>
-            <a class="submenu-item" routerLink="/loisirs" routerLinkActive="active" (click)="toggleMobile()">Loisirs</a>
-            <a class="submenu-item" routerLink="/restauration" routerLinkActive="active"
+            <a class="submenu-item" routerLink="/categories/loisirs" routerLinkActive="active"
+              (click)="toggleMobile()">Loisirs</a>
+            <a class="submenu-item" routerLink="/categories/restauration" routerLinkActive="active"
               (click)="toggleMobile()">Restauration</a>
           </div>
         </div>
@@ -54,7 +56,7 @@
             <i class="fas fa-user-circle"></i>
             {{utilisateur.nom}}
           </a>
-          <a *ngIf="utilisateur?.role === 'ADMIN'" routerLink="/admin" routerLinkActive="active"
+          <a *ngIf="utilisateur.role === 'ADMIN'" routerLink="/admin" routerLinkActive="active"
             (click)="toggleMobile()">
             🛠️ Admin
           </a>

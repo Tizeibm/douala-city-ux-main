@@ -8,31 +8,36 @@ import { Observable, Subscription, timer } from 'rxjs';
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss'
 })
-export class ToastComponent implements OnInit  {
+export class ToastComponent implements OnInit {
 
-  constructor(public feedback: FeedbackService, private cd: ChangeDetectorRef, 
+  constructor(public feedback: FeedbackService, private cd: ChangeDetectorRef,
     private ngZone: NgZone
-  ){ }
+  ) { }
 
-  toast:{
+  toast: {
     message: string;
     type: 'success' | 'error';
   } | null = null;
 
-  
-   close(){
-    
-   this.feedback.clear();
-   }
 
-   ngOnInit(): void{
-    this.feedback.toast$.subscribe(t=>{
+  close() {
 
-      this.ngZone.run(()=>{
-         this.toast = t;
-      });
-   });
+    this.feedback.clear();
   }
 
-  
+  ngOnInit(): void {
+    this.feedback.toast$.subscribe(t => {
+      this.ngZone.run(() => {
+        this.toast = t;
+        if (t) {
+          setTimeout(() => {
+            this.close();
+            this.cd.detectChanges();
+          }, 3000);
+        }
+      });
+    });
+  }
+
+
 }

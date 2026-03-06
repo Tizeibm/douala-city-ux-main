@@ -1,0 +1,137 @@
+<div class="vue-ensemble-wrapper">
+
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1 class="gradient-text">Vue d'ensemble</h1>
+            <p class="subtitle">Analysez les performances globales de vos structures</p>
+        </div>
+    </header>
+
+    <div *ngIf="loading" class="loader-overlay">
+        <div class="loader-spinner"></div>
+        <p>Récupération de vos statistiques...</p>
+    </div>
+
+    <div *ngIf="!loading && structures.length === 0" class="empty-state-card glass">
+        <div class="empty-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <h3>Aucune structure trouvée</h3>
+        <p>Vous n'avez pas encore de structures validées. Ajoutez-en une pour commencer à suivre vos performances.</p>
+        <a routerLink="/dashboard-user/structures/ajout" class="btn btn-primary btn-glow">
+            <i class="fas fa-plus"></i> Ajouter une structure
+        </a>
+    </div>
+
+    <ng-container *ngIf="!loading && structures.length > 0">
+
+        <!-- Hero Aggregate Stats -->
+        <section class="aggregate-stats-grid">
+            <div class="stat-card glass primary-glow">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ aggregateStats.totalViews | number }}</h4>
+                    <span>Vues Totales</span>
+                </div>
+            </div>
+
+            <div class="stat-card glass info-glow">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ aggregateStats.uniqueVisitors | number }}</h4>
+                    <span>Visiteurs Uniques</span>
+                </div>
+            </div>
+
+            <div class="stat-card glass success-glow">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-hand-pointer"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ aggregateStats.contactClicks | number }}</h4>
+                    <span>Clics de Contact</span>
+                </div>
+            </div>
+
+            <div class="stat-card glass warning-glow">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ aggregateStats.totalavis | number }}</h4>
+                    <span>Avis Reçus</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Structure Cards -->
+        <h2 class="section-title">Détails par structure</h2>
+        <section class="structures-grid">
+
+            <article *ngFor="let struct of structures" class="structure-card glass">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h3>{{ struct.nom }}</h3>
+                        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Validée</span>
+                    </div>
+                    <a [routerLink]="['/dashboard-user/structures', struct.id]" class="btn-icon" title="Gérer">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                </div>
+
+                <div class="stats-body" *ngIf="statsMap.get(struct.id!) as stats; else noStats">
+                    <div class="stat-pill">
+                        <div class="pill-icon primary"><i class="fas fa-eye"></i></div>
+                        <div class="pill-data">
+                            <span class="value">{{ stats.totalViews || 0 | number }}</span>
+                            <span class="label">Vues</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-pill">
+                        <div class="pill-icon info"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="pill-data">
+                            <span class="value">{{ stats.monthlyViews || 0 | number }}</span>
+                            <span class="label">Mois en cours</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-pill">
+                        <div class="pill-icon success"><i class="fas fa-phone-alt"></i></div>
+                        <div class="pill-data">
+                            <span class="value">{{ stats.contactClicks || 0 | number }}</span>
+                            <span class="label">Contacts</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-pill">
+                        <div class="pill-icon warning"><i class="fas fa-star"></i></div>
+                        <div class="pill-data">
+                            <span class="value">{{ stats.totalavis || 0 | number }}</span>
+                            <span class="label">Avis</span>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #noStats>
+                    <div class="no-stats-placeholder">
+                        <i class="fas fa-chart-line"></i>
+                        <p>Statistiques indésponibles</p>
+                    </div>
+                </ng-template>
+
+                <div class="card-footer">
+                    <a [routerLink]="['/structdet', struct.id]" class="btn-link">Voir la page publique <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+        </section>
+
+    </ng-container>
+
+</div>

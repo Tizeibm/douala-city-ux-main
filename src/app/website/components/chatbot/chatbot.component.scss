@@ -30,7 +30,7 @@
     width: 65px;
     height: 65px;
     border-radius: 50%;
-    background: linear-gradient(135deg, $brand-primary, darken($brand-primary, 15%));
+    background: linear-gradient(135deg, $brand-primary, color.adjust($brand-primary, $lightness: -15%));
     color: white;
     border: none;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);

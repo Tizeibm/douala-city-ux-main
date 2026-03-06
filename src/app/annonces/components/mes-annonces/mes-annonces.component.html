@@ -1,0 +1,55 @@
+<div class="mes-annonces-wrapper">
+    <header class="section-header">
+        <div class="header-info">
+            <h2>Mes Annonces</h2>
+            <p>Gérez vos annonces et attirez plus de clients.</p>
+        </div>
+        <div class="header-actions">
+            <!-- Allow users to add a new annonce. Link can be absolute or relative depending on routing -->
+            <a routerLink="/annonces/creer" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Créer une annonce
+            </a>
+        </div>
+    </header>
+
+    <div *ngIf="loading" class="loader-container">
+        <div class="spinner"></div>
+        <p>Chargement de vos annonces...</p>
+    </div>
+
+    <div *ngIf="!loading && annonces.length === 0" class="empty-state glass">
+        <i class="fas fa-bullhorn empty-icon"></i>
+        <h3>Aucune annonce</h3>
+        <p>Vous n'avez pas encore publié d'annonce. Commencez dès maintenant à promouvoir vos services !</p>
+        <a routerLink="/annonces/creer" class="btn btn-primary mt-3">
+            <i class="fas fa-plus"></i> Publier ma première annonce
+        </a>
+    </div>
+
+    <div *ngIf="!loading && annonces.length > 0" class="annonces-grid">
+        <div class="annonce-card glass" *ngFor="let annonce of annonces">
+            <div class="card-image bg-light d-flex align-items-center justify-content-center">
+                <i class="fas fa-bullhorn fa-4x text-muted opacity-50"></i>
+            </div>
+            <div class="card-content">
+                <span class="category-tag">{{ annonce.type }}</span>
+                <h3 class="title" [title]="annonce.titre">{{ annonce.titre }}</h3>
+                <p class="description">{{ annonce.description | slice:0:80 }}{{ annonce.description.length > 80 ? '...'
+                    : '' }}</p>
+                <div class="meta">
+                    <span class="date"><i class="far fa-calendar-alt"></i> {{ annonce.dateCreation | date:'dd/MM/yyyy'
+                        }}</span>
+                </div>
+            </div>
+            <div class="card-actions">
+                <!-- Update this to point to the edit route when we create it, but for now we just show it -->
+                <button class="action-btn edit-btn" title="Modifier (Bientôt disponible)">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete-btn" title="Supprimer" (click)="deleteAnnonce(annonce.id)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

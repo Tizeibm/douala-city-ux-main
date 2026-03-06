@@ -14,6 +14,7 @@ export interface Annonce {
     type: AnnonceType | string;
     description: string;
     dateCreation?: string;
-    structureId?: string; // Often linked to a structure
-    user?: any; // To hold user info like name, email
+    structureId?: string;
+    user?: any;
+    photos?: any[];
 }

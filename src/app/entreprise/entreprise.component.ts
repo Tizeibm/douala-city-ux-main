@@ -146,7 +146,7 @@ export class EntrepriseComponent {
 
   consulter(entreprise: Entreprise) {
     this.haptic.navigation();
-    this.router.navigate(['/admin/structures', entreprise.id]);
+    this.router.navigate(['/dashboard-user/structures', entreprise.id]);
   }
 
   supprimer(id: any) {

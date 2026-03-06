@@ -5,7 +5,25 @@
             <p class="subtitle">Diffusez votre actualité, promotion ou événement à toute la ville de Douala.</p>
         </div>
 
-        <form (ngSubmit)="onSubmit()" class="mt-md">
+        <form (ngSubmit)="onSubmit()" class="form-grid">
+            <!-- Author Selection -->
+            <div class="form-group full-width" *ngIf="userStructures.length > 0">
+                <label>Publier en tant que</label>
+                <div class="author-selector flex gap-md">
+                    <label class="radio-card" [class.active]="!selectedStructureId">
+                        <input type="radio" name="author" [value]="null" [(ngModel)]="selectedStructureId" hidden>
+                        <i class="fas fa-user"></i>
+                        <span>Moi-même</span>
+                    </label>
+                    <label class="radio-card" *ngFor="let struct of userStructures"
+                        [class.active]="selectedStructureId === struct.id">
+                        <input type="radio" name="author" [value]="struct.id" [(ngModel)]="selectedStructureId" hidden>
+                        <i class="fas fa-building"></i>
+                        <span>{{struct.nom}}</span>
+                    </label>
+                </div>
+            </div>
+
             <!-- Type Selector -->
             <div class="form-group">
                 <label>Type d'annonce</label>
@@ -27,11 +45,33 @@
             </div>
 
             <!-- Description -->
-            <div class="form-group mt-md">
+            <div class="form-group mt-md full-width">
                 <label>Description de l'annonce</label>
-                <textarea [(ngModel)]="annonce.description" name="description" class="input" rows="6"
+                <textarea [(ngModel)]="annonce.description" name="description" class="input" rows="4"
                     placeholder="Décrivez votre annonce ici (détails, conditions, dates...)" required></textarea>
                 <p class="help-text">Soyez clair et concis pour attirer l'attention.</p>
+            </div>
+
+            <!-- Photos Upload -->
+            <div class="form-group mt-md full-width">
+                <label>Photos (Optionnel)</label>
+                <div class="photo-upload-zone">
+                    <input type="file" id="photoInput" (change)="onFileSelected($event)" multiple accept="image/*"
+                        hidden>
+                    <label for="photoInput" class="upload-btn">
+                        <i class="fas fa-camera"></i>
+                        <span>Ajouter des photos</span>
+                    </label>
+
+                    <div class="previews-grid mt-sm" *ngIf="photoPreviews.length > 0">
+                        <div class="preview-card" *ngFor="let preview of photoPreviews; let i = index">
+                            <img [src]="preview" alt="Preview">
+                            <button type="button" class="remove-btn" (click)="removePhoto(i)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Actions -->

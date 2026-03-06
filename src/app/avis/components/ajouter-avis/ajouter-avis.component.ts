@@ -29,8 +29,8 @@ export class AjouterAvisComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Parent route is structdet/:id
-    this.structureId = this.route.parent?.snapshot.paramMap.get('id') || null;
+    // Check current route for id (if embedded) or parent route (if routed)
+    this.structureId = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id') || null;
     if (!this.authService.isLoggedIn()) {
       this.errorMessage = 'Vous devez être connecté pour donner un avis.';
     }
@@ -70,6 +70,7 @@ export class AjouterAvisComponent implements OnInit {
         this.successMessage = 'Votre avis a été envoyé avec succès ! Il sera visible après validation par l\'administration.';
         this.loading = false;
         this.commentaire = '';
+        this.avisService.notifyAvisAdded();
         setTimeout(() => {
           this.closePanel.emit();
         }, 3000);

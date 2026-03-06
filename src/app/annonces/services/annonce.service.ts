@@ -17,24 +17,34 @@ export class AnnonceService {
         return this.http.get<any>(`${this.apiUrl}/public`, { params });
     }
 
-    // Create an announcement
-    createAnnonce(annonce: Annonce, userId: string): Observable<Annonce> {
-        return this.http.post<Annonce>(`${this.apiUrl}/${userId}`, annonce);
+    // Create an announcement 
+    createAnnonce(annonce: Annonce): Observable<Annonce> {
+        return this.http.post<Annonce>(this.apiUrl, annonce);
+    }
+
+    // Create an announcement for a specific structure
+    createAnnonceByStructure(structureId: string, annonce: Annonce): Observable<Annonce> {
+        return this.http.post<Annonce>(`${this.apiUrl}/${structureId}/structure`, annonce);
+    }
+
+    // Get announcements for a specific structure
+    getAnnoncesByStructure(structureId: string): Observable<Annonce[]> {
+        return this.http.get<Annonce[]>(`${this.apiUrl}/${structureId}/structure`);
     }
 
     // Update an announcement
-    updateAnnonce(annonce: Annonce, annonceId: string, userId: string): Observable<Annonce> {
-        return this.http.put<Annonce>(`${this.apiUrl}/update/${annonceId}/${userId}`, annonce);
+    updateAnnonce(annonce: Annonce, annonceId: string): Observable<Annonce> {
+        return this.http.put<Annonce>(`${this.apiUrl}/update/${annonceId}`, annonce);
     }
 
-    // Get announcements for a specific user
-    getUserAnnonces(userId: string): Observable<Annonce[]> {
-        return this.http.get<Annonce[]>(`${this.apiUrl}/${userId}/user`);
+    // Get announcements for the logged-in user (JWT auth)
+    getUserAnnonces(): Observable<Annonce[]> {
+        return this.http.get<Annonce[]>(`${this.apiUrl}/user`);
     }
 
-    // Delete an announcement
-    deleteAnnonce(annonceId: string, userId: string): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/delete/${annonceId}/${userId}`);
+    // Delete an announcement 
+    deleteAnnonce(annonceId: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/delete/${annonceId}`);
     }
 
     // Get announcements by type
@@ -43,12 +53,8 @@ export class AnnonceService {
         return this.http.get<Annonce[]>(`${this.apiUrl}/public/type`, { params });
     }
 
+    // Get single announcement by ID
     getAnnonceById(id: string): Observable<Annonce> {
         return this.http.get<Annonce>(`${this.apiUrl}/public/${id}/annonce`);
-    }
-
-    searchAnnonces(query: string, page: number = 0, size: number = 10): Observable<any> {
-        const params = new HttpParams().set('query', query).set('page', page).set('size', size);
-        return this.http.get<any>(`${this.apiUrl}/public/search`, { params });
     }
 }

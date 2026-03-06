@@ -72,4 +72,13 @@ export class EntreprisesService {
   setEntreprise(structure: Entreprise | null) {
     this.structureSubject.next(structure);
   }
+
+  // --- STATS & TRACKING ---
+  recordView(id: string, userId?: string, visitorHash?: string): Observable<void> {
+    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/view`, { userId, visitorHash });
+  }
+
+  recordContactClick(id: string, type: string, visitorHash?: string, userId?: string, clickedUrl?: string): Observable<void> {
+    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
+  }
 }

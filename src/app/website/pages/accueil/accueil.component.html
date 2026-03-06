@@ -4,23 +4,24 @@
     <p class="hero-subtitle">Trouvez les meilleurs commerces, services et professionnels à Douala.</p>
 
     <div class="search-container">
-      <form class="search-form" action="/resultats">
+      <form class="search-form" (ngSubmit)="onSearch()">
         <div class="input-group what">
           <i class="fas fa-search input-icon"></i>
-          <input type="text" name="q" placeholder="Quoi, qui ? (ex: Restaurant, Plombier...)" class="search-input">
+          <input type="text" name="q" [(ngModel)]="searchQuery" placeholder="Quoi, qui ? (ex: Restaurant, Plombier...)"
+            class="search-input">
         </div>
         <div class="divider"></div>
         <div class="input-group where">
           <i class="fas fa-map-marker-alt input-icon"></i>
-          <select name="zone" class="search-select">
+          <select name="zone" [(ngModel)]="searchZone" class="search-select">
             <option value="">Où ? (Toute la ville)</option>
-            <option>Akwa</option>
-            <option>Bonapriso</option>
-            <option>Bonamoussadi</option>
-            <option>Deïdo</option>
-            <option>Logbessou</option>
-            <option>Bali</option>
-            <option>Koumassi</option>
+            <option value="Akwa">Akwa</option>
+            <option value="Bonapriso">Bonapriso</option>
+            <option value="Bonamoussadi">Bonamoussadi</option>
+            <option value="Deïdo">Deïdo</option>
+            <option value="Logbessou">Logbessou</option>
+            <option value="Bali">Bali</option>
+            <option value="Koumassi">Koumassi</option>
           </select>
         </div>
         <button type="submit" class="btn-search">
@@ -29,12 +30,12 @@
       </form>
     </div>
 
-    <div class="hero-tags">
+    <!-- <div class="hero-tags">
       <span>Populaire :</span>
       <a routerLink="/resultats" [queryParams]="{q: 'Pharmacie'}">Pharmacie</a>
       <a routerLink="/resultats" [queryParams]="{q: 'Restaurant'}">Restaurant</a>
       <a routerLink="/resultats" [queryParams]="{q: 'Hôtel'}">Hôtel</a>
-    </div>
+    </div>-->
   </div>
 </section>
 
@@ -42,42 +43,42 @@
   <div class="container">
     <h2 class="section-title">Explorez par catégorie</h2>
     <div class="grid cols-4 categories-grid">
-      <a routerLink="/commerces" class="category-card">
+      <a routerLink="/categories/commerces" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-shopping-bag"></i>
         </div>
         <span class="label">Commerces</span>
       </a>
-      <a routerLink="/institutions" class="category-card">
+      <a routerLink="/categories/institutions" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-landmark"></i>
         </div>
         <span class="label">Institutions</span>
       </a>
-      <a routerLink="/ecoles" class="category-card">
+      <a routerLink="/categories/education" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-graduation-cap"></i>
         </div>
         <span class="label">Écoles</span>
       </a>
-      <a routerLink="/hopitaux" class="category-card">
+      <a routerLink="/categories/sante" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-hospital-user"></i>
         </div>
         <span class="label">Hôpitaux</span>
       </a>
-      <a routerLink="/services" class="category-card">
+      <!--<a routerLink="/categories/services" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-concierge-bell"></i>
         </div>
         <span class="label">Services</span>
       </a>
-      <a routerLink="/loisirs" class="category-card">
+      <a routerLink="/categories/loisirs" class="category-card">
         <div class="icon-wrapper">
           <i class="fas fa-cocktail"></i>
         </div>
         <span class="label">Loisirs</span>
-      </a>
+      </a>-->
     </div>
   </div>
 </section>

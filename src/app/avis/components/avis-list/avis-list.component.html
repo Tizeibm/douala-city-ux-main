@@ -43,8 +43,11 @@
             </div>
 
             <div class="avis-actions">
-                <button *ngIf="!a.reponses || a.reponses.length === 0" (click)="reply(a.id)" class="btn-reply">
-                    <i class="fas fa-reply"></i> Répondre
+                <button (click)="reply(a.id)" class="btn-reply" title="Répondre (Propriétaire uniquement)">
+                    <i class="fas fa-reply"></i>
+                </button>
+                <button (click)="deleteAvis(a.id)" class="btn-signal" title="Signaler cet avis">
+                    <i class="fas fa-flag"></i> Signaler
                 </button>
             </div>
         </div>

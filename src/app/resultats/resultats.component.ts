@@ -39,16 +39,11 @@ export class ResultatsComponent implements OnInit {
   performSearch() {
     this.loading = true;
 
-    // Combine searches for structures and announcements
-    forkJoin({
-      structures: this.entrepriseService.searchEntreprises(this.searchQuery, 0, 10),
-      annonces: this.annonceService.searchAnnonces(this.searchQuery, 0, 5)
-    }).subscribe({
+    // Search structures only (annonce search not available in API)
+    this.entrepriseService.searchEntreprises(this.searchQuery, this.searchZone, 0, 10).subscribe({
       next: (res: any) => {
-        this.structures = res.structures.content || res.structures;
-        this.annonces = res.annonces.content || res.annonces;
-        this.totalFound = (res.structures.totalElements || this.structures.length) +
-          (res.annonces.totalElements || this.annonces.length);
+        this.structures = res.content || res;
+        this.totalFound = res.totalElements || this.structures.length;
         this.loading = false;
       },
       error: (err) => {

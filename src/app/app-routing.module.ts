@@ -1,19 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegisterBusinessComponent } from './website/registration/register-business/register-business.component';
 import { AppComponent } from './app.component';
-import { MainComponent } from './website/components/main/main.component';
-import { CategoriesComponent } from './website/components/categories/categories.component';
-import { ServicePageComponent } from './website/pages/service-page/service-page.component';
-import { CategoriepageComponent } from './website/pages/categoriepage/categoriepage.component';
-import { ContactpageComponent } from './website/pages/contactpage/contactpage.component';
 import { EntrepriseComponent } from './entreprise/entreprise.component';
 import { AccueilComponent } from './website/pages/accueil/accueil.component';
 import { AppliComponent } from './appli/appli.component';
-import { CommercesComponent } from './commerces/commerces.component';
-import { InstitutionsComponent } from './institutions/institutions.component';
-import { EcolesComponent } from './ecoles/ecoles.component';
-import { HopitauxComponent } from './hopitaux/hopitaux.component';
 import { LoginLogoutComponent } from './login-logout/login-logout.component';
 import { AnnoncesComponent } from './annonces/annonces.component';
 import { RechercheComponent } from './recherche/recherche.component';
@@ -23,22 +13,18 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
 import { authGuard } from './auth.guard';
 import { AddEntrepriseComponent } from './add-entreprise/add-entreprise.component';
 import { StructureUserComponent } from './structure-user/structure-user.component';
-import { StructureDetailsComponent } from './admin/structure-details/structure-details.component';
-import { UserStructureDetComponent } from './user-structure-det/user-structure-det.component';
-import { StructDetailsComponent } from './struct-details/struct-details.component';
-import { HebergementComponent } from './hebergement/hebergement.component';
-import { RestaurationComponent } from './restauration/restauration.component';
-import { ServicesComponent } from './services/services.component';
-import { LoisirsComponent } from './loisirs/loisirs.component';
-import { TransportComponent } from './transport/transport.component';
+import { StructureDetailPageComponent } from './shared/components/structure-detail-page/structure-detail-page.component';
 import { AjouterAvisComponent } from './avis/components/ajouter-avis/ajouter-avis.component';
 import { AvisListComponent } from './avis/components/avis-list/avis-list.component';
 import { ReplyAvisComponent } from './avis/components/reply-avis/reply-avis.component';
 import { EditAvisComponent } from './avis/edit-avis/edit-avis.component';
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
-import { StatsComponent } from './stats/stats.component';
 import { AddAnnonceComponent } from './annonces/components/add-annonce/add-annonce.component';
 import { AnnonceDetailsComponent } from './annonce-details/annonce-details.component';
+import { CategoryListingComponent } from './website/pages/category-listing/category-listing.component';
+import { VueEnsembleComponent } from './dashboard-user/vue-ensemble/vue-ensemble.component';
+import { MesAnnoncesComponent } from './annonces/components/mes-annonces/mes-annonces.component';
+import { DashboardClientComponent } from './dashboard-client/dashboard-client.component';
 
 const routes: Routes = [
 
@@ -60,7 +46,8 @@ const routes: Routes = [
       },
       {
         path: 'structdet/:id',
-        component: StructDetailsComponent,
+        component: StructureDetailPageComponent,
+        data: { mode: 'public' },
         children: [
           {
             path: 'ajouterAvis',
@@ -93,42 +80,6 @@ const routes: Routes = [
 
 
       {
-        path: 'commerces',
-        component: CommercesComponent,
-        title: 'commerces de la ville de Douala'
-      },
-
-      {
-        path: 'institutions',
-        component: InstitutionsComponent,
-        title: 'trouver un service public dans la ville de Douala'
-      },
-      {
-        path: 'institution',
-        redirectTo: 'institutions',
-        pathMatch: 'full'
-      },
-      {
-        path: 'ecoles',
-        component: EcolesComponent,
-        title: 'trouver une ecole dans la ville de Douala'
-      },
-      {
-        path: 'ecole',
-        redirectTo: 'ecoles',
-        pathMatch: 'full'
-      },
-      {
-        path: 'hopitaux',
-        component: HopitauxComponent,
-        title: 'trouver un centre de santé dans la ville de Douala'
-      },
-      {
-        path: 'sante',
-        redirectTo: 'hopitaux',
-        pathMatch: 'full'
-      },
-      {
         path: 'inscription',
         component: LoginLogoutComponent,
         title: 'Inscription d\'une entreprise - Douala-city'
@@ -136,8 +87,19 @@ const routes: Routes = [
 
       {
         path: 'annonces',
-        component: AnnoncesComponent,
-        title: 'Annonces - Douala-city'
+        children: [
+          {
+            path: '',
+            component: AnnoncesComponent,
+            title: 'Annonces - Douala-city'
+          },
+          {
+            path: 'creer',
+            component: AddAnnonceComponent,
+            title: 'Publier une annonce - Douala-city',
+            canActivate: [authGuard]
+          }
+        ]
       },
       {
         path: 'annonce/:id',
@@ -145,48 +107,25 @@ const routes: Routes = [
         title: 'Détails de l\'annonce - Douala-city'
       },
       {
-        path: 'annonces/creer',
-        component: AddAnnonceComponent,
-        title: 'Créer une annonce - Douala-city',
-        canActivate: [authGuard]
-      },
-
-
-      {
-        path: 'loisirs',
-        component: LoisirsComponent,
-        title: 'trouver un lieu de loisir dans la ville de Douala'
-
-      },
-      {
-        path: 'restauration',
-        component: RestaurationComponent,
-        title: 'se restaurer dans la ville de Douala'
-      },
-
-
-      {
-        path: 'services',
-        component: ServicesComponent,
-        title: 'trouver des services dans la ville de Douala'
-      },
-
-      {
-        path: 'transport',
-        component: TransportComponent,
-        title: 'trouver des services de transport dans la ville de Douala'
-      },
-
-      {
-        path: 'hebergement',
-        component: HebergementComponent,
-        title: 'trouver des services d\'hébergement dans la ville de Douala'
-      },
-      {
         path: 'recherche',
         component: RechercheComponent,
         title: 'rechercher une entreprise dans la  ville de Douala'
       },
+      {
+        path: 'categories/:category',
+        component: CategoryListingComponent,
+        title: 'Douala-city - Catégories'
+      },
+      // Redirections for old paths
+      { path: 'commerces', redirectTo: 'categories/commerces', pathMatch: 'full' },
+      { path: 'institutions', redirectTo: 'categories/institutions', pathMatch: 'full' },
+      { path: 'ecoles', redirectTo: 'categories/education', pathMatch: 'full' },
+      { path: 'hopitaux', redirectTo: 'categories/sante', pathMatch: 'full' },
+      { path: 'loisirs', redirectTo: 'categories/loisirs', pathMatch: 'full' },
+      { path: 'restauration', redirectTo: 'categories/restauration', pathMatch: 'full' },
+      { path: 'services', redirectTo: 'categories/services', pathMatch: 'full' },
+      { path: 'transport', redirectTo: 'categories/transport', pathMatch: 'full' },
+      { path: 'hebergement', redirectTo: 'categories/hebergement', pathMatch: 'full' },
       {
         path: 'resultats',
         component: ResultatsComponent,
@@ -207,12 +146,17 @@ const routes: Routes = [
         component: DashboardUserComponent,
         title: 'manager vos entreprises - Douala-city',
         canActivate: [authGuard],
-        data: { expectedRoles: ['SOLO', 'INSTITUTION', 'COMMERCANT', 'ADMIN'] },
+        data: { expectedRoles: ['ENTREPRISE', 'ADMIN'] },
         children: [
           {
             path: '',
-            redirectTo: 'structures',
+            redirectTo: 'vue-ensemble',
             pathMatch: 'full'
+          },
+          {
+            path: 'vue-ensemble',
+            component: VueEnsembleComponent,
+            title: 'Vue d\'ensemble - Douala-city'
           },
           {
             path: 'structures',
@@ -232,21 +176,41 @@ const routes: Routes = [
           },
           {
             path: 'structures/:id',
-            component: UserStructureDetComponent,
+            component: StructureDetailPageComponent,
+            data: { mode: 'owner' },
             title: 'détails de votre structure - Douala-city'
           },
           {
             path: 'profil',
             component: ProfileSettingsComponent,
             title: 'Mon Profil - Douala-city'
+          },
+          {
+            path: 'annonces',
+            component: MesAnnoncesComponent,
+            title: 'Mes Annonces - Douala-city'
           }
 
         ]
+      },
+      {
+        path: 'dashboard-client',
+        component: DashboardClientComponent,
+        title: 'Mon Espace - Douala-city',
+        canActivate: [authGuard],
+        data: { expectedRoles: ['USER'] },
+        children: [
+          {
+            path: '',
+            component: MesAnnoncesComponent
+          },
+          {
+            path: 'profil',
+            component: ProfileSettingsComponent,
+            title: 'Mon Profil - Douala-city'
+          }
+        ]
       }
-
-
-
-
 
     ]
   }

@@ -1,9 +1,11 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ToastComponent } from './toast/toast.component';
 import { GlobalLoaderComponent } from './global-loader/global-loader.component';
 import { CarteComponent } from '../admin/carte/carte.component';
 import { StructureCardComponent } from './components/structure-card/structure-card.component';
+import { StructureDetailPageComponent } from './components/structure-detail-page/structure-detail-page.component';
 
 
 
@@ -12,16 +14,20 @@ import { StructureCardComponent } from './components/structure-card/structure-ca
     ToastComponent,
     GlobalLoaderComponent,
     CarteComponent,
-    StructureCardComponent
+    StructureCardComponent,
+    StructureDetailPageComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   exports: [
     ToastComponent,
     GlobalLoaderComponent,
     CarteComponent,
-    StructureCardComponent
-  ]
+    StructureCardComponent,
+    StructureDetailPageComponent
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class SharedModule { }

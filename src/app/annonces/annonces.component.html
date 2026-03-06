@@ -47,9 +47,9 @@
         </div>
 
         <div class="card-footer">
-          <div class="author-info" *ngIf="a.structureId">
-            <i class="fas fa-building mr-xs"></i>
-            <span>Propulsé par une entreprise locale</span>
+          <div class="author-info">
+            <i class="fas mr-xs" [ngClass]="a.structureId ? 'fa-building' : 'fa-user'"></i>
+            <span>{{a.user?.nom || a.user?.email || 'Anonyme'}}</span>
           </div>
           <button class="btn-interact">
             <i class="far fa-heart"></i>

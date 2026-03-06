@@ -45,8 +45,8 @@ export class AuthService {
   connecter(utilisateur: Utilisateur, token: string) {
     if (this.isBrowser) {
       localStorage.setItem('token', token);
-      console.log(utilisateur);
       localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
+      localStorage.setItem('role', utilisateur.role || '');
     }
     this.utilisateurSubject.next(utilisateur);
     this.estConnecteSubject.next(true);
@@ -59,7 +59,9 @@ export class AuthService {
     console.log(data);
     if (data) {
       try {
-        this.utilisateurSubject.next(JSON.parse(data));
+        const user = JSON.parse(data);
+        this.utilisateurSubject.next(user);
+        this.estConnecteSubject.next(true);
       } catch (e) {
         console.error('Error parsing user data', e);
       }
@@ -82,7 +84,7 @@ export class AuthService {
         if (this.isBrowser) {
           localStorage.setItem('token', res.token);
           localStorage.setItem('utilisateur', JSON.stringify(res.userDto));
-          localStorage.setItem('role', JSON.stringify(res.userDto.role));
+          localStorage.setItem('role', res.userDto.role);
         }
         this.utilisateurSubject.next(res.userDto);
         this.estConnecteSubject.next(true);

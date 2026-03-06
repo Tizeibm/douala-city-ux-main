@@ -113,49 +113,78 @@ export class EntrepriseService {
     return this.http.post<void>(`http://localhost:8080/api/horaires/${structureId}`, horaires);
   }
 
-  // Individual CRUD (maintained for existing compatibility)
+  // Individual CRUD — Localisation
   saveLocalisation(loc: any, token: any, structureId: string | number): Observable<Localisation> {
-    return this.http.post<Localisation>(`${this.apiUrl}/${structureId}/localisations`, loc);
+    return this.http.post<Localisation>(`http://localhost:8080/api/localisation/${structureId}`, [loc]);
   }
   editLocalisation(loc: any, id: string, token: any, structureId: string | number): Observable<Localisation> {
-    return this.http.put<Localisation>(`${this.apiUrl}/${structureId}/localisations/${id}`, loc);
+    return this.http.put<Localisation>(`http://localhost:8080/api/localisation/${structureId}/${id}`, loc);
   }
   removeLocalisation(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${structureId}/localisations/${id}`);
+    return this.http.delete<void>(`http://localhost:8080/api/localisation/${structureId}/${id}`);
   }
 
-  // Service
+  // Individual CRUD — Service
   saveService(service: any, token: any, structureId: string | number): Observable<ServiceOffert> {
-    return this.http.post<ServiceOffert>(`${this.apiUrl}/${structureId}/services`, service);
+    return this.http.post<ServiceOffert>(`http://localhost:8080/api/services/${structureId}/services/batch`, [service]);
   }
   editService(service: any, id: string, token: any, structureId: string | number): Observable<ServiceOffert> {
-    return this.http.put<ServiceOffert>(`${this.apiUrl}/${structureId}/services/${id}`, service);
+    return this.http.put<ServiceOffert>(`http://localhost:8080/api/services/${structureId}/services/${id}`, service);
   }
   removeService(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${structureId}/services/${id}`);
+    return this.http.delete<void>(`http://localhost:8080/api/services/${structureId}/services/${id}`);
   }
 
-  // Photo
-  savePhoto(photo: any, token: any, structureId: string | number): Observable<Photo> {
-    return this.http.post<Photo>(`${this.apiUrl}/${structureId}/photos`, photo);
+  // Individual CRUD — Photo
+  savePhoto(file: File, token: any, targetId: string | number): Observable<Photo> {
+    const formData = new FormData();
+    formData.append('File', file);
+    return this.http.post<Photo>(`http://localhost:8080/api/photos/${targetId}/upload`, formData);
+  }
+
+  updateMainPhoto(file: File, token: any, structureId: string | number): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    // Guessing endpoint based on naming or common practice
+    return this.http.post<any>(`http://localhost:8080/api/photos/${structureId}/main`, formData);
   }
   removePhoto(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${structureId}/photos/${id}`);
+    return this.http.delete<void>(`http://localhost:8080/api/photos/${id}`);
   }
 
-  // Horaire
+  // Individual CRUD — Horaire
   saveHoraire(horaire: any, token: any, structureId: string | number): Observable<Horaire> {
-    return this.http.post<Horaire>(`${this.apiUrl}/${structureId}/horaires`, horaire);
+    return this.http.post<Horaire>(`http://localhost:8080/api/horaires/${structureId}`, [horaire]);
   }
   editHoraire(horaire: any, id: string, token: any, structureId: string | number): Observable<Horaire> {
-    return this.http.put<Horaire>(`${this.apiUrl}/${structureId}/horaires/${id}`, horaire);
+    return this.http.put<Horaire>(`http://localhost:8080/api/horaires/${structureId}`, [horaire]);
   }
   removeHoraire(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${structureId}/horaires/${id}`);
+    return this.http.delete<void>(`http://localhost:8080/api/horaires/${structureId}/${id}`);
   }
 
-  searchEntreprises(query: string, page: number = 0, size: number = 10): Observable<any> {
-    const params = new HttpParams().set('query', query).set('page', page).set('size', size);
-    return this.http.get<any>(`${this.publicUrl}/search`, { params });
+  searchEntreprises(query: string, zone?: string, page: number = 0, size: number = 10): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    const body: any = {};
+    if (query) body.nom = query;
+    if (zone) body.quartier = zone;
+
+    return this.http.post<any>(`${this.publicUrl}/search`, body, { params });
+  }
+
+  // --- STATS ---
+  getStructureStats(id: string): Observable<any> {
+    return this.http.get<any>(`http://localhost:8080/api/structureStats/${id}/stats`);
+  }
+
+  recordView(id: string, userId?: string, visitorHash?: string): Observable<void> {
+    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/view`, { userId, visitorHash });
+  }
+
+  recordContactClick(id: string, type: string, visitorHash?: string, userId?: string, clickedUrl?: string): Observable<void> {
+    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
   }
 }

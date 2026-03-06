@@ -43,6 +43,8 @@ export class EditStructureComponent implements OnInit {
   structureForm!: FormGroup;
   localisations: any[] = [];
   successMessage = '';
+  pendingFiles = new Map<number, File>();
+  pendingMainPhoto: File | null = null;
 
   constructor(private fb: FormBuilder, private entreprisesService: EntrepriseService,
     private route: ActivatedRoute, private localisationState: LocalisationStateService,
@@ -325,9 +327,7 @@ export class EditStructureComponent implements OnInit {
       this.structureForm.patchValue({
         photoPrincipale: newPhotop
       });
-
-
-
+      this.pendingMainPhoto = file;
     };
     reader.readAsDataURL(file);
 
@@ -576,29 +576,27 @@ export class EditStructureComponent implements OnInit {
 
         });
 
-        const photosNonSavees = this.photos.value.filter((photo: any) => !photo.id);
+        const photosNonSavees = this.photos.value.map((photo: any, index: number) => ({ photo, index })).filter((item: any) => !item.photo.id);
 
-        photosNonSavees.forEach((photo: any) => {
-          const PhoJSON = {
-            filePath: photo.filePath,
-            originalFileName: photo.originalFileName,
-            storedFileName: photo.storedFileName,
-            fileSize: photo.fileSize,
-            contentType: photo.contentType,
-            uploadDate: photo.uploadDate,
-            thumbnailPath: photo.thumbnailPath
-
-          };
-
-
-          this.entreprisesService.savePhoto(PhoJSON, token, id).subscribe({
-            next: (res) => {
-              this.photoState.addphotos(res);
-
-            },
-            error: (err) => console.error('Erreur ajout photo', err)
-          });
+        photosNonSavees.forEach((item: any) => {
+          const file = this.pendingFiles.get(item.index);
+          if (file) {
+            this.entreprisesService.savePhoto(file, token, id).subscribe({
+              next: (res: Photo) => {
+                this.photoState.addphotos(res);
+              },
+              error: (err: any) => console.error('Erreur ajout photo', err)
+            });
+          }
         });
+
+        // Handle main photo if changed
+        if (this.pendingMainPhoto) {
+          this.entreprisesService.updateMainPhoto(this.pendingMainPhoto, token, id).subscribe({
+            next: (res: any) => console.log('Photo principale mise à jour'),
+            error: (err: any) => console.error('Erreur update photo principale', err)
+          });
+        }
 
         // 3️⃣ Mettre à jour les localisations déjà existantes
         /*  const photoSavees = this.photos.value.filter((pho: any) => pho.id);
@@ -723,6 +721,7 @@ export class EditStructureComponent implements OnInit {
       };
 
       this.photos.push(this.createPhoto(newPhoto));
+      this.pendingFiles.set(this.photos.length - 1, file);
 
       console.log('📸 Photo ajoutée:', newPhoto);
     };

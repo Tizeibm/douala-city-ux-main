@@ -1,0 +1,24 @@
+<div class="dashboard-wrapper">
+    <aside class="dashboard-sidebar">
+        <app-sidebar-client></app-sidebar-client>
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="content-header">
+            <div class="welcome-section">
+                <h1>Tableau de Bord Personnel</h1>
+                <p>Bienvenue, <span>{{ utilisateur?.nom }}</span>. Retrouvez ici la gestion de vos annonces.</p>
+            </div>
+            <div class="action-section">
+                <button routerLink="annonces/creer" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i>
+                    Nouvelle Annonce
+                </button>
+            </div>
+        </header>
+
+        <div class="content-body glass-surface">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>

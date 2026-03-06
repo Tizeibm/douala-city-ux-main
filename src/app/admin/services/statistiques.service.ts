@@ -2,46 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+export interface StatisticsDto {
+  totalStructures: number;
+  totalValideStructures: number;
+  totalWaitingStructures: number;
+  totalAnnonces: number;
+  totalUserAccounts: number;
+  totalEnterpriseAccounts: number;
+  totalAccounts: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class StatistiquesService {
 
-
-
   private apiUrl = 'http://localhost:8080/api/statistics';
 
   constructor(private http: HttpClient) { }
 
-  getNombreEntreprises():
-    Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/entreprises`);
+  // OpenAPI: single endpoint GET /api/statistics → StatisticsDto
+  getAllStatistiques(): Observable<StatisticsDto> {
+    return this.http.get<StatisticsDto>(this.apiUrl);
   }
-
-  getNombreEntreprisesValidees():
-    Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/entreprises-validees`);
-  }
-
-  getNombreEntreprisesEnAttente():
-    Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/entreprises-en-attente`);
-  }
-
-  getEntreprisesParCategorie():
-    Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/par-categorie`);
-  }
-
-  getEntreprisesParType():
-    Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/par-type`);
-  }
-
-  getAllStatistiques():
-    Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}`);
-  }
-
-
 }

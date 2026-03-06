@@ -17,16 +17,15 @@ export class ChatService {
 
     constructor(private http: HttpClient) { }
 
-    sendMessage(userId: string, userMessage: string, conversationId?: string): Observable<ChatMessage> {
-        let params = new HttpParams()
-            .set('userId', userId)
-            .set('userMessage', userMessage);
+    // OpenAPI: POST /api/chat/public/send?conversationId=&userMessage=
+    sendMessage(userMessage: string, conversationId?: string): Observable<ChatMessage[]> {
+        let params = new HttpParams().set('userMessage', userMessage);
 
         if (conversationId) {
             params = params.set('conversationId', conversationId);
         }
 
-        return this.http.post<ChatMessage>(`${this.apiUrl}/send`, null, { params });
+        return this.http.post<ChatMessage[]>(`${this.apiUrl}/send`, null, { params });
     }
 
     getConversationMessages(conversationId: string): Observable<ChatMessage[]> {

@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { ContentComponent } from './content/content.component';
-import { StructureDetailsComponent } from './structure-details/structure-details.component';
 import { SharedModule } from '../shared/shared.module';
 
 
@@ -31,7 +30,6 @@ import { FiltrerStructuresComponent } from './filtrer-structures/filtrer-structu
     StatistiquesComponent,
     LoginComponent,
     ContentComponent,
-    StructureDetailsComponent,
     EditStructureComponent,
     FiltrerStructuresComponent
 

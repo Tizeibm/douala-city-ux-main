@@ -21,10 +21,14 @@ export class AvisListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Navigate two levels up to find the 'id' param from structdet/:id
-    const id = this.route.parent?.snapshot.paramMap.get('id');
+    // Check current route for id (if embedded) or parent route (if routed)
+    const id = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
     if (id) {
       this.loadAvis(id);
+
+      this.avisService.avisAdded$.subscribe(() => {
+        this.loadAvis(id);
+      });
     }
   }
 

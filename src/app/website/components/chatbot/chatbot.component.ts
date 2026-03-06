@@ -154,16 +154,13 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
         this.isTyping = true;
         this.scrollToBottom();
 
-        this.chatService.sendMessage(userId, userMsg, this.conversationId || undefined).subscribe({
-            next: (res) => {
+        this.chatService.sendMessage(userMsg, this.conversationId || undefined).subscribe({
+            next: (messages) => {
                 this.isTyping = false;
-                if (res.id && !this.conversationId) {
-                    // This is slightly tricky as the API returns Message not Conversation, 
-                    // but usually the backend might return the conversation context somehow or we assume one.
-                    // OpenAPI says it returns a Message. Usually Message has a conversation back-reference or we get it from headers.
-                    // For now, let's assume we might get a conversationId from somewhere if available or just proceed.
+                if (messages && messages.length > 0) {
+                    const lastMsg = messages[messages.length - 1];
+                    this.addBotMessage(lastMsg.content);
                 }
-                this.addBotMessage(res.content);
             },
             error: (err) => {
                 this.isTyping = false;

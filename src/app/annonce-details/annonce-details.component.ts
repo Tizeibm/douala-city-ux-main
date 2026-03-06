@@ -4,6 +4,7 @@ import { AnnonceService } from '../annonces/services/annonce.service';
 import { Annonce } from '../annonces/models/annonce';
 import { HapticService } from '../core/services/haptic.service';
 import { Location, isPlatformBrowser } from '@angular/common';
+import { EntrepriseService } from '../services/entreprises.service';
 
 @Component({
   selector: 'app-annonce-details',
@@ -21,6 +22,7 @@ export class AnnonceDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private annonceService: AnnonceService,
+    private entrepriseService: EntrepriseService,
     private haptic: HapticService,
     private location: Location,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -99,11 +101,60 @@ export class AnnonceDetailsComponent implements OnInit {
 
   contactAuthor(): void {
     this.haptic.tap();
-    // In a real app, this might open a mailto:, a chat, or reveal a phone number
-    if (this.annonce?.user?.email) {
-      window.location.href = `mailto:${this.annonce.user.email}?subject=Suite à votre annonce "${this.annonce.titre}" sur Douala City`;
+    if (!this.annonce) return;
+
+    const user = this.annonce.user;
+    const role = user?.role || 'USER';
+
+    if (role === 'USER') {
+      if (user?.telephone) {
+        window.location.href = `tel:${user.telephone}`;
+      } else if (user?.email) {
+        window.location.href = `mailto:${user.email}?subject=Suite à votre annonce "${this.annonce.titre}"`;
+      } else {
+        alert("Aucun moyen de contact disponible pour cet auteur.");
+      }
     } else {
-      alert("Les informations de contact ne sont pas disponibles pour le moment.");
+      // For ENTREPRISE / ADMIN roles, try to use the structure's number
+      if (this.annonce.structureId) {
+        this.loading = true;
+        this.entrepriseService.getStructureById(null, this.annonce.structureId).subscribe({
+          next: (struct) => {
+            this.loading = false;
+            const tel = struct.localisation?.[0]?.telephone || struct.telephone;
+            if (tel) {
+              window.location.href = `tel:${tel}`;
+            } else if (struct.email) {
+              window.location.href = `mailto:${struct.email}?subject=Suite à votre annonce "${this.annonce!.titre}"`;
+            } else {
+              alert("Aucun numéro de téléphone disponible pour cette structure.");
+            }
+          },
+          error: (err) => {
+            this.loading = false;
+            console.error('Error fetching structure for contact:', err);
+            // Fallback to user email if structure fetch fails
+            if (user?.email) {
+              window.location.href = `mailto:${user.email}?subject=Suite à votre annonce "${this.annonce!.titre}"`;
+            } else {
+              alert("Impossible de contacter l'auteur.");
+            }
+          }
+        });
+      } else if (user?.telephone) {
+        // Fallback if no structureId but user has tel
+        window.location.href = `tel:${user.telephone}`;
+      } else if (user?.email) {
+        window.location.href = `mailto:${user.email}?subject=Suite à votre annonce "${this.annonce.titre}"`;
+      } else {
+        alert("Aucun moyen de contact disponible.");
+      }
     }
+  }
+
+  openPhoto(photo: any) {
+    this.haptic.tap();
+    // Implementation for full-screen view could be added here
+    console.log('Opening photo:', photo);
   }
 }

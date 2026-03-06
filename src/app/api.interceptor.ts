@@ -12,9 +12,12 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     const isApiRequest = req.url.includes('/api/') || req.url.includes('localhost:8080');
+    const isAuthRequest = req.url.includes('/auth/');
+    const isPublicRequest = req.url.includes('/public/');
+
     let clonedReq = req;
 
-    if (token && isApiRequest) {
+    if (token && isApiRequest && !isAuthRequest && !isPublicRequest) {
         clonedReq = req.clone({
             setHeaders: {
                 Authorization: `Bearer ${token}`

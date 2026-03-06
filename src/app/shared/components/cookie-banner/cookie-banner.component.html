@@ -1,0 +1,19 @@
+<div class="cookie-banner-overlay" *ngIf="showBanner$ | async">
+    <div class="cookie-banner">
+        <div class="cookie-content">
+            <div class="cookie-icon">
+                <i class="fas fa-cookie-bite"></i>
+            </div>
+            <div class="cookie-text">
+                <h4>Nous respectons votre vie privée</h4>
+                <p>Nous utilisons des cookies pour réaliser des statistiques de visites, améliorer votre expérience et
+                    suivre les interactions avec les structures professionnelles. En continuant votre navigation, vous
+                    acceptez notre utilisation des cookies.</p>
+            </div>
+        </div>
+        <div class="cookie-actions">
+            <button class="btn btn-outline-secondary btn-sm" (click)="reject()">Refuser</button>
+            <button class="btn btn-primary btn-sm" (click)="accept()">Accepter</button>
+        </div>
+    </div>
+</div>

@@ -19,14 +19,15 @@ import { EditAvisComponent } from './edit-avis/edit-avis.component';
   ],
   imports: [
     CommonModule,
-    AvisRoutingModule, 
-    FormsModule, 
+    AvisRoutingModule,
+    FormsModule,
     RouterModule,
     ReactiveFormsModule
-   
+
   ],
   exports: [
     AjouterAvisComponent,
+    AvisListComponent,
     EditAvisComponent,
     RouterModule
   ]

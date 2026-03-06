@@ -51,13 +51,24 @@
             <!-- Title Section -->
             <h1 class="annonce-title">{{ annonce.titre }}</h1>
 
-            <div class="author-info">
-                <div class="avatar">
-                    <i class="fas fa-user-circle"></i>
+            <div class="author-info" *ngIf="annonce.structureId || annonce.user">
+                <div class="avatar" [class.structure]="annonce.structureId">
+                    <i class="fas" [ngClass]="annonce.structureId ? 'fa-building' : 'fa-user-circle'"></i>
                 </div>
                 <div class="author-details">
-                    <span class="name">{{annonce.user?.name || annonce.user?.email || 'Utilisateur Anonyme'}}</span>
-                    <span class="role">Auteur</span>
+                    <span class="name">{{annonce.user?.nom || annonce.user?.email || 'Auteur'}}</span>
+                    <span class="role">{{annonce.structureId ? 'Structure' : 'Auteur individuel'}}</span>
+                </div>
+            </div>
+
+            <!-- Photos Gallery -->
+            <div class="annonce-photos mt-lg" *ngIf="annonce.photos && annonce.photos.length > 0">
+                <h3 class="section-heading">Photos</h3>
+                <div class="photos-grid">
+                    <div class="photo-item" *ngFor="let photo of annonce.photos">
+                        <img [src]="'http://localhost:8080/api/photos/public/' + photo.id + '/image'"
+                            alt="Annonce photo" class="annonce-img" (click)="openPhoto(photo)">
+                    </div>
                 </div>
             </div>
 
@@ -77,7 +88,7 @@
                 </div>
 
                 <button class="btn-contact-primary" (click)="contactAuthor()">
-                    <i class="fas fa-envelope mr-2"></i> Contacter l'auteur
+                    <i class="fas fa-phone-alt mr-2"></i> Contacter l'auteur
                 </button>
             </div>
 
