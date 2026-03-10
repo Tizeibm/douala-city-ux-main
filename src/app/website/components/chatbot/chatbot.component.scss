@@ -218,6 +218,76 @@
         padding: 12px 16px;
         font-size: 0.95rem;
         line-height: 1.5;
+        
+        &.rag-message {
+            background: white !important;
+            color: $text-main !important;
+            border: 1px solid rgba(0,0,0,0.05);
+            max-width: 100%;
+
+            .answer-text {
+                margin-bottom: 16px;
+                white-space: pre-wrap;
+            }
+        }
+
+        .rag-items-grid {
+            display: grid;
+            gap: 12px;
+            margin-top: 15px;
+
+            .rag-card {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px;
+                transition: all 0.2s;
+
+                &:hover {
+                    background: white;
+                    border-color: $brand-primary;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                    transform: translateY(-2px);
+                }
+
+                .card-type {
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    color: $brand-primary;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                    letter-spacing: 0.5px;
+                }
+
+                .card-name {
+                    margin: 0 0 6px 0;
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: $text-main;
+                }
+
+                .card-desc {
+                    font-size: 0.85rem;
+                    color: #64748b;
+                    margin-bottom: 8px;
+                    line-height: 1.4;
+                }
+
+                .card-meta {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    font-size: 0.75rem;
+                    color: #94a3b8;
+
+                    i {
+                        width: 14px;
+                        color: $brand-primary;
+                        opacity: 0.7;
+                    }
+                }
+            }
+        }
     }
 
     .message-time {

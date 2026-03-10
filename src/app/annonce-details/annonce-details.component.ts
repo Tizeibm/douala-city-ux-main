@@ -5,6 +5,7 @@ import { Annonce } from '../annonces/models/annonce';
 import { HapticService } from '../core/services/haptic.service';
 import { Location, isPlatformBrowser } from '@angular/common';
 import { EntrepriseService } from '../services/entreprises.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-annonce-details',
@@ -16,7 +17,8 @@ export class AnnonceDetailsComponent implements OnInit {
   annonce: Annonce | null = null;
   loading: boolean = true;
   error: string | null = null;
-  backendUrl = 'http://localhost:8080/api/annonce';
+  backendUrl = `${environment.apiUrl}/annonce`;
+  apiUrl = environment.apiUrl;
 
   constructor(
     private route: ActivatedRoute,

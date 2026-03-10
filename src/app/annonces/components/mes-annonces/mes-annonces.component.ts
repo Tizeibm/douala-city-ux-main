@@ -3,6 +3,7 @@ import { AnnonceService } from '../../services/annonce.service';
 import { Annonce } from '../../models/annonce';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-mes-annonces',
@@ -13,7 +14,7 @@ import Swal from 'sweetalert2';
 export class MesAnnoncesComponent implements OnInit {
     annonces: Annonce[] = [];
     loading = true;
-    backendUrl = 'http://localhost:8080/';
+    backendUrl = environment.apiUrl;
 
     constructor(
         private annonceService: AnnonceService,

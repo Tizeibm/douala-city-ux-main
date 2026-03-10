@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Entreprise, Horaire, Localisation, Photo, ServiceOffert } from '../entreprise';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class EntrepriseService {
   private pageSubject = new BehaviorSubject<number>(1);
   page$ = this.pageSubject.asObservable();
 
-  private apiUrl = 'http://localhost:8080/api/structures';
-  private publicUrl = 'http://localhost:8080/api/structures/public';
+  private apiUrl = `${environment.apiUrl}/structures`;
+  private publicUrl = `${environment.apiUrl}/structures/public`;
 
   constructor(private http: HttpClient) { }
 
@@ -43,7 +44,7 @@ export class EntrepriseService {
   }
 
   // Update an existing enterprise
-  updateStructure(entreprise: any, token: any, id: string | number): Observable<Entreprise> {
+  updateStructure(entreprise: any, token: any, id: string): Observable<Entreprise> {
     return this.http.put<Entreprise>(`${this.apiUrl}/${id}`, entreprise);
   }
 
@@ -88,79 +89,79 @@ export class EntrepriseService {
 
   // Implementation for photo upload
   uploadPhoto(structureId: string, formData: FormData): Observable<Photo> {
-    return this.http.post<Photo>(`http://localhost:8080/api/photos/${structureId}/upload`, formData);
+    return this.http.post<Photo>(`${environment.apiUrl}/photos/${structureId}/upload`, formData);
   }
 
   // Get photos for a structure (public)
   getPhotos(structureId: string): Observable<Photo[]> {
-    return this.http.get<Photo[]>(`http://localhost:8080/api/photos/public/${structureId}`);
+    return this.http.get<Photo[]>(`${environment.apiUrl}/photos/public/${structureId}`);
   }
 
   // --- Sub-entity CRUD (Batch focused for new wizard) ---
 
   // Localisation Batch
   saveLocalisationsBatch(locs: any[], structureId: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/localisation/${structureId}`, locs);
+    return this.http.post<void>(`${environment.apiUrl}/localisation/${structureId}`, locs);
   }
 
   // Service Batch
   saveServicesBatch(services: any[], structureId: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/services/${structureId}/services/batch`, services);
+    return this.http.post<void>(`${environment.apiUrl}/services/${structureId}/services/batch`, services);
   }
 
   // Horaire Batch
   saveHorairesBatch(horaires: any[], structureId: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/horaires/${structureId}`, horaires);
+    return this.http.post<void>(`${environment.apiUrl}/horaires/${structureId}`, horaires);
   }
 
   // Individual CRUD — Localisation
-  saveLocalisation(loc: any, token: any, structureId: string | number): Observable<Localisation> {
-    return this.http.post<Localisation>(`http://localhost:8080/api/localisation/${structureId}`, [loc]);
+  saveLocalisation(loc: any, token: any, structureId: string): Observable<Localisation> {
+    return this.http.post<Localisation>(`${environment.apiUrl}/localisation/${structureId}`, [loc]);
   }
-  editLocalisation(loc: any, id: string, token: any, structureId: string | number): Observable<Localisation> {
-    return this.http.put<Localisation>(`http://localhost:8080/api/localisation/${structureId}/${id}`, loc);
+  editLocalisation(loc: any, id: string, token: any, structureId: string): Observable<Localisation> {
+    return this.http.put<Localisation>(`${environment.apiUrl}/localisation/${structureId}/${id}`, loc);
   }
-  removeLocalisation(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/api/localisation/${structureId}/${id}`);
+  removeLocalisation(id: string, token: any, structureId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/localisation/${structureId}/${id}`);
   }
 
   // Individual CRUD — Service
-  saveService(service: any, token: any, structureId: string | number): Observable<ServiceOffert> {
-    return this.http.post<ServiceOffert>(`http://localhost:8080/api/services/${structureId}/services/batch`, [service]);
+  saveService(service: any, token: any, structureId: string): Observable<ServiceOffert> {
+    return this.http.post<ServiceOffert>(`${environment.apiUrl}/services/${structureId}/services/batch`, [service]);
   }
-  editService(service: any, id: string, token: any, structureId: string | number): Observable<ServiceOffert> {
-    return this.http.put<ServiceOffert>(`http://localhost:8080/api/services/${structureId}/services/${id}`, service);
+  editService(service: any, id: string, token: any, structureId: string): Observable<ServiceOffert> {
+    return this.http.put<ServiceOffert>(`${environment.apiUrl}/services/${structureId}/services/${id}`, service);
   }
-  removeService(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/api/services/${structureId}/services/${id}`);
+  removeService(id: string, token: any, structureId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/services/${structureId}/services/${id}`);
   }
 
   // Individual CRUD — Photo
-  savePhoto(file: File, token: any, targetId: string | number): Observable<Photo> {
+  savePhoto(file: File, token: any, targetId: string): Observable<Photo> {
     const formData = new FormData();
     formData.append('File', file);
-    return this.http.post<Photo>(`http://localhost:8080/api/photos/${targetId}/upload`, formData);
+    return this.http.post<Photo>(`${environment.apiUrl}/photos/${targetId}/upload`, formData);
   }
 
-  updateMainPhoto(file: File, token: any, structureId: string | number): Observable<any> {
+  updateMainPhoto(file: File, token: any, structureId: string): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     // Guessing endpoint based on naming or common practice
-    return this.http.post<any>(`http://localhost:8080/api/photos/${structureId}/main`, formData);
+    return this.http.post<any>(`${environment.apiUrl}/photos/${structureId}/main`, formData);
   }
-  removePhoto(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/api/photos/${id}`);
+  removePhoto(id: string, token: any, structureId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/photos/${id}`);
   }
 
   // Individual CRUD — Horaire
-  saveHoraire(horaire: any, token: any, structureId: string | number): Observable<Horaire> {
-    return this.http.post<Horaire>(`http://localhost:8080/api/horaires/${structureId}`, [horaire]);
+  saveHoraire(horaire: any, token: any, structureId: string): Observable<Horaire> {
+    return this.http.post<Horaire>(`${environment.apiUrl}/horaires/${structureId}`, [horaire]);
   }
-  editHoraire(horaire: any, id: string, token: any, structureId: string | number): Observable<Horaire> {
-    return this.http.put<Horaire>(`http://localhost:8080/api/horaires/${structureId}`, [horaire]);
+  editHoraire(horaire: any, id: string, token: any, structureId: string): Observable<Horaire> {
+    return this.http.put<Horaire>(`${environment.apiUrl}/horaires/${structureId}`, [horaire]);
   }
-  removeHoraire(id: string, token: any, structureId: string | number): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/api/horaires/${structureId}/${id}`);
+  removeHoraire(id: string, token: any, structureId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/horaires/${structureId}/${id}`);
   }
 
   searchEntreprises(query: string, zone?: string, page: number = 0, size: number = 10): Observable<any> {
@@ -177,14 +178,34 @@ export class EntrepriseService {
 
   // --- STATS ---
   getStructureStats(id: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:8080/api/structureStats/${id}/stats`);
+    return this.http.get<any>(`${environment.apiUrl}/structureStats/${id}/stats`);
   }
 
   recordView(id: string, userId?: string, visitorHash?: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/view`, { userId, visitorHash });
+    return this.http.post<void>(`${environment.apiUrl}/structureStats/${id}/view`, { userId, visitorHash });
   }
 
   recordContactClick(id: string, type: string, visitorHash?: string, userId?: string, clickedUrl?: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
+    return this.http.post<void>(`${environment.apiUrl}/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
+  }
+
+  // --- MISSING ENDPOINTS (Admin & Fine-Tuned Data) ---
+
+  // Admin: Get structures for a specific user
+  getStructuresByUser(userId: string): Observable<Entreprise[]> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<Entreprise[]>(`${this.apiUrl}/users`, { params });
+  }
+
+  getPublicServices(structureId: string): Observable<ServiceOffert[]> {
+    return this.http.get<ServiceOffert[]>(`${environment.apiUrl}/services/public/structure/${structureId}`);
+  }
+
+  getPublicHoraires(structureId: string): Observable<Horaire[]> {
+    return this.http.get<Horaire[]>(`${environment.apiUrl}/horaires/public/${structureId}`);
+  }
+
+  getPublicLocalisation(structureId: string): Observable<Localisation> {
+    return this.http.get<Localisation>(`${environment.apiUrl}/localisation/public/${structureId}/location`);
   }
 }

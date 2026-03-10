@@ -71,5 +71,7 @@ export interface Entreprise {
   // Frontend legacy fields
   photoPrincipal?: string;
   imageUrl?: string;
+  noteMoyenne?: number;
+  viewCount?: number;
   user_id?: string | null;
 }

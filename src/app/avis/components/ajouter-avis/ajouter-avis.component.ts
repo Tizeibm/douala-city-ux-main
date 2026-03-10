@@ -13,9 +13,10 @@ import { Avis } from '../../models/avis';
 })
 export class AjouterAvisComponent implements OnInit {
 
-  rating = 5;
-  commentaire = '';
-  loading = false;
+  rating: number = 0;
+  hoverRating: number = 0;
+  commentaire: string = '';
+  loading: boolean = false;
   errorMessage = '';
   successMessage = '';
   @Input() structureId: string | null = null;
@@ -70,11 +71,11 @@ export class AjouterAvisComponent implements OnInit {
       anonyme: false
     };
 
-    console.log('[AjouterAvis] Submitting Review:', nouvelAvis);
+    console.log('[AjouterAvis] Submitting Review with Payload:', JSON.stringify(nouvelAvis, null, 2));
 
     this.avisService.addAvis(nouvelAvis).subscribe({
       next: (response) => {
-        console.log('[AjouterAvis] Success:', response);
+        console.log('[AjouterAvis] Success Response:', response);
         this.successMessage = 'Votre avis a été envoyé avec succès ! Il sera visible après validation.';
         this.loading = false;
         this.commentaire = '';
@@ -84,12 +85,20 @@ export class AjouterAvisComponent implements OnInit {
         }, 2000);
       },
       error: (error) => {
-        console.error('[AjouterAvis] Error Details:', error);
+        console.error('[AjouterAvis] Submission Error:', error);
         let detail = '';
         if (error.status === 400 && error.error) {
-          detail = typeof error.error === 'string' ? error.error : JSON.stringify(error.error);
+           detail = typeof error.error === 'string' ? error.error : JSON.stringify(error.error);
+           console.error('[AjouterAvis] Validation Error Details:', detail);
+        } else if (error.status === 401) {
+           detail = 'Non autorisé - Vérifiez votre connexion.';
+        } else if (error.status === 403) {
+           detail = 'Accès refusé - Droits insuffisants.';
+        } else if (error.status === 500) {
+           detail = 'Erreur interne du serveur.';
         }
-        this.errorMessage = `Erreur (${error.status || 'Inconnue'}). ${error.message || ''} ${detail}`.substring(0, 100);
+        
+        this.errorMessage = `Erreur (${error.status || 'Inconnue'}). ${detail || error.message || ''}`.substring(0, 150);
         this.loading = false;
       }
     });

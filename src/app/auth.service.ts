@@ -3,6 +3,7 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Utilisateur } from './website/registration/services/inscription.service';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthService {
   private estConnecteSubject = new BehaviorSubject<boolean>(false);
   estConnecte$ = this.estConnecteSubject.asObservable();
 
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   private isBrowser: boolean;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) platformId: Object) {

@@ -1,0 +1,165 @@
+<div class="premium-page" *ngIf="structure">
+  <!-- Modern Hero Section -->
+  <header class="page-hero">
+    <div class="hero-bg" [style.backgroundImage]="'url(' + (structure.photoPrincipal || '/assets/images/placeholder.jpg') + ')'"></div>
+    <div class="hero-overlay"></div>
+    
+    <div class="container hero-inner">
+      <nav class="breadcrumb-fancy">
+        <a routerLink="/">Accueil</a>
+        <span class="sep">/</span>
+        <span class="current">{{structure.categorieNom}}</span>
+      </nav>
+
+      <div class="hero-header-content">
+        <h1 class="main-title">
+          {{structure.nom}}
+          <span class="badge-verified" title="Vérifié par DoualaCity">
+            <i class="fas fa-check"></i>
+          </span>
+        </h1>
+        
+        <div class="hero-meta">
+          <div class="meta-item rating" *ngIf="totalAvis > 0">
+            <span class="avg">{{moyenneAvis}}</span>
+            <div class="stars-mini">
+              <i *ngFor="let s of [1,2,3,4,5]" class="fas fa-star" [class.filled]="s <= moyenneAvis"></i>
+            </div>
+            <a href="javascript:void(0)" (click)="scrollToReviews()" class="count">({{totalAvis}} avis)</a>
+          </div>
+          <span class="meta-sep" *ngIf="totalAvis > 0">•</span>
+          <div class="meta-item cat">
+            <i class="fas fa-tag"></i> {{structure.categorieNom}}
+          </div>
+          <span class="meta-sep">•</span>
+          <div class="meta-item status open">
+            <span class="dot"></span> Ouvert maintenant
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <button class="btn-premium primary" (click)="donnerAvis()" *ngIf="mode === 'public'">
+          <i class="fas fa-pen"></i> Écrire un avis
+        </button>
+        <button class="btn-premium primary" (click)="goToEdit()" *ngIf="mode !== 'public'">
+          <i class="fas fa-edit"></i> Modifier
+        </button>
+        <button class="btn-premium glass" (click)="share()">
+          <i class="fas fa-share-alt"></i> Partager
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-layout">
+    <!-- Main Content -->
+    <div class="layout-main">
+      
+      <!-- Photos Gallery (Premium) -->
+      <section class="page-section" *ngIf="structure.photos && structure.photos.length > 0">
+        <h2 class="section-label">Galerie Photos</h2>
+        <div class="premium-gallery">
+          <div *ngFor="let p of structure.photos" class="gallery-card">
+            <img [src]="getPhotoUrl(p)" [alt]="structure.nom">
+          </div>
+        </div>
+      </section>
+
+      <!-- Description Header -->
+      <section class="page-section">
+        <h2 class="section-label">À propos</h2>
+        <div class="card-premium about-card">
+          <p class="description">{{structure.description}}</p>
+        </div>
+      </section>
+
+      <!-- Services List (Grid) -->
+      <section class="page-section" *ngIf="structure.services && structure.services.length > 0">
+        <h2 class="section-label">Nos Services</h2>
+        <div class="services-grid-modern">
+          <div class="service-pill" *ngFor="let s of structure.services">
+            <div class="s-icon"><i class="fas fa-concierge-bell"></i></div>
+            <div class="s-info">
+              <span class="s-name">{{s.nom}}</span>
+              <span class="s-price" *ngIf="s.prix">{{s.prix | number}} FCFA</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reviews Section -->
+      <section id="reviews" class="page-section">
+        <div class="section-header-row">
+          <h2 class="section-label">Avis Clients</h2>
+          <button class="btn-text" (click)="donnerAvis()">Laissez le vôtre <i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div class="reviews-container mt-3">
+          <app-avis-list [structureId]="structure.id!" [allAvis]="avis"></app-avis-list>
+        </div>
+
+        <!-- Overlay for adding reviews -->
+        <div class="premium-overlay" *ngIf="showAvisDrawer" (click)="closeAvisDrawer()">
+          <div class="overlay-panel" (click)="$event.stopPropagation()">
+            <app-ajouter-avis [structureId]="structure.id!" (closePanel)="closeAvisDrawer()"></app-ajouter-avis>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Sidebar Content -->
+    <aside class="layout-sidebar">
+      <div class="sticky-side">
+        
+        <!-- Contact Quick Actions -->
+        <div class="card-premium contact-widget">
+          <div class="action-grid">
+            <button class="action-item" (click)="onActionClick('PHONE', 'tel:' + structure.localisation?.[0]?.telephone, '_self', $event)" *ngIf="structure.localisation?.[0]?.telephone">
+              <i class="fas fa-phone"></i> Appeler
+            </button>
+            <button class="action-item" (click)="onActionClick('OTHER', 'https://www.google.com/maps?q=' + (structure.localisation?.[0]?.latitude || 4.0) + ',' + (structure.localisation?.[0]?.longitude || 9.7), '_blank', $event)" *ngIf="structure.localisation?.[0]?.latitude">
+              <i class="fas fa-directions"></i> Itinéraire
+            </button>
+            <button class="action-item" (click)="onActionClick('WEBSITE', structure.website, '_blank', $event)" *ngIf="structure.website">
+              <i class="fas fa-globe"></i> Site
+            </button>
+            <button class="action-item" (click)="onActionClick('EMAIL', 'mailto:' + structure.email, '_self', $event)" *ngIf="structure.email">
+              <i class="fas fa-envelope"></i> Email
+            </button>
+          </div>
+          
+          <div class="contact-footer mt-4" *ngIf="structure.localisation?.[0]">
+            <div class="info-row">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>{{structure.localisation?.[0]?.adresse || structure.localisation?.[0]?.address || 'Douala, Cameroun'}}</span>
+            </div>
+            <div class="info-row mt-2" *ngIf="structure.localisation?.[0]?.quartier">
+               <i class="fas fa-city"></i>
+               <span>{{structure.localisation?.[0]?.quartier}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opening Hours Widget -->
+        <div class="card-premium mt-4" *ngIf="structure.horaires && structure.horaires.length > 0">
+          <h3 class="widget-title">Horaires d'ouverture</h3>
+          <div class="hours-list-premium">
+            <div class="hour-row" *ngFor="let h of structure.horaires">
+              <span class="day">{{h.jourSemaine || h.jour}}</span>
+              <span class="time">{{h.heureDeDebut || h.heureOuverture}} - {{h.heureDeFin || h.heureFermeture}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Premium Map Widget -->
+        <div class="card-premium map-widget-container mt-4" *ngIf="structure.localisation && structure.localisation.length > 0">
+           <div class="map-wrapper-inner">
+             <app-carte [locations]="structure.localisation" [editable]="false" mapId="premiumDetailMap"></app-carte>
+           </div>
+        </div>
+
+      </div>
+    </aside>
+  </main>
+</div>

@@ -2,12 +2,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Annonce, AnnonceType } from '../models/annonce';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AnnonceService {
-    private apiUrl = 'http://localhost:8080/api/annonce';
+    private apiUrl = `${environment.apiUrl}/annonce`;
 
     constructor(private http: HttpClient) { }
 

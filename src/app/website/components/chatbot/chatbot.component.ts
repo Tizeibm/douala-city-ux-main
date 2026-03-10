@@ -3,8 +3,25 @@ import { isPlatformBrowser } from '@angular/common';
 import { ChatService, ChatMessage } from '../../../services/chat.service';
 import { AuthService } from '../../../auth.service';
 
+interface RagItem {
+    name: string;
+    type: 'SERVICE' | 'ADMINISTRATION' | 'ENTREPRISE';
+    description?: string;
+    location?: string;
+    contact?: string;
+    opening_hours?: string;
+    price_indication?: string;
+}
+
+interface RagResponse {
+    intent: 'SEARCH' | 'PROCEDURE' | 'UNKNOWN';
+    answer_text: string;
+    items: RagItem[];
+}
+
 interface Message {
     content: string;
+    parsedContent?: RagResponse;
     sender: 'user' | 'bot';
     timestamp: Date;
 }
@@ -62,6 +79,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
             next: (history) => {
                 this.messages = history.map(h => ({
                     content: h.content,
+                    parsedContent: this.tryParseRag(h.content),
                     sender: h.messageRole === 'USER' ? 'user' : 'bot',
                     timestamp: h.createdAt ? new Date(h.createdAt) : new Date()
                 }));
@@ -155,12 +173,15 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
         this.scrollToBottom();
 
         this.chatService.sendMessage(userMsg, this.conversationId || undefined).subscribe({
-            next: (messages) => {
+            next: (msg) => {
                 this.isTyping = false;
-                if (messages && messages.length > 0) {
-                    const lastMsg = messages[messages.length - 1];
-                    this.addBotMessage(lastMsg.content);
+                if (msg && msg.conversation && msg.conversation.id) {
+                    if (!this.conversationId) {
+                        this.conversationId = msg.conversation.id;
+                        sessionStorage.setItem('chatbot_conv_id', this.conversationId);
+                    }
                 }
+                this.addBotMessage(msg.content);
             },
             error: (err) => {
                 this.isTyping = false;
@@ -171,12 +192,25 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     }
 
     private addBotMessage(content: string) {
+        const parsed = this.tryParseRag(content);
         this.messages.push({
             content: content,
+            parsedContent: parsed,
             sender: 'bot',
             timestamp: new Date()
         });
         this.scrollToBottom();
+    }
+
+    private tryParseRag(content: string): RagResponse | undefined {
+        if (!content.trim().startsWith('{')) return undefined;
+        try {
+            const data = JSON.parse(content);
+            if (data.intent && data.answer_text) {
+                return data as RagResponse;
+            }
+        } catch (e) {}
+        return undefined;
     }
 
     private scrollToBottom(): void {

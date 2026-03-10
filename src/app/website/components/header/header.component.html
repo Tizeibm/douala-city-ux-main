@@ -2,17 +2,17 @@
   <div class="container nav-wrapper">
     <!-- Brand (always visible) -->
     <a routerLink="/accueil" class="brand">
-      <span class="logo"></span> Douala City
+      <img src="favicon.ico" class="logo-img" alt="Douala City"> Douala City
     </a>
 
     <!-- Mobile toggle (visible on small screens) -->
-    <button class="mobile-toggle" (click)="toggleMenu($event)">
+    <button class="mobile-toggle" (click)="toggleMenu($event)" aria-label="Menu de navigation">
       <i class="fas" [ngClass]="menuOuvert ? 'fa-times' : 'fa-bars'"></i>
     </button>
 
     <!-- All nav content inside one collapsible container -->
     <div class="nav-content" [ngClass]="{ 'open': menuOuvert }">
-      <nav class="menu">
+      <nav class="menu" role="navigation" aria-label="Navigation principale">
         <a routerLink="/accueil" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
           (click)="toggleMobile()">Accueil</a>
 
@@ -62,6 +62,7 @@
           </a>
           <button *ngIf="utilisateur.role === 'USER'" (click)="logout()">Déconnexion</button>
         </div>
+        <app-notifications-center></app-notifications-center>
       </div>
     </div>
   </div>

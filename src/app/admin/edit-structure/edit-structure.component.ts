@@ -211,7 +211,8 @@ export class EditStructureComponent implements OnInit {
   }
   removeService(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id');
+    const structureId = id || '';
     const serv = this.services.at(i);
     const serviceId = serv.value.id;
     if (serviceId) {
@@ -234,7 +235,7 @@ export class EditStructureComponent implements OnInit {
 
   removeHoraire(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const horaire = this.horaires.at(i);
     console.log(horaire);
     const horaireId = horaire.value.id;
@@ -259,7 +260,7 @@ export class EditStructureComponent implements OnInit {
 
   removePhoto(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const photo = this.photos.at(i);
     const photoId = photo.value.id;
     if (photoId) {
@@ -389,7 +390,7 @@ export class EditStructureComponent implements OnInit {
 
   removeLocalisation(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const loc = this.localisation.at(i);
     const localisationId = loc.value.id;
     if (localisationId) {
@@ -473,7 +474,7 @@ export class EditStructureComponent implements OnInit {
     this.haptic.tap();
     const token = localStorage.getItem('token');
     const formValue = this.structureForm.value;
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id') || '';
     const structureData = {
 
       nom: formValue.nom,

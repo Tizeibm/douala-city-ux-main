@@ -13,7 +13,7 @@ import { DashboardUserComponent } from './dashboard-user/dashboard-user.componen
 import { authGuard } from './auth.guard';
 import { AddEntrepriseComponent } from './add-entreprise/add-entreprise.component';
 import { StructureUserComponent } from './structure-user/structure-user.component';
-import { StructureDetailPageComponent } from './shared/components/structure-detail-page/structure-detail-page.component';
+import { StructureDetailComponent } from './website/pages/structure-detail/structure-detail.component';
 import { AjouterAvisComponent } from './avis/components/ajouter-avis/ajouter-avis.component';
 import { AvisListComponent } from './avis/components/avis-list/avis-list.component';
 import { ReplyAvisComponent } from './avis/components/reply-avis/reply-avis.component';
@@ -49,7 +49,7 @@ const routes: Routes = [
       },
       {
         path: 'structdet/:id',
-        component: StructureDetailPageComponent,
+        component: StructureDetailComponent,
         data: { mode: 'public' },
         children: [
           {
@@ -185,7 +185,7 @@ const routes: Routes = [
           },
           {
             path: 'structures/:id',
-            component: StructureDetailPageComponent,
+            component: StructureDetailComponent,
             data: { mode: 'owner' },
             title: 'détails de votre structure - Douala-city'
           },

@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../../../variables' as *;
 
 .cookie-banner-overlay {
@@ -79,7 +80,7 @@
         border: none;
 
         &:hover {
-            background-color: darken($brand-primary, 10%);
+            background-color: color.scale($brand-primary, $lightness: -15%);
         }
     }
 }

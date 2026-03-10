@@ -34,9 +34,35 @@
         <div class="chatbot-messages" #scrollContainer>
             <div *ngFor="let msg of messages" class="message" [class.user]="msg.sender === 'user'"
                 [class.bot]="msg.sender === 'bot'">
-                <div class="message-content">
+                
+                <!-- Normal Text Message -->
+                <div class="message-content" *ngIf="!msg.parsedContent">
                     {{ msg.content }}
                 </div>
+
+                <!-- Rich RAG Message -->
+                <div class="message-content rag-message" *ngIf="msg.parsedContent">
+                    <div class="answer-text">{{ msg.parsedContent.answer_text }}</div>
+
+                    <!-- SEARCH INTENT: Structures Grid -->
+                    <div class="rag-items-grid" *ngIf="msg.parsedContent.intent === 'SEARCH' && msg.parsedContent.items.length > 0">
+                        <div class="rag-card" *ngFor="let item of msg.parsedContent.items">
+                            <div class="card-type">{{item.type}}</div>
+                            <h4 class="card-name">{{item.name}}</h4>
+                            <p class="card-desc" *ngIf="item.description">{{item.description}}</p>
+                            <div class="card-meta">
+                                <span *ngIf="item.location"><i class="fas fa-map-marker-alt"></i> {{item.location}}</span>
+                                <span *ngIf="item.contact"><i class="fas fa-phone"></i> {{item.contact}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROCEDURE INTENT: Enhanced list -->
+                    <div class="rag-procedure" *ngIf="msg.parsedContent.intent === 'PROCEDURE'">
+                        <!-- The answer_text already contains the pedagogical response -->
+                    </div>
+                </div>
+
                 <div class="message-time">
                     {{ msg.timestamp | date:'shortTime' }}
                 </div>

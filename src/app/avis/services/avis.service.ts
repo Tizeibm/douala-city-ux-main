@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Avis } from '../models/avis';
 import { ReponseAvis } from '../models/reponse-avis';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AvisService {
-  private apiUrl = 'http://localhost:8080/api/avis';
-  private replyUrl = 'http://localhost:8080/api/reponseAvis';
+  private apiUrl = `${environment.apiUrl}/avis`;
+  private replyUrl = `${environment.apiUrl}/reponseAvis`;
 
   private avisAddedSubject = new BehaviorSubject<void>(undefined);
   avisAdded$ = this.avisAddedSubject.asObservable();

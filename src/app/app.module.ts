@@ -52,6 +52,7 @@ import { DashboardClientComponent } from './dashboard-client/dashboard-client.co
 import { SidebarClientComponent } from './dashboard-client/sidebar-client/sidebar-client.component';
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
 import { StructureEditPageComponent } from './dashboard-user/structure-edit-page/structure-edit-page.component';
+import { StructureDetailComponent } from './website/pages/structure-detail/structure-detail.component';
 
 
 
@@ -88,7 +89,8 @@ import { StructureEditPageComponent } from './dashboard-user/structure-edit-page
     SidebarClientComponent,
     CookieBannerComponent,
     EditAnnonceComponent,
-    StructureEditPageComponent
+    StructureEditPageComponent,
+    StructureDetailComponent
 
 
 

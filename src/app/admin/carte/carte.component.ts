@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Inject, PLATFORM_ID, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, AfterViewInit, Inject, PLATFORM_ID, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 
@@ -24,6 +24,20 @@ export class CarteComponent implements AfterViewInit, OnChanges {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
+  private fixLeafletIcons(L: any) {
+    const iconRetinaUrl = 'assets/marker-icon-2x.png';
+    const iconUrl = 'assets/marker-icon.png';
+    const shadowUrl = 'assets/marker-shadow.png';
+    
+    // Fallback to CDN if assets aren't in place, or just use standard fix
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    });
+  }
+
   async ngAfterViewInit() {
     if (!this.isBrowser) return;
 
@@ -39,6 +53,7 @@ export class CarteComponent implements AfterViewInit, OnChanges {
 
     // Initialisation
     this.map = L.map(this.mapId).setView([4.05, 9.7], 13);
+    this.fixLeafletIcons(L);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);

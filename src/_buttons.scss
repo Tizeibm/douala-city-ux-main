@@ -1,0 +1,118 @@
+@use 'variables' as *;
+@use 'sass:color';
+
+/* === GLOBAL BUTTON SYSTEM ===
+   Reusable button classes for consistent UI across all components.
+   Usage: <button class="btn btn-primary">Text</button>
+*/
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-sm;
+    padding: 10px 20px;
+    border-radius: $radius-full;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: $font-family;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+    min-height: 44px; /* Tactile target */
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+}
+
+/* Primary — Brand green */
+.btn-primary {
+    background: $brand-primary;
+    color: #fff;
+    border-color: $brand-primary;
+
+    &:hover:not(:disabled) {
+        background: $brand-dark;
+        transform: translateY(-1px);
+        box-shadow: $shadow-md;
+    }
+}
+
+/* Secondary — Brand orange */
+.btn-secondary {
+    background: $brand-secondary;
+    color: #fff;
+    border-color: $brand-secondary;
+
+    &:hover:not(:disabled) {
+        background: color.scale($brand-secondary, $lightness: -10%);
+        transform: translateY(-1px);
+        box-shadow: $shadow-md;
+    }
+}
+
+/* Outline — Transparent with border */
+.btn-outline {
+    background: transparent;
+    color: $text-main;
+    border-color: $border-color;
+
+    &:hover:not(:disabled) {
+        border-color: $brand-primary;
+        color: $brand-primary;
+    }
+}
+
+/* Ghost — No border, subtle hover */
+.btn-ghost {
+    background: transparent;
+    color: $text-secondary;
+    border-color: transparent;
+
+    &:hover:not(:disabled) {
+        background: $bg-alt;
+        color: $text-main;
+    }
+}
+
+/* Danger — Red actions */
+.btn-danger {
+    background: transparent;
+    color: $danger;
+    border-color: $danger;
+
+    &:hover:not(:disabled) {
+        background: #FEF2F2;
+        color: color.scale($danger, $lightness: -15%);
+    }
+}
+
+/* Size variants */
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    min-height: 36px;
+}
+
+.btn-lg {
+    padding: 14px 28px;
+    font-size: 1rem;
+    min-height: 52px;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Icon button */
+.btn-icon {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+}

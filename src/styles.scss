@@ -1,5 +1,7 @@
-@use "sass:color";
 @use "variables" as *;
+@use "buttons" as *;
+
+@import "leaflet/dist/leaflet.css";
 
 /* === DOUALA CITY — GLOBAL STYLES (USER-FRIENDLY DIRECTORY) === */
 
@@ -30,6 +32,11 @@
   --shadow-hover: #{$shadow-hover};
   --z-loader: 1000;
   --z-toast: 3000;
+
+  /* Premium Design Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-blur: blur(12px);
+  --premium-gradient: linear-gradient(135deg, #{$brand-primary} 0%, #{$brand-dark} 100%);
 }
 
 /* 2. Reset & Base */
@@ -259,76 +266,7 @@ a {
   padding: 1rem;
 }
 
-/* 6. Buttons — Friendly & Rounded */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 12px 28px;
-  border-radius: $radius-full;
-  border: none;
-  background: $brand-primary;
-  color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
-  font-family: $font-family;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: $shadow-sm;
-
-  &:hover {
-    background: $brand-dark;
-    transform: translateY(-1px);
-    box-shadow: $shadow-md;
-    color: #fff;
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: $shadow-sm;
-  }
-}
-
-.btn.secondary {
-  background: transparent;
-  border: 2px solid $border-color;
-  color: $text-main;
-  box-shadow: none;
-
-  &:hover {
-    border-color: $brand-primary;
-    color: $brand-primary;
-    background: rgba(5, 150, 105, 0.04);
-  }
-}
-
-.btn.accent {
-  background: $brand-secondary;
-
-  &:hover {
-    background: color.scale($brand-secondary, $lightness: -10%);
-  }
-}
-
-.btn-sm,
-.btn.sm {
-  padding: 8px 18px;
-  font-size: 0.875rem;
-}
-
-.btn-primary {
-  @extend .btn;
-}
-
-.btn-secondary {
-  @extend .btn;
-  background: $brand-secondary;
-
-  &:hover {
-    background: color.scale($brand-secondary, $lightness: -10%);
-  }
-}
+/* 6. Buttons — Moved to _buttons.scss */
 
 /* 7. Cards — Clean & Elevated */
 .card {
@@ -393,6 +331,7 @@ textarea,
   color: $text-main;
   transition: all 0.2s ease;
   outline: none;
+  min-height: 44px; /* Tactile target (C8) */
 
   &::placeholder {
     color: #9CA3AF;
@@ -426,7 +365,7 @@ textarea,
 
 .hero .title {
   color: $heading-color;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(1.75rem, 5vw, 3.5rem); /* C3: Fluid typography */
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
 }
@@ -617,4 +556,33 @@ textarea,
     border: 1px dashed $border-color;
     color: $text-secondary;
   }
+}
+
+/* 17. Premium Helpers */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: $shadow-md;
+}
+
+.text-gradient {
+  background: var(--premium-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.leaflet-container {
+    z-index: 1 !important;
+}
+
+.map-container-premium {
+    border-radius: $radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-lg;
+    border: 1px solid $border-color;
+    height: 100%;
 }

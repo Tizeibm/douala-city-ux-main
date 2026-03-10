@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Avis } from '../../models/avis';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AvisService } from '../../services/avis.service';
@@ -11,9 +11,10 @@ import { AvisService } from '../../services/avis.service';
 })
 export class AvisListComponent implements OnInit {
 
-  allAvis: Avis[] = [];
+  @Input() allAvis: Avis[] = [];
+  @Input() structureId: string | null = null;
   filteredAvis: Avis[] = [];
-  loading = true;
+  loading = false;
   activeFilter: number | null = null;
 
   stats = {
@@ -37,10 +38,26 @@ export class AvisListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadAvis(id);
-      this.avisService.avisAdded$.subscribe(() => this.loadAvis(id));
+    if (!this.structureId) {
+      this.structureId = (this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id')) ?? null;
+    }
+    
+    if (this.allAvis.length > 0) {
+      this.computeStats();
+      this.applyFilter();
+    } else if (this.structureId) {
+      this.loadAvis(this.structureId);
+    }
+
+    this.avisService.avisAdded$.subscribe(() => {
+      if (this.structureId) this.loadAvis(this.structureId);
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['allAvis'] && this.allAvis) {
+      this.computeStats();
+      this.applyFilter();
     }
   }
 

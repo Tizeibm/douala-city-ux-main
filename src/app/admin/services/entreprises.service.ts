@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Entreprise } from '../../entreprise';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class EntreprisesService {
   private pageSubject = new BehaviorSubject<number>(1);
   page$ = this.pageSubject.asObservable();
 
-  private apiUrl = 'http://localhost:8080/api/structures';
+  private apiUrl = `${environment.apiUrl}/structures`;
 
   constructor(private http: HttpClient) { }
 
@@ -75,10 +76,10 @@ export class EntreprisesService {
 
   // --- STATS & TRACKING ---
   recordView(id: string, userId?: string, visitorHash?: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/view`, { userId, visitorHash });
+    return this.http.post<void>(`${environment.apiUrl}/structureStats/${id}/view`, { userId, visitorHash });
   }
 
   recordContactClick(id: string, type: string, visitorHash?: string, userId?: string, clickedUrl?: string): Observable<void> {
-    return this.http.post<void>(`http://localhost:8080/api/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
+    return this.http.post<void>(`${environment.apiUrl}/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
   }
 }

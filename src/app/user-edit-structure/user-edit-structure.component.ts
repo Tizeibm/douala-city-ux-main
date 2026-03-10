@@ -100,7 +100,7 @@ export class UserEditStructureComponent implements OnInit {
 
   async saveStep(step: number): Promise<boolean> {
     const token = localStorage.getItem('token');
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id') || '';
     const formValue = this.structureForm.value;
 
     return new Promise((resolve) => {
@@ -141,7 +141,7 @@ export class UserEditStructureComponent implements OnInit {
           heureDeFin: h.heureDeFin.includes(':') && h.heureDeFin.split(':').length === 2 ? h.heureDeFin + ':00' : h.heureDeFin
         }));
 
-        this.entreprisesService.saveHorairesBatch(mappedHoraires, id.toString()).subscribe({
+        this.entreprisesService.saveHorairesBatch(mappedHoraires, id).subscribe({
           next: () => {
             this.feedback.hideLoader();
             resolve(true);
@@ -154,7 +154,7 @@ export class UserEditStructureComponent implements OnInit {
         });
       } else if (step === 3) {
         // Step 3: Services
-        this.entreprisesService.saveServicesBatch(formValue.services, id.toString()).subscribe({
+        this.entreprisesService.saveServicesBatch(formValue.services, id).subscribe({
           next: () => {
             this.feedback.hideLoader();
             resolve(true);
@@ -172,7 +172,7 @@ export class UserEditStructureComponent implements OnInit {
     });
   }
 
-  saveNewPhotos(token: any, id: number) {
+  saveNewPhotos(token: any, id: string) {
     const photosNonSavees = this.photos.value.map((photo: any, index: number) => ({ photo, index })).filter((item: any) => !item.photo.id);
     photosNonSavees.forEach((item: any) => {
       const file = this.pendingFiles.get(item.index);
@@ -283,7 +283,7 @@ export class UserEditStructureComponent implements OnInit {
   }
   removeService(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const serv = this.services.at(i);
     const serviceId = serv.value.id;
     if (serviceId) {
@@ -306,7 +306,7 @@ export class UserEditStructureComponent implements OnInit {
 
   removeHoraire(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const horaire = this.horaires.at(i);
     console.log(horaire);
     const horaireId = horaire.value.id;
@@ -331,7 +331,7 @@ export class UserEditStructureComponent implements OnInit {
 
   removePhoto(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const photo = this.photos.at(i);
     const photoId = photo.value.id;
     if (photoId) {
@@ -463,7 +463,7 @@ export class UserEditStructureComponent implements OnInit {
 
   removeLocalisation(i: number) {
     const token = localStorage.getItem('token');
-    const structureId = Number(this.route.snapshot.paramMap.get('id'));
+    const structureId = this.route.snapshot.paramMap.get('id') || '';
     const loc = this.localisation.at(i);
     const localisationId = loc.value.id;
     if (localisationId) {
@@ -545,7 +545,7 @@ export class UserEditStructureComponent implements OnInit {
     }
     this.haptic.tap();
     const token = localStorage.getItem('token');
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id') || '';
 
     // Final save for localization
     const mappedLocalisations = this.localisation.value.map((loc: any) => ({
@@ -557,7 +557,7 @@ export class UserEditStructureComponent implements OnInit {
       longitude: loc.longitude
     }));
 
-    this.entreprisesService.saveLocalisationsBatch(mappedLocalisations, id.toString()).subscribe({
+    this.entreprisesService.saveLocalisationsBatch(mappedLocalisations, id).subscribe({
       next: () => {
         this.feedback.success('Structure mise à jour avec succès');
         this.feedback.hideLoader();
@@ -574,6 +574,10 @@ export class UserEditStructureComponent implements OnInit {
   }
 
   addPhoto(event: any): void {
+    if (this.photos.length >= 2) {
+      this.feedback.error('Vous ne pouvez pas ajouter plus de 2 photos.');
+      return;
+    }
     const file: File = event.target.files[0];
     if (!file) return;
 

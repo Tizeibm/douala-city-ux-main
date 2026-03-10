@@ -13,11 +13,11 @@ export class StructureCardComponent {
     @Output() view = new EventEmitter<Entreprise>();
 
     getMoyenneAvis(): number {
-        return 4.2; // Placeholder for now or calculate if data available
+        return this.structure.noteMoyenne || 0;
     }
 
     getTotalAvis(): number {
-        return 12; // Placeholder
+        return this.structure.viewCount || 0;
     }
 
     getTodayHoraire(): string {

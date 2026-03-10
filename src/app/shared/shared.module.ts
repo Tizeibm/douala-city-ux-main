@@ -5,7 +5,7 @@ import { ToastComponent } from './toast/toast.component';
 import { GlobalLoaderComponent } from './global-loader/global-loader.component';
 import { CarteComponent } from '../admin/carte/carte.component';
 import { StructureCardComponent } from './components/structure-card/structure-card.component';
-import { StructureDetailPageComponent } from './components/structure-detail-page/structure-detail-page.component';
+import { NotificationsCenterComponent } from './notifications-center/notifications-center.component';
 
 
 
@@ -14,19 +14,19 @@ import { StructureDetailPageComponent } from './components/structure-detail-page
     ToastComponent,
     GlobalLoaderComponent,
     CarteComponent,
-    StructureCardComponent,
-    StructureDetailPageComponent
+    StructureCardComponent
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    NotificationsCenterComponent
   ],
   exports: [
     ToastComponent,
     GlobalLoaderComponent,
     CarteComponent,
     StructureCardComponent,
-    StructureDetailPageComponent
+    NotificationsCenterComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })

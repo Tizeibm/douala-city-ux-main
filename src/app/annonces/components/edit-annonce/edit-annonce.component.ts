@@ -6,6 +6,7 @@ import { AuthService } from '../../../auth.service';
 import { Entreprise } from '../../../entreprise';
 import { FeedbackService } from '../../../shared/feedback.service';
 import { EntrepriseService } from '../../../services/entreprises.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-edit-annonce',
@@ -62,7 +63,7 @@ export class EditAnnonceComponent implements OnInit {
                 this.selectedStructureId = data.structureId || null;
                 // Preload existing photos as previews if any
                 if (data.photos && data.photos.length > 0) {
-                    this.photoPreviews = data.photos.map((p: any) => `http://localhost:8080/api/photos/public/${p.id}/image`);
+                    this.photoPreviews = data.photos.map((p: any) => `${environment.apiUrl}/photos/public/${p.id}/thumbnail`);
                 }
             },
             error: (err) => {

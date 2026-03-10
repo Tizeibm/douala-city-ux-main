@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ServiceOffert } from '../../../entreprise';
+import { environment } from '../../../../environments/environment';
 
 export interface Utilisateur {
   id?: string;
@@ -16,7 +17,7 @@ export interface Utilisateur {
 })
 export class InscriptionService {
 
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = `${environment.apiUrl}`;
   constructor(private http: HttpClient) { }
 
   // OpenAPI: POST /api/auth/user/register

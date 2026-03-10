@@ -1,46 +1,79 @@
-<div class="avis-side-panel">
-    <div class="panel-header">
-        <div class="header-text">
-            <h2>Évaluer</h2>
-            <p>Partagez votre avis</p>
-        </div>
-        <button class="btn-close" (click)="onCancel()"><i class="fas fa-times"></i></button>
+<div class="review-composition">
+  <div class="composition-header">
+    <div class="title-group">
+      <h2>Partagez votre expérience</h2>
+      <p>Votre avis aide les autres membres de la communauté DoualaCity.</p>
+    </div>
+    <button class="btn-close-circle" (click)="onCancel()" aria-label="Fermer">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="composition-body">
+    <!-- Feedback Messages -->
+    <div class="alert-premium error animate-fade-in" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <div class="alert-premium success animate-fade-in" *ngIf="successMessage">
+      <i class="fas fa-check-double"></i>
+      <span>{{ successMessage }}</span>
     </div>
 
-    <div class="panel-body">
-        <div class="alert alert-error animate-slide-down" *ngIf="errorMessage">
-            <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    <form (ngSubmit)="submitAvis()" #avisForm="ngForm" class="premium-form">
+      <!-- Step 1: Rating -->
+      <div class="form-step">
+        <label class="step-label">1. Évaluation globale</label>
+        <div class="star-picker-premium">
+          <div class="stars-row">
+            <i *ngFor="let s of [1,2,3,4,5]" 
+               class="fas fa-star" 
+               [class.active]="s <= rating"
+               [class.hovered]="s <= hoverRating"
+               (mouseenter)="hoverRating = s"
+               (mouseleave)="hoverRating = 0"
+               (click)="setRating(s)">
+            </i>
+          </div>
+          <div class="rating-feedback" [class.visible]="rating > 0 || hoverRating > 0">
+            <span class="value">{{ hoverRating || rating }}/5</span>
+            <span class="text" *ngIf="(hoverRating || rating) === 1">Décevant</span>
+            <span class="text" *ngIf="(hoverRating || rating) === 2">Moyen</span>
+            <span class="text" *ngIf="(hoverRating || rating) === 3">Bien</span>
+            <span class="text" *ngIf="(hoverRating || rating) === 4">Excellent</span>
+            <span class="text" *ngIf="(hoverRating || rating) === 5">Exceptionnel</span>
+          </div>
         </div>
-        <div class="alert alert-success animate-slide-down" *ngIf="successMessage">
-            <i class="fas fa-check-circle"></i> {{ successMessage }}
+      </div>
+
+      <!-- Step 2: Comment -->
+      <div class="form-step">
+        <label class="step-label" for="commentaire">2. Votre commentaire</label>
+        <div class="textarea-wrapper">
+          <textarea id="commentaire" 
+                    [(ngModel)]="commentaire" 
+                    name="commentaire" 
+                    rows="8"
+                    placeholder="Qu'avez-vous particulièrement apprécié ? Comment l'établissement pourrait-il s'améliorer ?" 
+                    required 
+                    class="premium-textarea">
+          </textarea>
+          <div class="char-count" [class.near-limit]="commentaire.length > 400">
+            {{ commentaire.length }} / 500
+          </div>
         </div>
+      </div>
 
-        <form (ngSubmit)="submitAvis()" #avisForm="ngForm">
-            <div class="form-section">
-                <label>Quelle note attribuez-vous ?</label>
-                <div class="star-picker">
-                    <div class="stars">
-                        <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= rating"
-                            (click)="setRating(star)">
-                        </i>
-                    </div>
-                    <span class="rating-label">{{rating}}/5</span>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <label for="commentaire">Votre expérience détaillée</label>
-                <textarea id="commentaire" [(ngModel)]="commentaire" name="commentaire" rows="6"
-                    placeholder="Qu'est-ce qui vous a plu ou déplu ?" required class="modern-textarea"></textarea>
-            </div>
-
-            <div class="panel-footer">
-                <button type="submit" class="btn-submit-premium" [disabled]="!avisForm.valid || loading">
-                    <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
-                    {{loading ? 'Envoi...' : 'Publier mon avis'}}
-                </button>
-                <button type="button" class="btn-secondary-modern" (click)="onCancel()">Plus tard</button>
-            </div>
-        </form>
-    </div>
+      <!-- Footer Actions -->
+      <footer class="composition-footer">
+        <button type="submit" class="btn-submit-luxury" [disabled]="!avisForm.valid || loading || rating === 0">
+          <span *ngIf="!loading">Publier mon avis <i class="fas fa-paper-plane"></i></span>
+          <span *ngIf="loading" class="btn-spinner"></span>
+        </button>
+        <button type="button" class="btn-secondary-luxury" (click)="onCancel()">
+          Annuler
+        </button>
+      </footer>
+    </form>
+  </div>
 </div>

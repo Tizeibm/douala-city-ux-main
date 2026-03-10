@@ -6,7 +6,7 @@ import { StatistiquesComponent } from './statistiques/statistiques.component';
 
 import { EntreprisesComponent } from './entreprises/entreprises.component';
 import { LoginComponent } from './login/login.component';
-import { StructureDetailPageComponent } from '../shared/components/structure-detail-page/structure-detail-page.component';
+import { StructureDetailComponent } from '../website/pages/structure-detail/structure-detail.component';
 import { authGuard } from '../auth.guard';
 import { FiltrerStructuresComponent } from './filtrer-structures/filtrer-structures.component';
 const routes: Routes = [
@@ -48,7 +48,7 @@ const routes: Routes = [
       },
       {
         path: 'structures/:id',
-        component: StructureDetailPageComponent,
+        component: StructureDetailComponent,
         data: { mode: 'admin' },
         title: 'Détails de la structure'
 

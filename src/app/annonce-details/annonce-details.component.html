@@ -66,7 +66,7 @@
                 <h3 class="section-heading">Photos</h3>
                 <div class="photos-grid">
                     <div class="photo-item" *ngFor="let photo of annonce.photos">
-                        <img [src]="'http://localhost:8080/api/photos/public/' + photo.id + '/image'"
+                        <img [src]="apiUrl + '/photos/public/' + photo.id + '/thumbnail'"
                             alt="Annonce photo" class="annonce-img" (click)="openPhoto(photo)">
                     </div>
                 </div>

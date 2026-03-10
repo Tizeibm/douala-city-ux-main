@@ -39,26 +39,14 @@
   letter-spacing: -0.02em;
   flex-shrink: 0;
 
-  .logo {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: $brand-primary;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  .logo-img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
     transition: transform 0.3s ease;
-
-    &::after {
-      content: 'D';
-      color: #fff;
-      font-weight: 800;
-      font-size: 1rem;
-      font-family: $font-family;
-    }
   }
 
-  &:hover .logo {
+  &:hover .logo-img {
     transform: scale(1.05) rotate(-2deg);
   }
 }

@@ -1,102 +1,112 @@
-<div class="avis-modern-component">
-    <!-- Header with Stats Distribution -->
-    <div class="avis-stats-summary animate-fade-in" *ngIf="!loading && allAvis.length > 0">
-        <div class="summary-left">
-            <div class="avg-score">{{ stats.average }}</div>
-            <div class="stars-row">
-                <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= stats.average"></i>
+<div class="reviews-premium">
+  <!-- Stats Header -->
+  <div class="stats-overview glass-card animate-fade-in" *ngIf="!loading && allAvis.length > 0">
+    <div class="main-score">
+      <h3 class="score-value">{{ stats.average }}</h3>
+      <div class="stars-display">
+        <i *ngFor="let s of [1,2,3,4,5]" class="fas fa-star" [class.filled]="s <= stats.average"></i>
+      </div>
+      <p class="count-label">{{ stats.total }} avis vérifiés</p>
+    </div>
+
+    <div class="distribution-list">
+      <div *ngFor="let d of stats.distribution" 
+           class="dist-bar-item" 
+           [class.active-filter]="activeFilter === d.rating"
+           (click)="setFilter(d.rating)">
+        <span class="rating-num">{{ d.rating }} <i class="fas fa-star"></i></span>
+        <div class="bar-bg">
+          <div class="bar-fill" [style.width.%]="d.percentage"></div>
+        </div>
+        <span class="count-val">{{ d.count }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Controls -->
+  <div class="reviews-controls" *ngIf="!loading && allAvis.length > 0">
+    <div class="filters-row">
+      <button class="filter-chip" [class.active]="activeFilter === null" (click)="setFilter(null)">Tous les avis</button>
+      <button class="filter-chip active active-specific" *ngIf="activeFilter !== null" (click)="setFilter(null)">
+        {{ activeFilter }} étoiles <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-reviews" *ngIf="loading">
+    <div class="premium-spinner"></div>
+    <p>Chargement des retours clients...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-reviews card-premium" *ngIf="!loading && allAvis.length === 0">
+    <i class="far fa-comments"></i>
+    <h3>Aucun avis partagé</h3>
+    <p>Soyez le premier à donner votre avis sur cet établissement !</p>
+  </div>
+
+  <!-- Reviews List -->
+  <div class="reviews-feed" *ngIf="!loading && filteredAvis.length > 0">
+    <article *ngFor="let a of filteredAvis" class="review-item animate-slide-up">
+      <div class="review-card card-premium">
+        <header class="review-header">
+          <div class="user-meta">
+            <div class="user-avatar">
+              {{ (a.auteur || 'U')[0].toUpperCase() }}
             </div>
-            <div class="total-count">{{ stats.total }} Avis au total</div>
+            <div class="user-info">
+              <span class="user-name">{{ a.auteur || 'Utilisateur Anonyme' }}</span>
+              <time class="review-date" *ngIf="a.dateCreation">{{ a.dateCreation | date:'longDate' }}</time>
+            </div>
+          </div>
+          <div class="review-rating">
+            <div class="stars-mini">
+              <i *ngFor="let s of [1,2,3,4,5]" class="fas fa-star" [class.filled]="s <= a.note"></i>
+            </div>
+          </div>
+        </header>
+
+        <div class="review-body">
+          <p class="comment-text" [class.collapsed]="!isExpanded(a.id)">
+            {{ a.commentaire }}
+          </p>
+          <button *ngIf="a.commentaire.length > 200" class="btn-toggle-text" (click)="toggleReadMore(a.id)">
+            {{ isExpanded(a.id) ? 'Voir moins' : 'Lire la suite' }}
+          </button>
         </div>
 
-        <div class="distribution-bars">
-            <div *ngFor="let d of stats.distribution" class="dist-row" [class.active-filter]="activeFilter === d.rating"
-                (click)="setFilter(d.rating)">
-                <span class="star-label">{{ d.rating }} <i class="fas fa-star"></i></span>
-                <div class="progress-container">
-                    <div class="progress-bar" [style.width.%]="d.percentage"></div>
-                </div>
-                <span class="count-label">{{ d.count }}</span>
+        <footer class="review-footer">
+          <div class="footer-badges">
+            <span class="badge-status {{a.status.toLowerCase()}}" *ngIf="a.status">{{ a.status }}</span>
+          </div>
+          <div class="footer-actions">
+            <button class="btn-action" (click)="reply(a.id)" title="Répondre">
+              <i class="fas fa-reply"></i> Répondre
+            </button>
+            <button class="btn-action danger" (click)="deleteAvis(a.id)" title="Signaler">
+              <i class="fas fa-flag"></i> Signaler
+            </button>
+          </div>
+        </footer>
+      </div>
+
+      <!-- Nested Replies -->
+      <div class="replies-container" *ngIf="a.reponses && a.reponses.length > 0">
+        <div class="reply-card" *ngFor="let r of a.reponses">
+          <div class="reply-line"></div>
+          <div class="reply-content">
+            <div class="reply-header">
+              <i class="fas fa-reply-all fa-flip-horizontal icon"></i>
+              <span class="owner-name">{{ r.auteur || 'Établissement' }}</span>
+              <time class="reply-date" *ngIf="r.dateCreation">· {{ r.dateCreation | date:'shortDate' }}</time>
             </div>
+            <p class="reply-text">{{ r.contenu }}</p>
+          </div>
         </div>
-    </div>
+      </div>
+    </article>
+  </div>
 
-    <!-- Filter Pills -->
-    <div class="filter-pills" *ngIf="!loading && allAvis.length > 0">
-        <button class="pill" [class.active]="activeFilter === null" (click)="setFilter(null)">Tous</button>
-        <button class="pill" *ngIf="activeFilter !== null" (click)="setFilter(null)" class="pill clear">
-            <i class="fas fa-times"></i> Filtré par {{ activeFilter }}★
-        </button>
-    </div>
-
-    <!-- Content -->
-    <div class="empty-state" *ngIf="!loading && allAvis.length === 0">
-        <i class="far fa-comment-dots text-muted"></i>
-        <p>Aucun avis pour le moment. Soyez le premier à partager votre expérience !</p>
-    </div>
-
-    <div *ngIf="loading" class="loading-state">
-        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
-        <p>Chargement des avis...</p>
-    </div>
-
-    <div class="avis-cards" *ngIf="!loading && filteredAvis.length > 0">
-        <div *ngFor="let a of filteredAvis" class="avis-card animate-slide-up">
-            <div class="avis-main-bubble">
-                <div class="avis-header">
-                    <div class="author-info">
-                        <div class="avatar-initials">
-                            {{ (a.auteur || 'A')[0].toUpperCase() }}
-                        </div>
-                        <div class="avis-meta">
-                            <span class="author-name">{{ a.auteur || 'Client Douala City' }}</span>
-                            <span class="avis-date" *ngIf="a.dateCreation">{{ a.dateCreation | date:'longDate' }}</span>
-                        </div>
-                    </div>
-                    <div class="rating-display">
-                        <div class="stars">
-                            <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star" [class.active]="star <= a.note"></i>
-                        </div>
-                        <span class="note-pill">{{ a.note }}/5</span>
-                    </div>
-                </div>
-
-                <div class="avis-content">
-                    <p class="avis-text" [class.clamped]="!isExpanded(a.id)">
-                        {{ a.commentaire }}
-                    </p>
-                    <button *ngIf="a.commentaire.length > 250" class="btn-read-more" (click)="toggleReadMore(a.id)">
-                        {{ isExpanded(a.id) ? 'Voir moins' : 'Lire la suite' }}
-                    </button>
-                </div>
-
-                <div class="avis-footer">
-                    <div class="avis-badges" *ngIf="a.status">
-                        <span class="status-badge" [ngClass]="a.status.toLowerCase()">{{ a.status }}</span>
-                    </div>
-                    <div class="avis-actions">
-                        <button (click)="reply(a.id)" class="action-link" title="Répondre">
-                            <i class="fas fa-reply-all"></i> Répondre
-                        </button>
-                        <button (click)="deleteAvis(a.id)" class="action-link danger" title="Signaler">
-                            <i class="fas fa-flag"></i> Signaler
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Enhanced Replies Section -->
-            <div class="responses-wrapper" *ngIf="a.reponses && a.reponses.length > 0">
-                <div *ngFor="let reponse of a.reponses" class="response-bubble">
-                    <div class="response-header">
-                        <i class="fas fa-reply fa-flip-horizontal mr-xs"></i>
-                        <strong>Réponse de l'établissement</strong>
-                    </div>
-                    <p class="response-text">{{ reponse.contenu }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>
