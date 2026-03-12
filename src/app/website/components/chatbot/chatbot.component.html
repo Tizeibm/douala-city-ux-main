@@ -46,9 +46,13 @@
 
                     <!-- SEARCH INTENT: Structures Grid -->
                     <div class="rag-items-grid" *ngIf="msg.parsedContent.intent === 'SEARCH' && msg.parsedContent.items.length > 0">
-                        <div class="rag-card" *ngFor="let item of msg.parsedContent.items">
+                        <div class="rag-card" *ngFor="let item of msg.parsedContent.items" 
+                             [class.clickable]="item.id" (click)="goToStructure(item.id)">
                             <div class="card-type">{{item.type}}</div>
-                            <h4 class="card-name">{{item.name}}</h4>
+                            <h4 class="card-name">
+                                {{item.name}}
+                                <i class="fas fa-external-link-alt" *ngIf="item.id"></i>
+                            </h4>
                             <p class="card-desc" *ngIf="item.description">{{item.description}}</p>
                             <div class="card-meta">
                                 <span *ngIf="item.location"><i class="fas fa-map-marker-alt"></i> {{item.location}}</span>

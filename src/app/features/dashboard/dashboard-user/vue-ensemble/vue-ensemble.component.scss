@@ -1,0 +1,461 @@
+@use "sass:color";
+
+@use '../../../../../variables' as *;
+
+// Premium Glassmorphism & Modern Dashboard Variables using Brand Colors
+$primary-glow: rgba($brand-primary, 0.4);
+$secondary: $brand-secondary;
+
+$info-glow: rgba($info, 0.4);
+$info-sec: color.adjust($info, $lightness: 10%);
+
+$success-glow: rgba($success, 0.4);
+$success-sec: color.adjust($success, $lightness: 10%);
+
+$warning-glow: rgba($warning, 0.4);
+$warning-sec: color.adjust($warning, $lightness: 10%);
+
+$bg-color: #f4f7f6;
+$text-main: #2d3748;
+$text-muted: #718096;
+$glass-bg: rgba(255, 255, 255, 0.7);
+$glass-border: rgba(255, 255, 255, 0.4);
+$glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+.vue-ensemble-wrapper {
+    padding: 2rem;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    font-family: 'Inter', 'Roboto', sans-serif;
+    color: $text-main;
+
+    .dashboard-header {
+        margin-bottom: 3rem;
+        animation: fadeInDown 0.6s ease-out;
+
+        .gradient-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, $brand-primary, $brand-secondary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: $text-muted;
+            margin: 0;
+        }
+    }
+}
+
+// Glassmorphism Utility
+.glass {
+    background: $glass-bg;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid $glass-border;
+    box-shadow: $glass-shadow;
+    border-radius: 16px;
+}
+
+// Aggregate Stats (Hero Section)
+.aggregate-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: slideUp 0.5s ease-out backwards;
+
+        &:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        &:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        &:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        &:hover {
+            transform: translateY(-8px);
+        }
+
+        .stat-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        &.primary-glow:hover {
+            box-shadow: 0 10px 25px $primary-glow;
+        }
+
+        &.primary-glow .stat-icon-wrapper {
+            background: linear-gradient(135deg, $brand-primary, $brand-secondary);
+        }
+
+        &.info-glow:hover {
+            box-shadow: 0 10px 25px $info-glow;
+        }
+
+        &.info-glow .stat-icon-wrapper {
+            background: linear-gradient(135deg, $info, $info-sec);
+        }
+
+        &.success-glow:hover {
+            box-shadow: 0 10px 25px $success-glow;
+        }
+
+        &.success-glow .stat-icon-wrapper {
+            background: linear-gradient(135deg, $success, $success-sec);
+        }
+
+        &.warning-glow:hover {
+            box-shadow: 0 10px 25px $warning-glow;
+        }
+
+        &.warning-glow .stat-icon-wrapper {
+            background: linear-gradient(135deg, $warning, $warning-sec);
+        }
+
+        .stat-info {
+            h4 {
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin: 0;
+                color: $text-main;
+            }
+
+            span {
+                font-size: 0.9rem;
+                color: $text-muted;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+    }
+}
+
+// Section Titles
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #1a202c;
+    display: flex;
+    align-items: center;
+
+    &::after {
+        content: '';
+        height: 3px;
+        width: 40px;
+        background: linear-gradient(to right, $brand-primary, transparent);
+        margin-left: 15px;
+        border-radius: 3px;
+    }
+}
+
+// Structures Grid
+.structures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+
+    .structure-card {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+        &:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        // Top Header
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+
+            .card-title-group {
+                h3 {
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: $text-main;
+                    margin: 0 0 0.5rem 0;
+                }
+
+                .badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    padding: 0.3rem 0.8rem;
+                    border-radius: 20px;
+                    text-transform: uppercase;
+
+                    &.badge-success {
+                        background: rgba($success, 0.15);
+                        color: color.adjust($success, $lightness: -10%);
+                    }
+                }
+            }
+
+            .card-actions {
+                display: flex;
+                gap: 0.5rem;
+
+                .btn-icon {
+                    color: $text-muted;
+                    background: transparent;
+                    border: none;
+                    width: 38px;
+                    height: 38px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.1rem;
+                    cursor: pointer;
+                    border-radius: 50%;
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+                    &:hover {
+                        color: $brand-primary;
+                        background: rgba($brand-primary, 0.1);
+                        transform: rotate(90deg);
+                    }
+
+                    &.edit {
+                        &:hover {
+                            color: $brand-secondary;
+                            background: rgba($brand-secondary, 0.1);
+                            transform: scale(1.1) rotate(0deg);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Body Stats Grid
+        .stats-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+
+            .stat-pill {
+                display: flex;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.5);
+                padding: 0.8rem;
+                border-radius: 12px;
+                transition: background 0.2s;
+
+                &:hover {
+                    background: white;
+                }
+
+                .pill-icon {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 0.8rem;
+                    font-size: 1rem;
+
+                    &.primary {
+                        background: rgba($brand-primary, 0.1);
+                        color: $brand-primary;
+                    }
+
+                    &.info {
+                        background: rgba($info, 0.1);
+                        color: color.adjust($info, $lightness: -10%);
+                    }
+
+                    &.success {
+                        background: rgba($success, 0.1);
+                        color: $success;
+                    }
+
+                    &.warning {
+                        background: rgba($warning, 0.1);
+                        color: color.adjust($warning, $lightness: -15%);
+                    }
+                }
+
+                .pill-data {
+                    display: flex;
+                    flex-direction: column;
+
+                    .value {
+                        font-size: 1.1rem;
+                        font-weight: 700;
+                        color: $text-main;
+                        line-height: 1.2;
+                    }
+
+                    .label {
+                        font-size: 0.75rem;
+                        color: $text-muted;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                }
+            }
+        }
+
+        // Footer
+        .card-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 1rem;
+            text-align: right;
+
+            .btn-link {
+                color: $brand-primary;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.9rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: color 0.2s;
+
+                i {
+                    transition: transform 0.2s;
+                }
+
+                &:hover {
+                    color: color.adjust($brand-primary, $lightness: -15%);
+
+                    i {
+                        transform: translateX(4px);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Empty State & Loaders
+.loader-overlay,
+.empty-state-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+
+    h3 {
+        font-size: 1.5rem;
+        color: $text-main;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        color: $text-muted;
+        max-width: 400px;
+        margin-bottom: 2rem;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: rgba($brand-primary, 0.2);
+        margin-bottom: 1.5rem;
+    }
+}
+
+// Animations
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Buttons
+.btn-primary {
+    background: linear-gradient(135deg, $brand-primary, $brand-secondary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px $primary-glow;
+
+    &:hover {
+        box-shadow: 0 6px 20px $primary-glow;
+        transform: translateY(-2px);
+        color: white;
+    }
+}
+
+// Spinner
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba($brand-primary, 0.2);
+    border-top-color: $brand-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Entreprise } from '../../../entreprise';
-import { EntrepriseService } from '../../../services/entreprises.service';
+import { Entreprise } from '../../../shared/models/entreprise';
+import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { HapticService } from '../../../core/services/haptic.service';
 
 interface CategoryConfig {
@@ -126,7 +126,7 @@ export class CategoryListingComponent implements OnInit {
 
         this.loading = true;
         this.entrepriseService.getByCategorie(this.categoryConfig.name, this.currentPage - 1, this.itemsPerPage).subscribe({
-            next: data => {
+            next: (data: any) => {
                 this.allStructures = data.content || data;
                 this.totalItems = data.totalElements || this.allStructures.length;
                 this.totalPages = data.totalPages || Math.ceil(this.allStructures.length / this.itemsPerPage);
@@ -134,7 +134,7 @@ export class CategoryListingComponent implements OnInit {
                 this.loading = false;
                 this.applyFilters();
             },
-            error: err => {
+            error: (err: any) => {
                 console.error(`Erreur lors du chargement de la catégorie ${this.categoryConfig?.name}`, err);
                 this.loading = false;
             }

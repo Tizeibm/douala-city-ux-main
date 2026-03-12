@@ -1,8 +1,8 @@
 import { Component, HostListener, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthService } from '../../../auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { Utilisateur } from '../../registration/services/inscription.service';
+import { Utilisateur } from '../../../features/auth/registration/services/inscription.service';
 
 @Component({
   selector: 'app-header',

@@ -1,15 +1,14 @@
 import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { Entreprise, Horaire, Localisation, Photo, ServiceOffert } from '../../entreprise';
-import { EntrepriseService } from '../../services/entreprises.service';
+import { Entreprise, Horaire, Localisation, Photo, ServiceOffert } from '../../shared/models/entreprise';
+import { EntrepriseService } from '../../core/services/entreprises.service';
 import { fileURLToPath } from 'url';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { LocalisationStateService } from '../localisation.service';
-import { EntreprisesService } from '../services/entreprises.service';
-import { ServService } from '../serv.service';
-import { HorairesService } from '../horaires.service';
-import { PhotosService } from '../photos.service';
+import { LocalisationStateService } from '../../core/services/localisation.service';
+import { ServService } from '../../core/services/serv.service';
+import { HorairesService } from '../../core/services/horaires.service';
+import { PhotosService } from '../../core/services/photos.service';
 import { HapticService } from '../../core/services/haptic.service';
 import { FeedbackService } from '../../shared/feedback.service';
 
@@ -51,7 +50,7 @@ export class EditStructureComponent implements OnInit {
     private servstate: ServService,
     private horState: HorairesService,
     private photoState: PhotosService,
-    private cdr: ChangeDetectorRef, private structureService: EntreprisesService,
+    private cdr: ChangeDetectorRef,    private structureService: EntrepriseService,
     private haptic: HapticService,
     private feedback: FeedbackService
   ) { }
@@ -69,7 +68,7 @@ export class EditStructureComponent implements OnInit {
 
   ngOnInit(): void {
     this.localisationState.localisations$.subscribe({
-      next: (locs) => (this.localisations = locs)
+      next: (locs: any) => (this.localisations = locs)
     });
     this.structureForm = this.fb.group({
       nom: [this.structure.nom, Validators.required],
@@ -223,7 +222,7 @@ export class EditStructureComponent implements OnInit {
           this.services.removeAt(i);
 
         },
-        error: (err) => console.error('Erreur suppression localisation', err)
+        error: (err: any) => console.error('Erreur suppression localisation', err)
       });
 
 
@@ -248,7 +247,7 @@ export class EditStructureComponent implements OnInit {
 
 
         },
-        error: (err) => console.error('Erreur suppression horaire', err)
+        error: (err: any) => console.error('Erreur suppression horaire', err)
       });
 
 
@@ -271,7 +270,7 @@ export class EditStructureComponent implements OnInit {
           this.photos.removeAt(i);
 
         },
-        error: (err) => console.error('Erreur suppression photo', err)
+        error: (err: any) => console.error('Erreur suppression photo', err)
       });
 
 
@@ -401,7 +400,7 @@ export class EditStructureComponent implements OnInit {
           this.localisation.removeAt(i);
 
         },
-        error: (err) => console.error('Erreur suppression localisation', err)
+        error: (err: any) => console.error('Erreur suppression localisation', err)
       });
 
 
@@ -507,7 +506,7 @@ export class EditStructureComponent implements OnInit {
               this.localisationState.addLocalisation(res);
 
             },
-            error: (err) => console.error('Erreur ajout localisation', err)
+            error: (err: any) => console.error('Erreur ajout localisation', err)
           });
         });
 
@@ -529,7 +528,7 @@ export class EditStructureComponent implements OnInit {
               this.localisationState.updateLocalisation(locJSON);
               console.log('Localisation mise à jour')
             },
-            error: (err) => console.error('Erreur update localisation', err)
+            error: (err: any) => console.error('Erreur update localisation', err)
           });
         });
 
@@ -548,7 +547,7 @@ export class EditStructureComponent implements OnInit {
               this.servstate.addService(res);
 
             },
-            error: (err) => console.error('Erreur ajout service', err)
+            error: (err: any) => console.error('Erreur ajout service', err)
           });
         });
 
@@ -569,7 +568,7 @@ export class EditStructureComponent implements OnInit {
               this.servstate.updateService(servJSON);
               console.log('service mis à jour')
             },
-            error: (err) => console.error('Erreur update service', err)
+            error: (err: any) => console.error('Erreur update service', err)
           });
 
 
@@ -621,7 +620,7 @@ export class EditStructureComponent implements OnInit {
                 this.photoState.updatePhoto(PhoJSON);
                 console.log('photo mise à jour')
               },
-              error: (err) => console.error('Erreur update photo', err)
+              error: (err: any) => console.error('Erreur update photo', err)
             });
     
     
@@ -650,7 +649,7 @@ export class EditStructureComponent implements OnInit {
               this.horState.addHoraire(res);
 
             },
-            error: (err) => console.error('Erreur ajout horaire', err)
+            error: (err: any) => console.error('Erreur ajout horaire', err)
           });
         });
 
@@ -673,7 +672,7 @@ export class EditStructureComponent implements OnInit {
               this.horState.updateHoraire(HorJSON);
               console.log('horaire mis à jour');
             },
-            error: (err) => console.error('Erreur update horaire', err)
+            error: (err: any) => console.error('Erreur update horaire', err)
           });
 
 
@@ -688,7 +687,7 @@ export class EditStructureComponent implements OnInit {
 
 
       },
-      error: (err) => {
+      error: (err: any) => {
         this.feedback.error('Erreur update structure');
         this.feedback.hideLoader();
 

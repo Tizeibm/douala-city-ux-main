@@ -1,74 +1,206 @@
+@use "sass:color";
 @use "variables" as *;
 
 .sidebar {
     width: 280px;
-    background: white;
-    border-right: 1px solid $border-color;
-    padding: 2rem 1.5rem;
+    background: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+    padding: 2rem 1.25rem;
     display: flex;
     flex-direction: column;
     height: 100vh;
     position: sticky;
     top: 0;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
 
-    .logo {
-        font-size: 1.5rem;
-        font-weight: 900;
-        color: $brand-primary;
-        margin-bottom: 3rem;
+    .sidebar-brand {
         display: flex;
         align-items: center;
         gap: 12px;
-        letter-spacing: -1px;
+        padding: 0 12px 2.5rem;
+        
+        .logo {
+            height: 40px;
+            width: 40px;
+            object-fit: cover;
+            border-radius: $radius-md;
+            box-shadow: 0 4px 12px rgba($brand-primary, 0.15);
+        }
 
-        &::before {
-            content: '';
-            width: 12px;
-            height: 24px;
-            background: $brand-primary;
-            border-radius: 4px;
+        span {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: $heading-color;
+            letter-spacing: -0.5px;
+            
+            &::after {
+                content: '.';
+                color: $brand-primary;
+            }
         }
     }
 
-    nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+    .sidebar-back-link {
+        margin-bottom: 2rem;
+        padding: 0 12px;
+        
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: $text-secondary !important;
+            text-decoration: none;
+            font-size: 0.85rem !important;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 20px;
+            background: $bg-alt;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            
+            i {
+                font-size: 0.9rem;
+                transition: transform 0.2s;
+            }
+            
+            &:hover {
+                background: rgba($brand-primary, 0.08);
+                color: $brand-primary !important;
+                transform: translateX(2px);
+                i {
+                    transform: translateX(-4px);
+                }
+            }
+        }
+    }
+
+    nav {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-
-        li a {
+        flex: 1;
+        
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
             display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            color: $text-secondary;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: $radius-md;
-            transition: all 0.2s;
+            flex-direction: column;
+            gap: 8px;
 
-            i {
-                font-size: 1.1rem;
-                width: 20px;
-                text-align: center;
+            li {
+                width: 100%;
+
+                a {
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    padding: 12px 18px;
+                    color: $text-secondary;
+                    text-decoration: none;
+                    font-weight: 600;
+                    font-size: 0.95rem;
+                    border-radius: 12px;
+                    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                    position: relative;
+
+                    i {
+                        font-size: 1.2rem;
+                        width: 24px;
+                        text-align: center;
+                        color: $text-light;
+                        transition: all 0.25s ease;
+                    }
+
+                    &:hover {
+                        color: $text-primary;
+                        background: $bg-alt;
+                        transform: translateX(4px);
+                        
+                        i {
+                            color: $brand-primary;
+                            transform: scale(1.1);
+                        }
+                    }
+
+                    &.active {
+                        background: linear-gradient(135deg, $brand-primary 0%, color.adjust($brand-primary, $lightness: -8%) 100%);
+                        color: #ffffff;
+                        box-shadow: 0 8px 16px rgba($brand-primary, 0.25);
+                        transform: translateX(4px);
+
+                        i {
+                            color: #ffffff;
+                        }
+                    }
+                }
             }
-
-            &:hover {
-                background: $bg-alt;
-                color: $brand-primary;
-            }
-
-            &.active {
-                background: rgba(5, 150, 105, 0.08);
-                color: $brand-primary;
+        }
+        
+        .footer-nav {
+            margin-top: auto;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            padding-top: 1.5rem;
+            
+            .logout-btn {
+                color: $danger;
+                
+                i {
+                    color: $danger;
+                }
+                
+                &:hover {
+                    background: rgba($danger, 0.08);
+                    color: color.adjust($danger, $lightness: -10%);
+                    i { color: color.adjust($danger, $lightness: -10%); }
+                }
             }
         }
     }
 }
 
+/* Response for Small/Medium Screens */
+@media (max-width: $bp-lg) {
+    .sidebar {
+        width: 80px;
+        padding: 2rem 0.75rem;
+        align-items: center;
+
+        .sidebar-brand span, 
+        .sidebar-back-link span,
+        nav ul li a span {
+            display: none;
+        }
+
+        .sidebar-brand, .sidebar-back-link {
+            padding: 0;
+            justify-content: center;
+        }
+
+        .sidebar-back-link a {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        nav ul li a {
+            justify-content: center;
+            padding: 14px;
+            transform: none !important;
+            
+            i {
+                margin: 0;
+                font-size: 1.4rem;
+                width: auto;
+            }
+        }
+    }
+}
+
+/* Bottom Bar for Mobile */
 @media (max-width: $bp-sm) {
     .sidebar {
         position: fixed;
@@ -77,45 +209,52 @@
         left: 0;
         width: 100% !important;
         height: 72px;
-        padding: 0;
+        padding: 0 0.5rem;
         flex-direction: row;
-        z-index: 1000;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
-        background: white;
         border-right: none;
-        border-top: 1px solid $border-color;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        background: #ffffff;
+        align-items: center;
 
-        .logo {
+        .sidebar-brand, .sidebar-back-link, .footer-nav {
             display: none;
         }
 
         nav {
             width: 100%;
             height: 100%;
-
+            
             ul {
                 flex-direction: row;
                 height: 100%;
+                justify-content: space-around;
+                align-items: center;
                 gap: 0;
 
                 li {
-                    flex: 1;
+                    width: auto;
                     height: 100%;
-                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    flex: 1;
 
                     a {
                         flex-direction: column;
+                        gap: 2px;
+                        padding: 6px 4px;
+                        border-radius: 8px;
+                        font-size: 0.6rem;
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        transform: none !important;
+                        color: $text-secondary;
+                        width: 100%;
                         justify-content: center;
-                        align-items: center;
-                        height: 100%;
-                        gap: 4px;
-                        padding: 8px 4px;
-                        border-radius: 0;
-                        font-size: 0.65rem;
 
                         i {
-                            font-size: 1.2rem;
-                            width: auto;
+                            font-size: 1.25rem;
+                            color: $text-light;
                             margin: 0;
                         }
 
@@ -123,39 +262,18 @@
                             display: block;
                             font-weight: 700;
                             white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
 
                         &.active {
-                            background: rgba(5, 150, 105, 0.08);
+                            color: $brand-primary;
+                            i { color: $brand-primary; }
+                            background: transparent;
                         }
                     }
                 }
             }
-
-            .footer-nav {
-                display: none;
-            }
-        }
-    }
-}
-
-@media (max-width: $bp-lg) and (min-width: $bp-sm) {
-    .sidebar {
-        width: 80px;
-        padding: 2rem 1rem;
-        align-items: center;
-
-        .logo span {
-            display: none;
-        }
-
-        nav ul li a span {
-            display: none;
-        }
-
-        nav ul li a {
-            padding: 12px;
-            justify-content: center;
         }
     }
 }

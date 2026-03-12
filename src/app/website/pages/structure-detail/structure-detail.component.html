@@ -1,165 +1,199 @@
-<div class="premium-page" *ngIf="structure">
-  <!-- Modern Hero Section -->
-  <header class="page-hero">
-    <div class="hero-bg" [style.backgroundImage]="'url(' + (structure.photoPrincipal || '/assets/images/placeholder.jpg') + ')'"></div>
-    <div class="hero-overlay"></div>
-    
-    <div class="container hero-inner">
-      <nav class="breadcrumb-fancy">
+<div class="structure-page" *ngIf="structure">
+
+  <!-- ═══════════ HERO BANNER ═══════════ -->
+  <header class="hero-banner">
+    <div class="hero-bg" [style.backgroundImage]="'url(' + getHeroImageUrl() + ')'"></div>
+    <div class="hero-gradient"></div>
+    <div class="container hero-content">
+      <nav class="breadcrumb-trail">
         <a routerLink="/">Accueil</a>
-        <span class="sep">/</span>
-        <span class="current">{{structure.categorieNom}}</span>
+        <i class="fas fa-chevron-right"></i>
+        <span>{{structure.categorieNom}}</span>
       </nav>
 
-      <div class="hero-header-content">
-        <h1 class="main-title">
+      <div class="hero-title-block">
+        <h1>
           {{structure.nom}}
-          <span class="badge-verified" title="Vérifié par DoualaCity">
-            <i class="fas fa-check"></i>
-          </span>
+          <span class="verified-badge" title="Vérifié par DoualaCity"><i class="fas fa-check-circle"></i></span>
         </h1>
-        
-        <div class="hero-meta">
-          <div class="meta-item rating" *ngIf="totalAvis > 0">
-            <span class="avg">{{moyenneAvis}}</span>
-            <div class="stars-mini">
-              <i *ngFor="let s of [1,2,3,4,5]" class="fas fa-star" [class.filled]="s <= moyenneAvis"></i>
-            </div>
-            <a href="javascript:void(0)" (click)="scrollToReviews()" class="count">({{totalAvis}} avis)</a>
-          </div>
-          <span class="meta-sep" *ngIf="totalAvis > 0">•</span>
-          <div class="meta-item cat">
-            <i class="fas fa-tag"></i> {{structure.categorieNom}}
-          </div>
-          <span class="meta-sep">•</span>
-          <div class="meta-item status open">
-            <span class="dot"></span> Ouvert maintenant
-          </div>
+
+        <div class="hero-tags">
+          <span class="tag category"><i class="fas fa-tag"></i> {{structure.categorieNom}}</span>
+          <span class="tag rating-tag" *ngIf="totalAvis > 0">
+            <i class="fas fa-star"></i> {{moyenneAvis}} · {{totalAvis}} avis
+          </span>
+          <span class="tag status-tag open"><span class="dot"></span> Ouvert</span>
         </div>
       </div>
 
-      <div class="hero-cta-group">
-        <button class="btn-premium primary" (click)="donnerAvis()" *ngIf="mode === 'public'">
-          <i class="fas fa-pen"></i> Écrire un avis
+      <div class="hero-actions">
+        <button class="btn-hero primary" (click)="donnerAvis()" *ngIf="mode === 'public'">
+          <i class="fas fa-pen-fancy"></i> Écrire un avis
         </button>
-        <button class="btn-premium primary" (click)="goToEdit()" *ngIf="mode !== 'public'">
+        <button class="btn-hero primary" (click)="goToEdit()" *ngIf="mode !== 'public'">
           <i class="fas fa-edit"></i> Modifier
         </button>
-        <button class="btn-premium glass" (click)="share()">
+        <button class="btn-hero glass" (click)="share()">
           <i class="fas fa-share-alt"></i> Partager
         </button>
       </div>
     </div>
   </header>
 
-  <main class="container page-layout">
-    <!-- Main Content -->
-    <div class="layout-main">
-      
-      <!-- Photos Gallery (Premium) -->
-      <section class="page-section" *ngIf="structure.photos && structure.photos.length > 0">
-        <h2 class="section-label">Galerie Photos</h2>
-        <div class="premium-gallery">
-          <div *ngFor="let p of structure.photos" class="gallery-card">
-            <img [src]="getPhotoUrl(p)" [alt]="structure.nom">
-          </div>
-        </div>
-      </section>
+  <!-- ═══════════ TAB NAVIGATION ═══════════ -->
+  <nav class="tab-navigation sticky-tabs">
+    <div class="container tabs-row">
+      <a (click)="scrollTo('about')" class="tab-item">À propos</a>
+      <a (click)="scrollTo('gallery')" class="tab-item" *ngIf="structure.photos && structure.photos.length > 0">Photos</a>
+      <a (click)="scrollTo('services')" class="tab-item" *ngIf="structure.services && structure.services.length > 0">Services</a>
+      <a (click)="scrollTo('location')" class="tab-item" *ngIf="structure.localisations && structure.localisations.length > 0">Localisation</a>
+      <a (click)="scrollTo('hours')" class="tab-item" *ngIf="structure.horaires && structure.horaires.length > 0">Horaires</a>
+      <a (click)="scrollTo('reviews')" class="tab-item">Avis</a>
+    </div>
+  </nav>
 
-      <!-- Description Header -->
-      <section class="page-section">
-        <h2 class="section-label">À propos</h2>
-        <div class="card-premium about-card">
-          <p class="description">{{structure.description}}</p>
-        </div>
-      </section>
+  <!-- ═══════════ MAIN CONTENT ═══════════ -->
+  <main class="container content-grid">
+    <div class="main-col">
 
-      <!-- Services List (Grid) -->
-      <section class="page-section" *ngIf="structure.services && structure.services.length > 0">
-        <h2 class="section-label">Nos Services</h2>
-        <div class="services-grid-modern">
-          <div class="service-pill" *ngFor="let s of structure.services">
-            <div class="s-icon"><i class="fas fa-concierge-bell"></i></div>
-            <div class="s-info">
-              <span class="s-name">{{s.nom}}</span>
-              <span class="s-price" *ngIf="s.prix">{{s.prix | number}} FCFA</span>
+      <!-- ── ABOUT ── -->
+      <section id="about" class="section-block">
+        <h2 class="section-heading"><i class="fas fa-info-circle"></i> À propos</h2>
+        <div class="info-card glass">
+          <p class="about-text">{{structure.description}}</p>
+
+          <div class="quick-info-grid" *ngIf="structure.localisations?.[0] || structure.email || structure.website">
+            <div class="qi-item" *ngIf="structure.localisations?.[0]?.telephone">
+              <i class="fas fa-phone"></i>
+              <div>
+                <span class="qi-label">Téléphone</span>
+                <a [href]="'tel:' + structure.localisations?.[0]?.telephone" 
+                   (click)="onActionClick('PHONE', 'tel:' + structure.localisations?.[0]?.telephone, '_self', $event)">
+                  {{structure.localisations?.[0]?.telephone}}
+                </a>
+              </div>
+            </div>
+            <div class="qi-item" *ngIf="structure.email">
+              <i class="fas fa-envelope"></i>
+              <div>
+                <span class="qi-label">Email</span>
+                <a [href]="'mailto:' + structure.email" 
+                   (click)="onActionClick('EMAIL', 'mailto:' + structure.email, '_self', $event)">
+                  {{structure.email}}
+                </a>
+              </div>
+            </div>
+            <div class="qi-item" *ngIf="structure.website">
+              <i class="fas fa-globe"></i>
+              <div>
+                <span class="qi-label">Site web</span>
+                <a [href]="structure.website" target="_blank"
+                   (click)="onActionClick('WEBSITE', structure.website, '_blank', $event)">
+                  Visiter le site
+                </a>
+              </div>
+            </div>
+            <div class="qi-item" *ngIf="structure.localisations?.[0]?.adresse || structure.localisations?.[0]?.address">
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <span class="qi-label">Adresse</span>
+                <span>{{structure.localisations?.[0]?.adresse || structure.localisations?.[0]?.address}}</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Reviews Section -->
-      <section id="reviews" class="page-section">
-        <div class="section-header-row">
-          <h2 class="section-label">Avis Clients</h2>
-          <button class="btn-text" (click)="donnerAvis()">Laissez le vôtre <i class="fas fa-arrow-right"></i></button>
+      <!-- ── PHOTO GALLERY ── -->
+      <section id="gallery" class="section-block" *ngIf="structure.photos && structure.photos.length > 0">
+        <h2 class="section-heading"><i class="fas fa-images"></i> Galerie Photos</h2>
+        <div class="photo-mosaic">
+          <div *ngFor="let p of structure.photos; let i = index"
+               class="mosaic-item"
+               [class.large]="i === 0"
+               [class.medium]="i === 1 || i === 2">
+            <img [src]="getPhotoUrl(p)" [alt]="structure.nom + ' photo ' + (i+1)">
+            <div class="mosaic-overlay">
+              <i class="fas fa-expand"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SERVICES ── -->
+      <section id="services" class="section-block" *ngIf="structure.services && structure.services.length > 0">
+        <h2 class="section-heading"><i class="fas fa-concierge-bell"></i> Services Proposés</h2>
+        <div class="services-grid">
+          <div class="service-card glass" *ngFor="let s of structure.services">
+            <div class="service-icon">
+              <i class="fas fa-concierge-bell"></i>
+            </div>
+            <div class="service-details">
+              <h4>{{s.nom}}</h4>
+              <p *ngIf="s.description" class="service-desc">{{s.description}}</p>
+              <span class="service-price" *ngIf="s.prix">
+                <i class="fas fa-coins"></i> {{s.prix | number}} FCFA
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── LOCATION MAP ── -->
+      <section id="location" class="section-block" *ngIf="structure.localisations && structure.localisations.length > 0">
+        <h2 class="section-heading"><i class="fas fa-map-marked-alt"></i> Localisation</h2>
+        <div class="map-card glass">
+          <div class="map-inner">
+            <app-carte [locations]="structure.localisations" [editable]="false" mapId="structureDetailMap"></app-carte>
+          </div>
+          <div class="map-address-bar" *ngIf="structure.localisations?.[0]">
+            <i class="fas fa-map-pin"></i>
+            <span>{{structure.localisations[0].adresse || structure.localisations[0].address || 'Douala, Cameroun'}}</span>
+            <a class="directions-link" 
+               [href]="'https://www.google.com/maps?q=' + (structure.localisations[0].latitude || 4.0) + ',' + (structure.localisations[0].longitude || 9.7)"
+               target="_blank"
+               (click)="onActionClick('OTHER', 'https://www.google.com/maps?q=' + (structure.localisations[0].latitude || 4.0) + ',' + (structure.localisations[0].longitude || 9.7), '_blank', $event)">
+              <i class="fas fa-directions"></i> Itinéraire
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── OPENING HOURS ── -->
+      <section id="hours" class="section-block" *ngIf="structure.horaires && structure.horaires.length > 0">
+        <h2 class="section-heading"><i class="fas fa-clock"></i> Horaires d'ouverture</h2>
+        <div class="hours-card glass">
+          <div class="hour-row" *ngFor="let h of structure.horaires">
+            <span class="day-name">{{h.jourSemaine || h.jour}}</span>
+            <span class="hour-range">
+              <i class="far fa-clock"></i>
+              {{h.heureDeDebut || h.heureOuverture}} — {{h.heureDeFin || h.heureFermeture}}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── REVIEWS ── -->
+      <section id="reviews" class="section-block">
+        <div class="section-header-flex">
+          <h2 class="section-heading"><i class="fas fa-star"></i> Avis Clients</h2>
+          <button class="btn-write-review" (click)="donnerAvis()">
+            <i class="fas fa-pen"></i> Laisser un avis
+          </button>
         </div>
 
-        <div class="reviews-container mt-3">
+        <div class="reviews-container">
           <app-avis-list [structureId]="structure.id!" [allAvis]="avis"></app-avis-list>
         </div>
 
-        <!-- Overlay for adding reviews -->
-        <div class="premium-overlay" *ngIf="showAvisDrawer" (click)="closeAvisDrawer()">
-          <div class="overlay-panel" (click)="$event.stopPropagation()">
+        <!-- Overlay drawer for adding reviews -->
+        <div class="review-drawer-overlay" *ngIf="showAvisDrawer" (click)="closeAvisDrawer()">
+          <div class="review-drawer" (click)="$event.stopPropagation()">
             <app-ajouter-avis [structureId]="structure.id!" (closePanel)="closeAvisDrawer()"></app-ajouter-avis>
           </div>
         </div>
       </section>
+
     </div>
-
-    <!-- Sidebar Content -->
-    <aside class="layout-sidebar">
-      <div class="sticky-side">
-        
-        <!-- Contact Quick Actions -->
-        <div class="card-premium contact-widget">
-          <div class="action-grid">
-            <button class="action-item" (click)="onActionClick('PHONE', 'tel:' + structure.localisation?.[0]?.telephone, '_self', $event)" *ngIf="structure.localisation?.[0]?.telephone">
-              <i class="fas fa-phone"></i> Appeler
-            </button>
-            <button class="action-item" (click)="onActionClick('OTHER', 'https://www.google.com/maps?q=' + (structure.localisation?.[0]?.latitude || 4.0) + ',' + (structure.localisation?.[0]?.longitude || 9.7), '_blank', $event)" *ngIf="structure.localisation?.[0]?.latitude">
-              <i class="fas fa-directions"></i> Itinéraire
-            </button>
-            <button class="action-item" (click)="onActionClick('WEBSITE', structure.website, '_blank', $event)" *ngIf="structure.website">
-              <i class="fas fa-globe"></i> Site
-            </button>
-            <button class="action-item" (click)="onActionClick('EMAIL', 'mailto:' + structure.email, '_self', $event)" *ngIf="structure.email">
-              <i class="fas fa-envelope"></i> Email
-            </button>
-          </div>
-          
-          <div class="contact-footer mt-4" *ngIf="structure.localisation?.[0]">
-            <div class="info-row">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>{{structure.localisation?.[0]?.adresse || structure.localisation?.[0]?.address || 'Douala, Cameroun'}}</span>
-            </div>
-            <div class="info-row mt-2" *ngIf="structure.localisation?.[0]?.quartier">
-               <i class="fas fa-city"></i>
-               <span>{{structure.localisation?.[0]?.quartier}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Opening Hours Widget -->
-        <div class="card-premium mt-4" *ngIf="structure.horaires && structure.horaires.length > 0">
-          <h3 class="widget-title">Horaires d'ouverture</h3>
-          <div class="hours-list-premium">
-            <div class="hour-row" *ngFor="let h of structure.horaires">
-              <span class="day">{{h.jourSemaine || h.jour}}</span>
-              <span class="time">{{h.heureDeDebut || h.heureOuverture}} - {{h.heureDeFin || h.heureFermeture}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Premium Map Widget -->
-        <div class="card-premium map-widget-container mt-4" *ngIf="structure.localisation && structure.localisation.length > 0">
-           <div class="map-wrapper-inner">
-             <app-carte [locations]="structure.localisation" [editable]="false" mapId="premiumDetailMap"></app-carte>
-           </div>
-        </div>
-
-      </div>
-    </aside>
   </main>
 </div>

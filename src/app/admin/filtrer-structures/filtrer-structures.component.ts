@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Entreprise } from '../../entreprise';
-import { EntreprisesService } from '../services/entreprises.service';
+import { Entreprise } from '../../shared/models/entreprise';
+import { EntrepriseService } from '../../core/services/entreprises.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
@@ -101,7 +101,7 @@ export class FiltrerStructuresComponent {
   allStructures: Entreprise[] = [];
   filteredStructures: Entreprise[] = [];
 
-  constructor(private structureService: EntreprisesService,
+  constructor(private structureService: EntrepriseService,
     private router: Router
   ) { }
 
@@ -110,14 +110,14 @@ export class FiltrerStructuresComponent {
   }
   loadStructures() {
     const token: String | null = localStorage.getItem('token');
-    this.structureService.getAllEntreprisesValid(token).subscribe({
-      next: data => {
+    this.structureService.getMesEntreprisesValides(token).subscribe({
+      next: (data: any) => {
         this.allStructures = data;
         console.log(this.allStructures);
         this.loading = true;
         this.applyFilters();
       },
-      error: err => {
+      error: (err: any) => {
         console.error('Erreur lors du chargement des structures', err);
       }
     });
@@ -142,12 +142,12 @@ export class FiltrerStructuresComponent {
   }
 
   updatePaginatedStructures(): void {
-    this.structureService.page$.subscribe(page => {
+    this.structureService.page$.subscribe((page: any) => {
       this.currentPage = page;
     });
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.structureService.ent$.subscribe(data => {
+    this.structureService.ent$.subscribe((data: any) => {
       this.filteredStructures = data;
       this.filteredStructures = this.filteredStructures.slice(startIndex, endIndex);
     });
@@ -171,7 +171,7 @@ export class FiltrerStructuresComponent {
     }
   }
   getpage(): number {
-    this.structureService.page$.subscribe(page => {
+    this.structureService.page$.subscribe((page: any) => {
       this.currentPage = page;
     });
     return this.currentPage;

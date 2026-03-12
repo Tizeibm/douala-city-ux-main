@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { EntrepriseService } from '../../../services/entreprises.service';
-import { AnnonceService } from '../../../annonces/services/annonce.service';
-import { Entreprise } from '../../../entreprise';
-import { Annonce } from '../../../annonces/models/annonce';
+import { EntrepriseService } from '../../../core/services/entreprises.service';
+import { AnnonceService } from '../../../features/annonces/annonces/services/annonce.service';
+import { Entreprise } from '../../../shared/models/entreprise';
+import { Annonce } from '../../../features/annonces/annonces/models/annonce';
 
 @Component({
   selector: 'app-accueil',
@@ -36,7 +36,7 @@ export class AccueilComponent implements OnInit {
       next: (res) => {
         this.featuredStructures = res.content || [];
       },
-      error: (err) => console.error('Error fetching structures', err)
+      error: (err: any) => console.error('Error fetching structures', err)
     });
 
     // Fetch 3 recent announcements
@@ -45,7 +45,7 @@ export class AccueilComponent implements OnInit {
         this.recentAnnonces = res.content || [];
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching annonces', err);
         this.loading = false;
       }

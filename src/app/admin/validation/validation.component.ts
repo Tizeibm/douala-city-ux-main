@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EntreprisesService } from '../services/entreprises.service';
+import { EntreprisesService } from '../../admin/services/entreprises.service';
 import { FeedbackService } from '../../shared/feedback.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class ValidationComponent implements OnInit {
         this.entreprises = data.content || data;
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erreur lors du chargement des entreprises', err);
         this.loading = false;
       }
@@ -41,7 +41,7 @@ export class ValidationComponent implements OnInit {
         this.feedback.success('Entreprise validée avec succès');
         this.loadEntreprises();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.feedback.hideLoader();
         this.feedback.error('Erreur lors de la validation de l\'entreprise');
         this.loadEntreprises();
@@ -57,7 +57,7 @@ export class ValidationComponent implements OnInit {
         this.feedback.hideLoader();
         this.loadEntreprises();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.feedback.error('Erreur lors du rejet de l\'entreprise');
         this.feedback.hideLoader();
         this.loadEntreprises();

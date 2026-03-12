@@ -7,8 +7,9 @@ import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { EntreprisesComponent } from './entreprises/entreprises.component';
 import { LoginComponent } from './login/login.component';
 import { StructureDetailComponent } from '../website/pages/structure-detail/structure-detail.component';
-import { authGuard } from '../auth.guard';
+import { authGuard } from '../core/auth.guard';
 import { FiltrerStructuresComponent } from './filtrer-structures/filtrer-structures.component';
+import { AdminAvisComponent } from './admin-avis/admin-avis.component';
 const routes: Routes = [
 
   {
@@ -45,6 +46,11 @@ const routes: Routes = [
         component: FiltrerStructuresComponent,
         title: 'Filtrer les structures'
 
+      },
+      {
+        path: 'avis',
+        component: AdminAvisComponent,
+        title: 'Gestion des Avis'
       },
       {
         path: 'structures/:id',

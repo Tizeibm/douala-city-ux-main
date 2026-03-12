@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { EntreprisesService } from '../services/entreprises.service';
-import { Entreprise } from '../../entreprise';
+import { Entreprise } from '../../shared/models/entreprise';
 import { Router } from '@angular/router';
 import { HapticService } from '../../core/services/haptic.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -44,7 +44,7 @@ export class EntreprisesComponent implements OnInit {
         this.entreprises = data.content || data;
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erreur lors du chargement des entreprises', err);
         this.loading = false;
       }

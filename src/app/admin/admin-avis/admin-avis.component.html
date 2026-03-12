@@ -1,0 +1,89 @@
+<div class="admin-avis-page">
+  <header class="page-header">
+    <h1><i class="fas fa-star"></i> Gestion des Avis</h1>
+    <p>Modérez les avis des utilisateurs. Publiez, rejetez ou consultez les avis signalés.</p>
+  </header>
+
+  <!-- Status Tabs -->
+  <div class="status-tabs">
+    <button class="tab" [class.active]="activeTab === 'all'" (click)="setTab('all')">
+      Tous <span class="badge">{{getStatusCount('all')}}</span>
+    </button>
+    <button class="tab pending" [class.active]="activeTab === 'EN_ATTENTE'" (click)="setTab('EN_ATTENTE')">
+      <i class="fas fa-clock"></i> En attente <span class="badge">{{getStatusCount('EN_ATTENTE')}}</span>
+    </button>
+    <button class="tab published" [class.active]="activeTab === 'PUBLIE'" (click)="setTab('PUBLIE')">
+      <i class="fas fa-check-circle"></i> Publiés <span class="badge">{{getStatusCount('PUBLIE')}}</span>
+    </button>
+    <button class="tab rejected" [class.active]="activeTab === 'REJETE'" (click)="setTab('REJETE')">
+      <i class="fas fa-times-circle"></i> Rejetés <span class="badge">{{getStatusCount('REJETE')}}</span>
+    </button>
+    <button class="tab flagged" [class.active]="activeTab === 'SIGNALE'" (click)="setTab('SIGNALE')">
+      <i class="fas fa-flag"></i> Signalés <span class="badge">{{getStatusCount('SIGNALE')}}</span>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement des avis...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && filteredAvis.length === 0" class="empty-state">
+    <i class="far fa-comments"></i>
+    <h3>Aucun avis dans cette catégorie</h3>
+    <p>Les avis apparaîtront ici lorsqu'ils seront soumis par les utilisateurs.</p>
+  </div>
+
+  <!-- Avis Table -->
+  <div *ngIf="!loading && filteredAvis.length > 0" class="avis-table-wrapper">
+    <table class="avis-table">
+      <thead>
+        <tr>
+          <th>Auteur</th>
+          <th>Note</th>
+          <th>Commentaire</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of filteredAvis" class="avis-row">
+          <td class="author-cell">
+            <div class="avatar">{{ (a.auteur || 'U')[0].toUpperCase() }}</div>
+            <span>{{ a.auteur || 'Utilisateur' }}</span>
+          </td>
+          <td class="note-cell">
+            <div class="stars-mini-inline">
+              <i *ngFor="let s of [1,2,3,4,5]" class="fas fa-star" [class.filled]="s <= a.note"></i>
+            </div>
+            <span class="note-val">{{ a.note }}/5</span>
+          </td>
+          <td class="comment-cell">
+            <p>{{ a.commentaire | slice:0:120 }}{{ a.commentaire.length > 120 ? '...' : '' }}</p>
+          </td>
+          <td class="date-cell">{{ a.dateCreation | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="(a.status || 'EN_ATTENTE').toLowerCase()">
+              {{ getStatusLabel(a.status) }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <button *ngIf="a.status === 'EN_ATTENTE' || a.status === 'SIGNALE'"
+                    class="btn-action publish"
+                    (click)="publierAvis(a)" title="Publier">
+              <i class="fas fa-check"></i>
+            </button>
+            <button *ngIf="a.status === 'EN_ATTENTE' || a.status === 'SIGNALE'"
+                    class="btn-action reject"
+                    (click)="rejeterAvis(a)" title="Rejeter">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

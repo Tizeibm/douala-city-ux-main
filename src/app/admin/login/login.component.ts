@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { Utilisateur } from '../../website/registration/services/inscription.service';
+import { Utilisateur } from '../../features/auth/registration/services/inscription.service';
 import { FeedbackService } from '../../shared/feedback.service';
 
 @Component({
@@ -43,7 +43,7 @@ constructor(private authService: AuthService, private router: Router, private fe
              
       this.router.navigate(['/admin']);
     },
-    error: (err) =>{
+    error: (err: any) =>{
       this.feedback.error('Erreur lors de la connexion');
       this.feedback.hideLoader();
       console.error('Erreur lors de la connexion', err);

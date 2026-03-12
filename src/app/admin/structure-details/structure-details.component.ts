@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Entreprise, Localisation } from '../../entreprise';
+import { Entreprise, Localisation } from '../../shared/models/entreprise';
 import { ActivatedRoute } from '@angular/router';
-import { EntreprisesService } from '../services/entreprises.service';
+import { EntreprisesService } from '../../core/services/entreprises.service';
 import { LocalisationStateService } from '../localisation.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ServService } from '../serv.service';

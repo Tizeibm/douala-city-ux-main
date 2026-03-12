@@ -1,0 +1,36 @@
+<nav class="sidebar-nav">
+    <div class="sidebar-brand">
+        <img src="assets/doualacity.jpg" alt="Douala City" class="logo">
+        <span>Personnel</span>
+    </div>
+
+    <div class="sidebar-back-link">
+        <a routerLink="/accueil">
+            <i class="fas fa-arrow-left"></i>
+            <span>Retour au site</span>
+        </a>
+    </div>
+
+    <div class="nav-groups">
+        <div class="nav-group">
+            <span class="group-label">Principal</span>
+            <a routerLink="/dashboard-client" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+                class="nav-item">
+                <i class="fas fa-bullhorn"></i>
+                <span>Mes Annonces</span>
+            </a>
+            <a routerLink="/annonces/creer" routerLinkActive="active" class="nav-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>Publier une annonce</span>
+            </a>
+        </div>
+
+        <div class="nav-group footer-group">
+            <div class="sidebar-divider"></div>
+            <a routerLink="/dashboard-client/profil" routerLinkActive="active" class="nav-item profile-item">
+                <i class="fas fa-user-circle"></i>
+                <span>Mon Profil</span>
+            </a>
+        </div>
+    </div>
+</nav>

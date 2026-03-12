@@ -2,16 +2,16 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
-import { Entreprise } from '../../../entreprise';
+import { Entreprise } from '../../../shared/models/entreprise';
 import { EntreprisesService } from '../../../admin/services/entreprises.service';
-import { AvisService } from '../../../avis/services/avis.service';
-import { Avis } from '../../../avis/models/avis';
-import { LocalisationStateService } from '../../../admin/localisation.service';
-import { ServService } from '../../../admin/serv.service';
-import { HorairesService } from '../../../admin/horaires.service';
-import { PhotosService } from '../../../admin/photos.service';
+import { AvisService } from '../../../features/avis/services/avis.service';
+import { Avis } from '../../../features/avis/models/avis';
+import { LocalisationStateService } from '../../../core/services/localisation.service';
+import { ServService } from '../../../core/services/serv.service';
+import { HorairesService } from '../../../core/services/horaires.service';
+import { PhotosService } from '../../../core/services/photos.service';
 import { CookieConsentService } from '../../../shared/services/cookie-consent.service';
-import { AuthService } from '../../../auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -58,7 +58,11 @@ export class StructureDetailComponent implements OnInit {
 
         if (this.mode !== 'public') {
           this.entrepriseService.setEntreprise(struct);
-          this.localisationStateService.setLocalisations(struct.localisation || []);
+          // Sync plural/singular for components
+          if (struct.localisations && !struct.localisation) struct.localisation = struct.localisations;
+          if (struct.localisation && !struct.localisations) struct.localisations = struct.localisation;
+          
+          this.localisationStateService.setLocalisations(struct.localisations || []);
           this.servService.setServices(struct.services || []);
           this.photosService.setphotos(struct.photos || []);
           this.horairesService.setHoraires(struct.horaires || []);
@@ -66,17 +70,17 @@ export class StructureDetailComponent implements OnInit {
 
         this.avisService.avisAdded$.subscribe(() => this.loadAvisStats(id));
       },
-      error: (err) => console.error('[StructureDetail] Error:', err)
+      error: (err: any) => console.error('[StructureDetail] Error:', err)
     });
   }
 
   loadAvisStats(structureId: string) {
     this.avisService.getAvisByStructure(structureId).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.avis = data;
         this.totalAvis = data.length;
         if (this.totalAvis > 0) {
-          const sum = data.reduce((acc, curr) => acc + curr.note, 0);
+          const sum = data.reduce((acc: any, curr: any) => acc + curr.note, 0);
           this.moyenneAvis = parseFloat((sum / this.totalAvis).toFixed(1));
         }
       }
@@ -91,10 +95,14 @@ export class StructureDetailComponent implements OnInit {
     this.showAvisDrawer = false;
   }
 
-  scrollToReviews() {
+  scrollTo(sectionId: string) {
     if (isPlatformBrowser(this.platformId)) {
-      document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  scrollToReviews() {
+    this.scrollTo('reviews');
   }
 
   share() {
@@ -132,6 +140,13 @@ export class StructureDetailComponent implements OnInit {
   goToEdit(): void {
     const prefix = this.mode === 'admin' ? '/admin/structures' : '/dashboard-user/structures';
     this.router.navigate([`${prefix}/${this.structure.id}/modifier`]);
+  }
+
+  getHeroImageUrl(): string {
+    if (!this.structure?.photoPrincipal) return '/assets/images/placeholder.jpg';
+    if (this.structure.photoPrincipal.startsWith('http')) return this.structure.photoPrincipal;
+    // If it's a relative path or ID, use the photos endpoint
+    return `${environment.apiUrl}/photos/public/${this.structure.photoPrincipal}`;
   }
 
   getPhotoUrl(photo: any): string {

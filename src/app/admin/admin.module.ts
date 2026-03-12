@@ -18,6 +18,7 @@ import { SharedModule } from '../shared/shared.module';
 import { EditStructureComponent } from './edit-structure/edit-structure.component';
 import { CarteComponent } from './carte/carte.component';
 import { FiltrerStructuresComponent } from './filtrer-structures/filtrer-structures.component';
+import { AdminAvisComponent } from './admin-avis/admin-avis.component';
 
 
 @NgModule({
@@ -31,9 +32,8 @@ import { FiltrerStructuresComponent } from './filtrer-structures/filtrer-structu
     LoginComponent,
     ContentComponent,
     EditStructureComponent,
-    FiltrerStructuresComponent
-
-
+    FiltrerStructuresComponent,
+    AdminAvisComponent
   ],
   imports: [
     CommonModule,

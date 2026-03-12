@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Entreprise } from '../../../entreprise';
+import { Entreprise } from '../../../shared/models/entreprise';
 
 @Component({
     selector: 'app-structure-card',

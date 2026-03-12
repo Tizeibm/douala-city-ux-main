@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ChatService, ChatMessage } from '../../../services/chat.service';
-import { AuthService } from '../../../auth.service';
+import { ChatService, ChatMessage } from '../../../core/services/chat.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 interface RagItem {
+    id?: string;
     name: string;
     type: 'SERVICE' | 'ADMINISTRATION' | 'ENTREPRISE';
     description?: string;
@@ -51,6 +53,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     constructor(
         private chatService: ChatService,
         private authService: AuthService,
+        private router: Router,
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
@@ -183,7 +186,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
                 }
                 this.addBotMessage(msg.content);
             },
-            error: (err) => {
+            error: (err: any) => {
                 this.isTyping = false;
                 this.addBotMessage("Désolé, j'ai rencontré une erreur technique. Veuillez réessayer plus tard.");
                 console.error('Chat error:', err);
@@ -211,6 +214,13 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
             }
         } catch (e) {}
         return undefined;
+    }
+
+    goToStructure(id: string | undefined) {
+        if (!id) return;
+        this.isOpen = false;
+        this.isExpanded = false;
+        this.router.navigate(['/establishments', id]);
     }
 
     private scrollToBottom(): void {
