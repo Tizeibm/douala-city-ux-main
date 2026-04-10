@@ -15,13 +15,20 @@ export class AjouterAvisComponent implements OnInit {
 
   rating: number = 0;
   hoverRating: number = 0;
-  commentaire: string = '';
+  
+  private _commentaire: string = '';
+  get commentaire(): string { return this._commentaire; }
+  set commentaire(value: string) {
+    this._commentaire = value;
+    this.formDirty.emit(value.trim().length > 0);
+  }
+
   loading: boolean = false;
   errorMessage = '';
   successMessage = '';
   @Input() structureId: string | null = null;
   @Output() closePanel = new EventEmitter<void>();
-
+  @Output() formDirty = new EventEmitter<boolean>();
 
   constructor(
     private avisService: AvisService,

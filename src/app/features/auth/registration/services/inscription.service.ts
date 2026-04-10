@@ -9,6 +9,7 @@ export interface Utilisateur {
   nom: string;
   email: string;
   motDePasse: string;
+  telephone?: string;       // Backend RegisterRequest accepts this
   role: string | null;
 }
 

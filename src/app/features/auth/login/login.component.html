@@ -12,18 +12,27 @@
     <form (ngSubmit)="onLogin()" #loginForm="ngForm" novalidate class="auth-form">
       <div class="form-group">
         <label for="email">Adresse email</label>
-        <div class="input-wrapper">
+        <div class="input-wrapper" [class.has-error]="emailControl.invalid && (emailControl.dirty || emailControl.touched)">
           <i class="fas fa-envelope"></i>
-          <input id="email" type="email" placeholder="vous@exemple.com" [(ngModel)]="email" name="email" required />
+          <input id="email" type="email" placeholder="vous@exemple.com" [(ngModel)]="email" name="email" required email #emailControl="ngModel" />
         </div>
+        <p class="error-msg" *ngIf="emailControl.invalid && (emailControl.dirty || emailControl.touched)">
+           Veuillez entrer une adresse email valide.
+        </p>
       </div>
 
       <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <div class="input-wrapper">
-          <i class="fas fa-lock"></i>
-          <input id="password" type="password" placeholder="••••••••" [(ngModel)]="password" name="password" required />
+        <div class="label-row">
+            <label for="password">Mot de passe</label>
+            <a routerLink="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
         </div>
+        <div class="input-wrapper" [class.has-error]="passControl.invalid && (passControl.dirty || passControl.touched)">
+          <i class="fas fa-lock"></i>
+          <input id="password" type="password" placeholder="••••••••" [(ngModel)]="password" name="password" required minlength="6" #passControl="ngModel" />
+        </div>
+        <p class="error-msg" *ngIf="passControl.invalid && (passControl.dirty || passControl.touched)">
+           Le mot de passe doit contenir au moins 6 caractères.
+        </p>
       </div>
 
       <button type="submit" class="btn-auth-primary" [disabled]="loginForm.invalid">

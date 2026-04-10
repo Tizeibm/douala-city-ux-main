@@ -88,17 +88,17 @@
                <div class="grid cols-12 gap-sm items-end">
                   <div class="col-span-4 form-group mb-0">
                      <label class="small-label">Jour</label>
-                     <select [(ngModel)]="newHoraire.jour" class="input">
+                     <select [(ngModel)]="newHoraire.jourSemaine" class="input">
                         <option *ngFor="let jour of joursSemaine" [value]="jour">{{jour}}</option>
                      </select>
                   </div>
                   <div class="col-span-3 form-group mb-0">
                      <label class="small-label">Ouverture</label>
-                     <input type="time" [(ngModel)]="newHoraire.heureOuverture" class="input" />
+                     <input type="time" [(ngModel)]="newHoraire.heureDeDebut" class="input" />
                   </div>
                   <div class="col-span-3 form-group mb-0">
                      <label class="small-label">Fermeture</label>
-                     <input type="time" [(ngModel)]="newHoraire.heureFermeture" class="input" />
+                     <input type="time" [(ngModel)]="newHoraire.heureDeFin" class="input" />
                   </div>
                   <div class="col-span-2">
                      <button class="btn btn-primary w-full" (click)="addHoraire()" title="Ajouter">
@@ -111,9 +111,9 @@
             <div class="horaires-list mt-md">
                <div *ngFor="let h of entreprise.horaires; let i = index" class="horaire-item list-item">
                   <div class="horaire-info">
-                     <span class="day-badge"><i class="far fa-calendar-alt mr-xs"></i> {{h.jour}}</span>
-                     <span class="time-range"><i class="far fa-clock mr-xs"></i> {{h.heureOuverture}} — <i
-                           class="far fa-clock mr-xs"></i> {{h.heureFermeture}}</span>
+                     <span class="day-badge"><i class="far fa-calendar-alt mr-xs"></i> {{h.jourSemaine}}</span>
+                     <span class="time-range"><i class="far fa-clock mr-xs"></i> {{h.heureDeDebut}} — <i
+                           class="far fa-clock mr-xs"></i> {{h.heureDeFin}}</span>
                   </div>
                   <button class="btn-icon danger" (click)="removeHoraire(i)" title="Supprimer cet horaire">
                      <i class="fas fa-trash"></i>
@@ -229,15 +229,15 @@
                   </button>
                </div>
 
-               <div class="photos-list grid cols-3 gap-sm mt-md" *ngIf="uploadedPhotos.length > 0">
-                  <div *ngFor="let photo of uploadedPhotos; let i = index" class="photo-item" style="position: relative;">
-                     <img [src]="getPhotoUrl(photo.id)" [alt]="photo.fileName" class="img-thumbnail" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;">
-                     <button class="btn-icon danger p-xs" (click)="removePhoto(photo.id, i)" title="Supprimer" style="position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.8); color: white;">
+               <div class="photos-list grid cols-3 gap-sm mt-md" *ngIf="pendingPhotos.length > 0">
+                  <div *ngFor="let photo of pendingPhotos; let i = index" class="photo-item" style="position: relative;">
+                     <img [src]="getPhotoUrl(photo)" [alt]="photo.file.name" class="img-thumbnail" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;">
+                     <button class="btn-icon danger p-xs" (click)="removePhoto('', i)" title="Supprimer" style="position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.8); color: white;">
                         <i class="fas fa-trash text-xs"></i>
                      </button>
                   </div>
                </div>
-               <div *ngIf="uploadedPhotos.length === 0" class="empty-state small mt-md">
+               <div *ngIf="pendingPhotos.length === 0" class="empty-state small mt-md">
                   Aucune photo ajoutée pour le moment.
                </div>
             </div>
@@ -247,7 +247,7 @@
          <div class="form-actions mt-xl">
             <button type="button" class="btn secondary" (click)="onBack()" *ngIf="currentStep === 1">Annuler</button>
             <button type="button" class="btn secondary" (click)="prevStep()"
-               *ngIf="currentStep > 1 && !structureId">Précédent</button>
+               *ngIf="currentStep > 1">Précédent</button>
 
             <!-- Buttons associated with finishStep logic -->
             <button type="button" class="btn btn-primary" (click)="finishStep1()" *ngIf="currentStep === 1">

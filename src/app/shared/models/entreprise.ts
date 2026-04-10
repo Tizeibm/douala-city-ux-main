@@ -1,14 +1,10 @@
 
 export interface Horaire {
   id?: string; // UUID
-  jour?: string;
-  heureOuverture?: string;
-  heureFermeture?: string;
-
-  // Legacy support
-  jourSemaine?: string;
-  heureDeDebut?: string;
-  heureDeFin?: string;
+  jourSemaine?: string;      // Backend enum: LUNDI..DIMANCHE
+  heureDeDebut?: string;     // LocalTime format "HH:mm:ss"
+  heureDeFin?: string;       // LocalTime format "HH:mm:ss"
+  ouvertWeekend?: boolean;   // From HoraireResponse
 }
 
 export interface Categorie {
@@ -38,15 +34,19 @@ export interface Localisation {
 
 export interface Photo {
   id?: string; // UUID
-  fileName?: string;
-  storedFileName: string;
-  contentType: string;
-  uploadedAt?: string;
-  filePath?: string;
-  thumbnailPath?: string;
   originalFileName?: string;
+  storedFileName: string;
+  filePath?: string;
   fileSize?: number;
+  contentType: string;
   uploadDate?: string | Date;
+  thumbnailPath?: string;
+  isPrincipal?: boolean;
+  url?: string;              // Constructed URL for display
+
+  // Legacy aliases (frontend-only)
+  fileName?: string;
+  uploadedAt?: string;
 }
 
 export interface Entreprise {
@@ -57,7 +57,7 @@ export interface Entreprise {
   website?: string;
   description?: string;
   address?: string;
-  status?: 'EN_ATTENTE' | 'VALIDE' | 'REJETE' | 'ACTIF';
+  status?: 'EN_ATTENTE' | 'VALIDE' | 'REFUSEE';
   categorieNom: string;
   sousCategorie: string;
   horaires?: Horaire[];

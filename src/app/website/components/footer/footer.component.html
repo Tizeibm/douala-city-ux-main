@@ -3,7 +3,10 @@
     <div class="footer-grid">
       <!-- Brand Column -->
       <div class="footer-col brand-col">
-        <h3 class="footer-logo">DoualaCity</h3>
+        <a routerLink="/accueil" style="text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+           <img src="/favicon.ico" alt="DoualaCity Logo" style="height: 45px; border-radius: 6px;">
+           <h3 class="footer-logo" style="margin: 0;">DoualaCity</h3>
+        </a>
         <p class="footer-desc">
           Votre guide intelligent pour découvrir et vivre Douala. Commerces, services, institutions et plus encore.
         </p>
@@ -19,10 +22,10 @@
       <div class="footer-col">
         <h4>Explorer</h4>
         <ul class="footer-links">
-          <li><a routerLink="/commerces">Commerces</a></li>
-          <li><a routerLink="/institutions">Institutions</a></li>
-          <li><a routerLink="/ecoles">Écoles</a></li>
-          <li><a routerLink="/hopitaux">Hôpitaux</a></li>
+          <li><a routerLink="/categories/commerces">Commerces</a></li>
+          <li><a routerLink="/categories/institutions">Institutions</a></li>
+          <li><a routerLink="/categories/education">Éducation</a></li>
+          <li><a routerLink="/categories/sante">Santé</a></li>
           <li><a routerLink="/annonces">Annonces</a></li>
         </ul>
       </div>
@@ -31,10 +34,10 @@
       <div class="footer-col">
         <h4>Informations</h4>
         <ul class="footer-links">
-          <li><a routerLink="/about">À propos</a></li>
+          <li><a routerLink="/a-propos">À propos</a></li>
           <li><a routerLink="/contact">Contact</a></li>
-          <li><a routerLink="/privacy">Confidentialité</a></li>
-          <li><a routerLink="/terms">Mentions Légales</a></li>
+          <li><a routerLink="/confidentialite">Confidentialité</a></li>
+          <li><a routerLink="/mentions-legales">Mentions Légales</a></li>
         </ul>
       </div>
 

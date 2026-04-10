@@ -53,6 +53,12 @@ import { SidebarClientComponent } from './features/dashboard/dashboard-client/si
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
 import { StructureEditPageComponent } from './features/dashboard/dashboard-user/structure-edit-page/structure-edit-page.component';
 import { StructureDetailComponent } from './website/pages/structure-detail/structure-detail.component';
+import { NotFoundComponent } from './website/pages/not-found/not-found.component';
+import { AboutPageComponent } from './website/pages/a-propos/about.component';
+import { ContactPageComponent } from './website/pages/contact/contact.component';
+import { PrivacyPageComponent } from './website/pages/confidentialite/privacy.component';
+import { LegalPageComponent } from './website/pages/mentions-legales/legal.component';
+import { MobileNavbar } from './website/components/mobile-navbar/mobile-navbar';
 
 
 
@@ -90,7 +96,13 @@ import { StructureDetailComponent } from './website/pages/structure-detail/struc
     CookieBannerComponent,
     EditAnnonceComponent,
     StructureEditPageComponent,
-    StructureDetailComponent
+    StructureDetailComponent,
+    NotFoundComponent,
+    AboutPageComponent,
+    ContactPageComponent,
+    PrivacyPageComponent,
+    LegalPageComponent,
+    MobileNavbar
 
 
 

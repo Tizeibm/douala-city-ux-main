@@ -2,7 +2,7 @@
 
   <!-- ═══════════ HERO BANNER ═══════════ -->
   <header class="hero-banner">
-    <div class="hero-bg" [style.backgroundImage]="'url(' + getHeroImageUrl() + ')'"></div>
+    <div class="hero-bg" [style.backgroundImage]="'url(' + getHeroImageUrl() + ')'" (click)="openImage(getHeroImageUrl())" style="cursor: pointer;"></div>
     <div class="hero-gradient"></div>
     <div class="container hero-content">
       <nav class="breadcrumb-trail">
@@ -105,13 +105,14 @@
       </section>
 
       <!-- ── PHOTO GALLERY ── -->
-      <section id="gallery" class="section-block" *ngIf="structure.photos && structure.photos.length > 0">
+      <section id="gallery" class="section-block" *ngIf="otherPhotos && otherPhotos.length > 0">
         <h2 class="section-heading"><i class="fas fa-images"></i> Galerie Photos</h2>
         <div class="photo-mosaic">
-          <div *ngFor="let p of structure.photos; let i = index"
+          <div *ngFor="let p of otherPhotos; let i = index"
                class="mosaic-item"
                [class.large]="i === 0"
-               [class.medium]="i === 1 || i === 2">
+               [class.medium]="i === 1 || i === 2"
+               (click)="openImage(getFullPhotoUrl(p))">
             <img [src]="getPhotoUrl(p)" [alt]="structure.nom + ' photo ' + (i+1)">
             <div class="mosaic-overlay">
               <i class="fas fa-expand"></i>
@@ -164,10 +165,10 @@
         <h2 class="section-heading"><i class="fas fa-clock"></i> Horaires d'ouverture</h2>
         <div class="hours-card glass">
           <div class="hour-row" *ngFor="let h of structure.horaires">
-            <span class="day-name">{{h.jourSemaine || h.jour}}</span>
+            <span class="day-name">{{h.jourSemaine}}</span>
             <span class="hour-range">
               <i class="far fa-clock"></i>
-              {{h.heureDeDebut || h.heureOuverture}} — {{h.heureDeFin || h.heureFermeture}}
+              {{h.heureDeDebut}} — {{h.heureDeFin}}
             </span>
           </div>
         </div>
@@ -189,11 +190,17 @@
         <!-- Overlay drawer for adding reviews -->
         <div class="review-drawer-overlay" *ngIf="showAvisDrawer" (click)="closeAvisDrawer()">
           <div class="review-drawer" (click)="$event.stopPropagation()">
-            <app-ajouter-avis [structureId]="structure.id!" (closePanel)="closeAvisDrawer()"></app-ajouter-avis>
+            <app-ajouter-avis [structureId]="structure.id!" (formDirty)="onAvisDirty($event)" (closePanel)="closeAvisDrawer()"></app-ajouter-avis>
           </div>
         </div>
       </section>
 
     </div>
   </main>
+
+  <!-- ═══════════ IMAGE FULLSCREEN OVERLAY ═══════════ -->
+  <div class="image-overlay-fullscreen" *ngIf="selectedImageUrl" (click)="closeImage()">
+    <button class="btn-close-overlay" (click)="closeImage()" aria-label="Fermer"><i class="fas fa-times"></i></button>
+    <img [src]="selectedImageUrl" class="fullscreen-image" (click)="$event.stopPropagation()">
+  </div>
 </div>

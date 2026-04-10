@@ -99,7 +99,12 @@ export class AuthService {
 
   getNomUtilisateur(): string | null {
     if (!this.isBrowser) return null;
-    return localStorage.getItem('utilisateurNom');
+    try {
+      const utilisateur = JSON.parse(localStorage.getItem('utilisateur') || 'null');
+      return utilisateur?.nom || null;
+    } catch {
+      return null;
+    }
   }
 
   getUtilisateurId(): string {

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { Entreprise } from '../../../shared/models/entreprise';
 import { EntreprisesService } from '../../../admin/services/entreprises.service';
+import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { AvisService } from '../../../features/avis/services/avis.service';
 import { Avis } from '../../../features/avis/models/avis';
 import { LocalisationStateService } from '../../../core/services/localisation.service';
@@ -28,11 +29,13 @@ export class StructureDetailComponent implements OnInit {
   showAvisDrawer = false;
   apiUrl = environment.apiUrl;
   mode: 'public' | 'owner' | 'admin' = 'public';
+  selectedImageUrl: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private entrepriseService: EntreprisesService,
+    private coreEntrepriseService: EntrepriseService,
     private avisService: AvisService,
     private localisationStateService: LocalisationStateService,
     private servService: ServService,
@@ -53,7 +56,7 @@ export class StructureDetailComponent implements OnInit {
       next: (struct) => {
         this.structure = struct;
         const visitorHash = this.cookieConsentService.getVisitorHash() || undefined;
-        this.entrepriseService.recordView(struct.id!, undefined, visitorHash).subscribe();
+        this.coreEntrepriseService.recordView(struct.id!, undefined, visitorHash).subscribe();
         this.loadAvisStats(id);
 
         if (this.mode !== 'public') {
@@ -91,8 +94,21 @@ export class StructureDetailComponent implements OnInit {
     this.showAvisDrawer = true;
   }
 
+  isAvisDirty = false;
+  
+  onAvisDirty(isDirty: boolean) {
+    this.isAvisDirty = isDirty;
+  }
+
   closeAvisDrawer() {
-    this.showAvisDrawer = false;
+    if (this.isAvisDirty) {
+      if (confirm("Vous avez un avis en cours de rédaction. Voulez-vous vraiment annuler ?")) {
+        this.showAvisDrawer = false;
+        this.isAvisDirty = false;
+      }
+    } else {
+      this.showAvisDrawer = false;
+    }
   }
 
   scrollTo(sectionId: string) {
@@ -124,7 +140,7 @@ export class StructureDetailComponent implements OnInit {
     const visitorHash = this.cookieConsentService.getVisitorHash() || undefined;
     const userId = this.authService.getUtilisateurId() || undefined;
 
-    this.entrepriseService.recordContactClick(this.structure.id!, type, visitorHash, userId, url).subscribe({
+    this.coreEntrepriseService.recordContactClick(this.structure.id!, type, visitorHash, userId, url).subscribe({
       next: () => this.navigateAction(url, target),
       error: () => this.navigateAction(url, target)
     });
@@ -145,12 +161,37 @@ export class StructureDetailComponent implements OnInit {
   getHeroImageUrl(): string {
     if (!this.structure?.photoPrincipal) return '/assets/images/placeholder.jpg';
     if (this.structure.photoPrincipal.startsWith('http')) return this.structure.photoPrincipal;
-    // If it's a relative path or ID, use the photos endpoint
-    return `${environment.apiUrl}/photos/public/${this.structure.photoPrincipal}`;
+    // If it's a UUID (new system)
+    if (this.structure.photoPrincipal.length > 20) {
+      return `${this.apiUrl}/photos/public/${this.structure.photoPrincipal}/image`;
+    }
+    // Fallback for old system or direct filename
+    return `http://localhost:8080/${this.structure.photoPrincipal}`;
   }
 
   getPhotoUrl(photo: any): string {
     if (!photo?.id) return '/assets/images/placeholder.jpg';
     return `${environment.apiUrl}/photos/public/${photo.id}/thumbnail`;
+  }
+
+  getFullPhotoUrl(photo: any): string {
+    if (!photo?.id) return '/assets/images/placeholder.jpg';
+    return `${environment.apiUrl}/photos/public/${photo.id}/image`;
+  }
+
+  openImage(url: string) {
+    this.selectedImageUrl = url;
+  }
+
+  closeImage() {
+    this.selectedImageUrl = null;
+  }
+
+  get otherPhotos(): any[] {
+    if (!this.structure?.photos) return [];
+    if (!this.structure?.photoPrincipal) return this.structure.photos;
+    
+    // Filter out the principal photo so it doesn't appear twice (once in hero, once in gallery)
+    return this.structure.photos.filter(p => p.id !== this.structure.photoPrincipal);
   }
 }

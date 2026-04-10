@@ -83,6 +83,33 @@
         color: $text-main;
         font-size: 0.9rem;
     }
+
+    .label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+
+        label { margin-bottom: 0; }
+        
+        .forgot-link {
+            font-size: 0.8rem;
+            color: $text-secondary;
+            text-decoration: none;
+            font-weight: 500;
+            
+            &:hover {
+                color: $brand-primary;
+            }
+        }
+    }
+
+    .error-msg {
+        color: $danger;
+        font-size: 0.75rem;
+        margin-top: 5px;
+        font-weight: 500;
+    }
 }
 
 .input-wrapper {
@@ -108,7 +135,7 @@
         color: $text-main;
         background: #fff;
         outline: none;
-        transition: border-color 0.2s;
+        transition: all 0.2s;
 
         &::placeholder {
             color: #9CA3AF;
@@ -117,6 +144,21 @@
         &:focus {
             border-color: $brand-primary;
             box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.08);
+        }
+    }
+
+    &.has-error {
+        input, select {
+            border-color: rgba($danger, 0.5);
+            
+            &:focus {
+                border-color: $danger;
+                box-shadow: 0 0 0 3px rgba($danger, 0.08);
+            }
+        }
+        
+        i {
+            color: $danger;
         }
     }
 }

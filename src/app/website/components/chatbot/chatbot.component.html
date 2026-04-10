@@ -5,7 +5,6 @@
         (click)="toggleChat($event)" [style.cursor]="isDragging ? 'grabbing' : 'grab'"
         [attr.aria-label]="isOpen ? 'Fermer le chat' : 'Ouvrir le chat'">
         <i class="fas" [class.fa-comment-dots]="!isOpen" [class.fa-times]="isOpen"></i>
-        <span class="notification-badge" *ngIf="!isOpen && messages.length > 1">1</span>
     </button>
 
     <!-- Chat Window -->
@@ -36,13 +35,12 @@
                 [class.bot]="msg.sender === 'bot'">
                 
                 <!-- Normal Text Message -->
-                <div class="message-content" *ngIf="!msg.parsedContent">
-                    {{ msg.content }}
+                <div class="message-content" *ngIf="!msg.parsedContent" [innerHTML]="renderMarkdown(msg.content)">
                 </div>
 
                 <!-- Rich RAG Message -->
                 <div class="message-content rag-message" *ngIf="msg.parsedContent">
-                    <div class="answer-text">{{ msg.parsedContent.answer_text }}</div>
+                    <div class="answer-text" [innerHTML]="renderMarkdown(msg.parsedContent.answer_text)"></div>
 
                     <!-- SEARCH INTENT: Structures Grid -->
                     <div class="rag-items-grid" *ngIf="msg.parsedContent.intent === 'SEARCH' && msg.parsedContent.items.length > 0">
@@ -72,10 +70,12 @@
                 </div>
             </div>
 
-            <div class="message bot typing" *ngIf="isTyping">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+            <div class="message bot" *ngIf="isTyping">
+                <div class="message-content typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </div>
 

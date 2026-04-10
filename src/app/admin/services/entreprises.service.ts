@@ -32,7 +32,7 @@ export class EntreprisesService {
 
   getAllEntreprises(page: number = 0, size: number = 10): Observable<any> {
     const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<any>(this.apiUrl, { params });
+    return this.http.get<any>(`${this.apiUrl}/public`, { params });
   }
 
   getEntreprisesEnAttente(page: number = 0, size: number = 10): Observable<any> {
@@ -66,20 +66,14 @@ export class EntreprisesService {
   }
 
   searchEntreprises(query: string, page: number = 0, size: number = 10): Observable<any> {
-    const params = new HttpParams().set('query', query).set('page', page).set('size', size);
-    return this.http.get<any>(`${this.apiUrl}/search`, { params });
+    const params = new HttpParams().set('page', page).set('size', size);
+    const body: any = {};
+    if (query) body.nom = query;
+    return this.http.post<any>(`${this.apiUrl}/public/search`, body, { params });
   }
 
   setEntreprise(structure: Entreprise | null) {
     this.structureSubject.next(structure);
   }
 
-  // --- STATS & TRACKING ---
-  recordView(id: string, userId?: string, visitorHash?: string): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}/structureStats/${id}/view`, { userId, visitorHash });
-  }
-
-  recordContactClick(id: string, type: string, visitorHash?: string, userId?: string, clickedUrl?: string): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}/structureStats/${id}/contact-click`, { type, visitorHash, userId, clickedUrl });
-  }
 }

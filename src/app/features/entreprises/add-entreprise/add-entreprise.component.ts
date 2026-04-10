@@ -50,7 +50,7 @@ export class AddEntrepriseComponent implements OnInit {
   };
 
   newService = { nom: '', description: '', prix: 0 };
-  newHoraire: Horaire = { jour: 'LUNDI', heureOuverture: '08:00', heureFermeture: '18:00' };
+  newHoraire: Horaire = { jourSemaine: 'LUNDI', heureDeDebut: '08:00', heureDeFin: '18:00' };
   newLocalisation: Localisation = { adresse: '', quartier: '', telephone: '', latitude: 4.0511, longitude: 9.7679 };
 
   categories: { nom: string; sousCategories: string[] }[] = [
@@ -109,9 +109,9 @@ export class AddEntrepriseComponent implements OnInit {
   addHoraire() {
     this.entreprise.horaires?.push({ ...this.newHoraire });
     // Cycle to next day for convenience
-    const currentIndex = this.joursSemaine.indexOf(this.newHoraire.jour || 'LUNDI');
+    const currentIndex = this.joursSemaine.indexOf(this.newHoraire.jourSemaine || 'LUNDI');
     if (currentIndex < 6) {
-      this.newHoraire.jour = this.joursSemaine[currentIndex + 1];
+      this.newHoraire.jourSemaine = this.joursSemaine[currentIndex + 1];
     }
   }
 
@@ -136,137 +136,131 @@ export class AddEntrepriseComponent implements OnInit {
   }
 
   finishStep1() {
-    this.feedback.showLoader();
-    this.entrepriseService.ajouterEntreprise(this.entreprise).subscribe({
-      next: (res) => {
-        this.structureId = res.id as string;
-        this.feedback.hideLoader();
-        this.currentStep = 2;
-      },
-      error: (err: any) => {
-        this.feedback.hideLoader();
-        this.feedback.error('Erreur lors de la création initiale de la structure');
-      }
-    });
+    this.currentStep = 2;
   }
 
   finishStep2() {
-    if (!this.structureId) return;
-    this.feedback.showLoader();
-    const horaires = this.entreprise.horaires || [];
-
-    // Map to backend expected properties
-    const mappedHoraires = horaires.map(h => ({
-      jourSemaine: h.jour,
-      heureDeDebut: h.heureOuverture + ':00', // Assuming time needs seconds in some standard cases or backend handles standard time, standard is "HH:mm". Testing showed time format might be strict. "08:00:00" might be needed if format is 'time', but format 'time' can be strict. I'll pass standard HH:mm:ss if it fails, but mostly backends parse HH:mm. Let's send what the UI produces (usually HH:mm) + ":00" to be safe since type is LocalTime.
-      heureDeFin: h.heureFermeture + ':00',
-      ouvertWeekend: h.jour === 'SAMEDI' || h.jour === 'DIMANCHE'
-    }));
-
-    this.entrepriseService.saveHorairesBatch(mappedHoraires, this.structureId).subscribe({
-      next: () => {
-        this.feedback.hideLoader();
-        this.currentStep = 3;
-      },
-      error: () => {
-        this.feedback.hideLoader();
-        this.feedback.error('Erreur lors de l’enregistrement des horaires');
-      }
-    });
+    this.currentStep = 3;
   }
 
   finishStep3() {
-    if (!this.structureId) return;
-    this.feedback.showLoader();
-    const services = this.entreprise.services || [];
-    this.entrepriseService.saveServicesBatch(services, this.structureId).subscribe({
-      next: () => {
-        this.feedback.hideLoader();
-        this.currentStep = 4;
-      },
-      error: () => {
-        this.feedback.hideLoader();
-        this.feedback.error('Erreur lors de l’enregistrement des services');
-      }
-    });
+    this.currentStep = 4;
   }
 
   finishStep4() {
-    if (!this.structureId) return;
-    // Add current pending localisation if any
     if (this.newLocalisation.adresse || this.newLocalisation.quartier) {
       this.addLocalisation();
     }
-
     if (!this.entreprise.localisation || this.entreprise.localisation.length === 0) {
       this.feedback.error('Veuillez ajouter au moins une localisation');
       return;
     }
-
-    this.feedback.showLoader();
-
-    // Map to backend expected properties
-    const mappedLocalisations = this.entreprise.localisation.map(loc => ({
-      address: loc.adresse,
-      quartier: loc.quartier,
-      telephone: loc.telephone,
-      latitude: loc.latitude,
-      longitude: loc.longitude
-    }));
-
-    this.entrepriseService.saveLocalisationsBatch(mappedLocalisations, this.structureId).subscribe({
-      next: () => {
-        this.feedback.hideLoader();
-        this.currentStep = 5; // Move to photos step
-      },
-      error: () => {
-        this.feedback.hideLoader();
-        this.feedback.error('Erreur lors de l’enregistrement de la localisation');
-      }
-    });
+    this.currentStep = 5;
   }
 
+  pendingPhotos: { file: File, url: string }[] = [];
+
   onFileSelected(event: any) {
-    if (!this.structureId) {
-      this.feedback.error('Structure non créée completement');
-      return;
-    }
     const file: File = event.target.files[0];
     if (file) {
-      this.isUploading = true;
-      this.entrepriseService.savePhoto(file, this.token, this.structureId).subscribe({
-        next: (photo) => {
-          this.uploadedPhotos.push(photo);
-          this.isUploading = false;
-          this.feedback.success('Photo ajoutée avec succès');
-        },
-        error: (err) => {
-          this.isUploading = false;
-          this.feedback.error("Erreur lors de l'ajout de la photo");
-        }
-      });
+      // Create local preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.pendingPhotos.push({ file: file, url: e.target.result });
+      };
+      reader.readAsDataURL(file);
     }
     event.target.value = ''; // Reset input
   }
 
-  getPhotoUrl(photoId: string): string {
-    return `${environment.apiUrl}/photos/public/${photoId}/image`;
+  getPhotoUrl(photo: any): string {
+    return photo.url || `${environment.apiUrl}/photos/public/${photo.id}/image`;
   }
 
   removePhoto(photoId: string, index: number) {
-    if (!this.structureId) return;
-    this.entrepriseService.removePhoto(photoId, this.token, this.structureId).subscribe({
-      next: () => {
-        this.uploadedPhotos.splice(index, 1);
-        this.feedback.success('Photo supprimée');
-      },
-      error: () => this.feedback.error('Erreur lors de la suppression de la photo')
-    });
+    if (this.pendingPhotos[index]) {
+       this.pendingPhotos.splice(index, 1);
+       return;
+    }
+    // Logic for existing remote photos (if editing later)
   }
 
   finishStep5() {
-    this.feedback.success('Structure créée avec succès !');
-    this.onBack(); // Redirect back
+    this.feedback.showLoader();
+
+    // 1. Create Structure
+    this.entrepriseService.ajouterEntreprise(this.entreprise).subscribe({
+      next: (res) => {
+        const id = res.id as string;
+        this.structureId = id;
+        
+        // Prepare Batches
+        const horaires = this.entreprise.horaires || [];
+        const mappedHoraires = horaires.map(h => {
+          const debut = h.heureDeDebut || '08:00';
+          const fin = h.heureDeFin || '18:00';
+          return {
+            jourSemaine: h.jourSemaine,
+            heureDeDebut: debut.length <= 5 ? debut + ':00' : debut,
+            heureDeFin: fin.length <= 5 ? fin + ':00' : fin,
+            ouvertWeekend: h.jourSemaine === 'SAMEDI' || h.jourSemaine === 'DIMANCHE'
+          };
+        });
+
+        const services = this.entreprise.services || [];
+        
+        const locs = this.entreprise.localisation || [];
+        const mappedLocalisations = locs.map(loc => ({
+          address: loc.adresse,
+          quartier: loc.quartier,
+          telephone: loc.telephone,
+          latitude: loc.latitude,
+          longitude: loc.longitude
+        }));
+
+        import('rxjs').then(({ forkJoin, of, from }) => {
+          import('rxjs/operators').then(({ concatMap }) => {
+            
+            const reqHoraires = mappedHoraires.length > 0 ? this.entrepriseService.saveHorairesBatch(mappedHoraires, id) : of(null);
+            const reqServices = services.length > 0 ? this.entrepriseService.saveServicesBatch(services, id) : of(null);
+            const reqLocs = mappedLocalisations.length > 0 ? this.entrepriseService.saveLocalisationsBatch(mappedLocalisations, id) : of(null);
+
+            forkJoin([reqHoraires, reqServices, reqLocs]).subscribe({
+              next: () => {
+                // Upload pending photos sequentially if any
+                if (this.pendingPhotos.length > 0) {
+                   from(this.pendingPhotos).pipe(
+                     concatMap(photo => this.entrepriseService.savePhoto(photo.file, this.token, id))
+                   ).subscribe({
+                     next: () => {},
+                     error: () => console.error('Photo upload error'),
+                     complete: () => {
+                       this.feedback.hideLoader();
+                       this.feedback.success('Structure créée avec succès !');
+                       this.onBack();
+                     }
+                   });
+                } else {
+                   this.feedback.hideLoader();
+                   this.feedback.success('Structure créée avec succès !');
+                   this.onBack();
+                }
+              },
+              error: () => {
+                this.feedback.hideLoader();
+                this.feedback.error('Structure créée, mais la sauvegarde des détails a échoué');
+                this.onBack();
+              }
+            });
+          });
+        });
+
+      },
+      error: (err: any) => {
+        this.feedback.hideLoader();
+        this.feedback.error('Erreur lors de la création de la structure');
+      }
+    });
   }
 
   private resetEntreprise() {

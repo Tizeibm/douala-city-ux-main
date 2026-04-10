@@ -71,9 +71,8 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     }
 
     ngAfterViewChecked() {
-        if (isPlatformBrowser(this.platformId)) {
-            this.scrollToBottom();
-        }
+        // Only scroll to bottom if we just added a message (handled in addMethods)
+        // Removed aggressive scrollToBottom from here to allow user manual scrolling
     }
 
     loadHistory(convId: string) {
@@ -119,7 +118,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     @HostListener('document:mousemove', ['$event'])
     @HostListener('document:touchmove', ['$event'])
     onMouseMove(event: MouseEvent | TouchEvent) {
-        if (!this.isDragging) return;
+        if (!this.isDragging || this.isOpen) return; // Ignore drag when open
 
         const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
         const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
@@ -150,6 +149,9 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
         this.isOpen = !this.isOpen;
         if (!this.isOpen) {
             this.isExpanded = false;
+        } else {
+            // Scroll to last message when opening
+            this.scrollToBottom();
         }
     }
 
@@ -205,22 +207,99 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
         this.scrollToBottom();
     }
 
-    private tryParseRag(content: string): RagResponse | undefined {
-        if (!content.trim().startsWith('{')) return undefined;
-        try {
-            const data = JSON.parse(content);
-            if (data.intent && data.answer_text) {
-                return data as RagResponse;
+    private tryParseRag(content: any): RagResponse | undefined {
+        if (!content) return undefined;
+
+        // --- STEP 0: Object Handling ---
+        if (typeof content === 'object') {
+            if (content.answer_text) {
+                return {
+                    intent: content.intent || 'UNKNOWN',
+                    answer_text: content.answer_text,
+                    items: content.items || []
+                };
             }
-        } catch (e) {}
+        }
+
+        if (typeof content !== 'string') return undefined;
+        
+        // --- STEP 1: Find potential JSON block ---
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) return undefined;
+
+        let potentialJson = jsonMatch[0].trim();
+
+        // --- STEP 2: Sanitize Malformed JSON (Literal Newlines) ---
+        // LLMs sometimes output real newlines inside "..." strings, which breaks JSON.parse.
+        // We replace literal newlines that occur within double quotes with \n.
+        try {
+            // First, remove invisible characters like BOM
+            potentialJson = potentialJson.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, '');
+            
+            // Heuristic to escape newlines inside string values:
+            // This looks for newlines that are not preceded by a comma, brace, or bracket (structural)
+            // But a simpler approach is to use JSON.parse and caught errors.
+            // Let's try to replace all literal newlines with escaped \n if they seem to be inside a value.
+            const sanitized = potentialJson.replace(/:\s*"([^"]*)"/g, (match, p1) => {
+                return ': "' + p1.replace(/\n/g, '\\n') + '"';
+            });
+            
+            const data = JSON.parse(sanitized);
+            
+            if (data && data.answer_text) {
+                return {
+                    intent: data.intent || 'UNKNOWN',
+                    answer_text: data.answer_text,
+                    items: data.items || []
+                };
+            }
+        } catch (e1) {
+            // Fallback: try parsing the original without sanitation if that somehow works
+            try {
+                const data = JSON.parse(potentialJson);
+                if (data && data.answer_text) {
+                    return {
+                        intent: data.intent || 'UNKNOWN',
+                        answer_text: data.answer_text,
+                        items: data.items || []
+                    };
+                }
+            } catch (e2) {}
+        }
         return undefined;
+    }
+
+    /**
+     * Simple markdown-to-html formatter for the chatbot
+     */
+    renderMarkdown(text: string): string {
+        if (!text) return '';
+        
+        let html = text
+            // Bold: **text**
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Italic: *text*
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // New lines: \n
+            .replace(/\n/g, '<br>');
+            
+        return html;
     }
 
     goToStructure(id: string | undefined) {
         if (!id) return;
+        
+        // UUID Regex: 8-4-4-4-12 hex characters
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        
+        if (!uuidRegex.test(id)) {
+            console.warn('Chatbot returned an invalid ID:', id);
+            return; // Ignore invalid IDs (hallucinations like "1", "2")
+        }
+
         this.isOpen = false;
         this.isExpanded = false;
-        this.router.navigate(['/establishments', id]);
+        this.router.navigate(['/structdet', id.toString()]);
     }
 
     private scrollToBottom(): void {

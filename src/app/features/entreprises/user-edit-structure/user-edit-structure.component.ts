@@ -117,10 +117,17 @@ export class UserEditStructureComponent implements OnInit {
 
         this.entreprisesService.updateStructure(structureData, token, id).subscribe({
           next: () => {
-            // Handle photos here as well
             this.saveNewPhotos(token, id);
             if (this.pendingMainPhoto) {
-              this.entreprisesService.updateMainPhoto(this.pendingMainPhoto, token, id).subscribe();
+              this.entreprisesService.savePhoto(this.pendingMainPhoto, token, id).subscribe({
+                next: (res) => {
+                  if (res.id) {
+                    this.entreprisesService.updateMainPhoto(res.id).subscribe();
+                  }
+                  this.photoState.addphotos(res);
+                  this.pendingMainPhoto = null; // Clear after success
+                }
+              });
             }
             this.feedback.hideLoader();
             resolve(true);
@@ -189,7 +196,6 @@ export class UserEditStructureComponent implements OnInit {
     this.step--;
   }
 
-  backendUrl = "http://localhost:8080/";
   structureForm!: FormGroup;
   localisations: any[] = [];
   pendingFiles = new Map<number, File>();

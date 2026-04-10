@@ -1,97 +1,200 @@
-<div class="annonce-details-page">
-    <!-- Header / Navbar -->
-    <header class="detail-header">
-        <div class="container header-container">
-            <button class="btn-back" (click)="goBack()">
-                <i class="fas fa-arrow-left"></i>
-                <span>Retour</span>
+<div class="annonce-detail-page" [ngClass]="annonce?.type?.toLowerCase() || 'autres'">
+
+    <!-- ═══════════ SKELETON LOADER ═══════════ -->
+    <div *ngIf="loading" class="skeleton-page">
+        <div class="skeleton-hero">
+            <div class="skeleton-item sk-breadcrumb"></div>
+            <div class="skeleton-item sk-badge"></div>
+            <div class="skeleton-item sk-title"></div>
+            <div class="skeleton-item sk-meta"></div>
+        </div>
+        <div class="container skeleton-content">
+            <div class="skeleton-item sk-block"></div>
+            <div class="skeleton-item sk-block short"></div>
+            <div class="skeleton-photos">
+                <div class="skeleton-item sk-photo" *ngFor="let i of [1,2,3]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ ERROR STATE ═══════════ -->
+    <div *ngIf="error && !loading" class="error-state-page">
+        <div class="error-card">
+            <div class="error-icon-wrapper">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Oups, annonce introuvable</h2>
+            <p>{{error}}</p>
+            <button class="btn-back-error" (click)="goBack()">
+                <i class="fas fa-arrow-left"></i> Retourner aux annonces
             </button>
-            <div class="header-actions">
-                <button class="btn-action" (click)="share()" title="Partager">
-                    <i class="fas fa-share-alt"></i>
-                </button>
-                <button class="btn-action" title="Sauvegarder">
-                    <i class="far fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="loading-state flex justify-center items-center py-20">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Chargement...</span>
         </div>
     </div>
 
-    <!-- Error State -->
-    <div *ngIf="error" class="error-state container text-center py-20">
-        <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-        <h2 class="text-2xl font-bold text-gray-800">{{error}}</h2>
-        <button class="btn btn-primary mt-6" (click)="goBack()">Retourner</button>
-    </div>
+    <!-- ═══════════ MAIN PAGE ═══════════ -->
+    <ng-container *ngIf="annonce && !loading && !error">
 
-    <!-- Main Content -->
-    <main *ngIf="annonce && !loading && !error" class="container content-wrapper">
-        <article class="annonce-card">
-
-            <!-- Type Badge & Date -->
-            <div class="meta-header">
-                <div class="badge-type" [ngClass]="annonce.type.toLowerCase() || 'autres'">
-                    <i
-                        [class]="getAnnonceIcon(annonce.type) | slice:0:getAnnonceIcon(annonce.type).indexOf('text-') - 1"></i>
-                    {{ annonce.type || 'Annonce' }}
-                </div>
-                <div class="date-published">
-                    <i class="far fa-calendar-alt"></i> Publié le {{ annonce.dateCreation | date:'dd MMM yyyy à HH:mm'
-                    }}
-                </div>
+        <!-- ── HERO BANNER ── -->
+        <header class="hero-banner" [style.background]="getHeroImageUrl() ? 'none' : getHeroGradient(annonce.type)">
+            <!-- Background image if photo exists -->
+            <div class="hero-bg" *ngIf="getHeroImageUrl()"
+                [style.backgroundImage]="'url(' + getHeroImageUrl() + ')'"
+                (click)="annonce.photos && annonce.photos.length > 0 && openPhoto(annonce.photos[0])">
             </div>
+            <div class="hero-gradient"></div>
 
-            <!-- Title Section -->
-            <h1 class="annonce-title">{{ annonce.titre }}</h1>
+            <div class="container hero-content">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb-trail">
+                    <a routerLink="/">Accueil</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a routerLink="/annonces">Annonces</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>{{ getTypeLabel(annonce.type) }}</span>
+                </nav>
 
-            <div class="author-info" *ngIf="annonce.structureId || annonce.user">
-                <div class="avatar" [class.structure]="annonce.structureId">
-                    <i class="fas" [ngClass]="annonce.structureId ? 'fa-building' : 'fa-user-circle'"></i>
+                <!-- Type Badge -->
+                <div class="hero-tags">
+                    <span class="tag type-tag" [ngClass]="annonce.type?.toLowerCase() || 'autres'">
+                        <i [class]="getAnnonceIcon(annonce.type)"></i>
+                        {{ getTypeLabel(annonce.type) }}
+                    </span>
+                    <span class="tag date-tag">
+                        <i class="far fa-calendar-alt"></i>
+                        {{ annonce.dateCreation | date:'dd MMM yyyy' }}
+                    </span>
                 </div>
-                <div class="author-details">
-                    <span class="name">{{annonce.user?.nom || annonce.user?.email || 'Auteur'}}</span>
-                    <span class="role">{{annonce.structureId ? 'Structure' : 'Auteur individuel'}}</span>
-                </div>
-            </div>
 
-            <!-- Photos Gallery -->
-            <div class="annonce-photos mt-lg" *ngIf="annonce.photos && annonce.photos.length > 0">
-                <h3 class="section-heading">Photos</h3>
-                <div class="photos-grid">
-                    <div class="photo-item" *ngFor="let photo of annonce.photos">
-                        <img [src]="apiUrl + '/photos/public/' + photo.id + '/thumbnail'"
-                            alt="Annonce photo" class="annonce-img" (click)="openPhoto(photo)">
+                <!-- Title -->
+                <div class="hero-title-block">
+                    <h1>{{ annonce.titre || 'Annonce' }}</h1>
+                </div>
+
+                <!-- Author Quick Info -->
+                <div class="hero-author" *ngIf="annonce.user">
+                    <div class="author-avatar" [class.structure]="annonce.structureId">
+                        <i class="fas" [ngClass]="annonce.structureId ? 'fa-building' : 'fa-user'"></i>
+                    </div>
+                    <div class="author-meta">
+                        <span class="author-name">{{ annonce.user?.nom || annonce.user?.email || 'Auteur' }}</span>
+                        <span class="author-role">{{ annonce.structureId ? 'Structure vérifiée' : 'Auteur individuel' }}</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Main Content Area -->
-            <div class="annonce-body">
-                <h3 class="section-heading">Description détaillée</h3>
-                <div class="description-content">
-                    {{ annonce.description }}
+                <!-- Hero Actions -->
+                <div class="hero-actions">
+                    <button class="btn-hero primary" (click)="contactAuthor()">
+                        <i class="fas fa-phone-alt"></i> Contacter
+                    </button>
+                    <button class="btn-hero glass" (click)="share()">
+                        <i class="fas fa-share-alt"></i> Partager
+                    </button>
+                    <button class="btn-hero glass" title="Sauvegarder">
+                        <i class="far fa-heart"></i>
+                    </button>
                 </div>
             </div>
+        </header>
 
-            <!-- Call to Action -->
-            <div class="action-footer">
-                <div class="pricing-info" *ngIf="annonce.type === 'VENTE' || annonce.type === 'IMMOBILIER'">
-                    <span class="price-label">Prix indicatif:</span>
-                    <span class="price-value">Sur demande</span>
+        <!-- ═══════════ MAIN CONTENT ═══════════ -->
+        <main class="container content-grid">
+
+            <!-- ── DESCRIPTION ── -->
+            <section class="section-block">
+                <h2 class="section-heading"><i class="fas fa-align-left"></i> Description</h2>
+                <div class="info-card glass">
+                    <div class="description-content">{{ annonce.description }}</div>
+
+                    <!-- Quick info pills -->
+                    <div class="quick-pills" *ngIf="annonce.type === 'VENTE' || annonce.type === 'IMMOBILIER'">
+                        <div class="pill">
+                            <i class="fas fa-coins"></i>
+                            <div>
+                                <span class="pill-label">Prix indicatif</span>
+                                <span class="pill-value">Sur demande</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </section>
 
-                <button class="btn-contact-primary" (click)="contactAuthor()">
-                    <i class="fas fa-phone-alt mr-2"></i> Contacter l'auteur
-                </button>
+            <!-- ── PHOTO GALLERY ── -->
+            <section class="section-block" *ngIf="annonce.photos && annonce.photos.length > 0">
+                <h2 class="section-heading"><i class="fas fa-images"></i> Galerie Photos</h2>
+                <div class="photo-mosaic">
+                    <div *ngFor="let p of annonce.photos; let i = index"
+                        class="mosaic-item"
+                        [class.large]="i === 0"
+                        (click)="openPhoto(p)">
+                        <img [src]="getPhotoUrl(p)" [alt]="(annonce.titre || 'Annonce') + ' photo ' + (i+1)">
+                        <div class="mosaic-overlay">
+                            <i class="fas fa-expand"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── LINKED STRUCTURE ── -->
+            <section class="section-block" *ngIf="linkedStructure">
+                <h2 class="section-heading"><i class="fas fa-building"></i> Structure associée</h2>
+                <div class="structure-link-card glass" (click)="goToStructure()">
+                    <div class="slc-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="slc-info">
+                        <h3>{{ linkedStructure.nom }}</h3>
+                        <span class="slc-category" *ngIf="linkedStructure.categorieNom">
+                            <i class="fas fa-tag"></i> {{ linkedStructure.categorieNom }}
+                        </span>
+                        <span class="slc-address" *ngIf="linkedStructure.localisations?.[0]?.adresse">
+                            <i class="fas fa-map-pin"></i> {{ linkedStructure.localisations[0].adresse }}
+                        </span>
+                    </div>
+                    <div class="slc-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── CONTACT CTA ── -->
+            <section class="section-block">
+                <h2 class="section-heading"><i class="fas fa-envelope-open-text"></i> Contact</h2>
+                <div class="cta-card">
+                    <div class="cta-content">
+                        <div class="cta-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div class="cta-text">
+                            <h3>Intéressé par cette annonce ?</h3>
+                            <p>Contactez directement l'auteur pour en savoir plus.</p>
+                        </div>
+                    </div>
+                    <button class="btn-contact-main" (click)="contactAuthor()">
+                        <i class="fas fa-phone-alt"></i> Contacter l'auteur
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ═══════════ STICKY MOBILE CTA ═══════════ -->
+        <div class="sticky-cta-bar">
+            <div class="sticky-cta-info">
+                <span class="sticky-type">{{ getTypeLabel(annonce.type) }}</span>
+                <span class="sticky-title">{{ annonce.titre || 'Annonce' }}</span>
             </div>
+            <button class="btn-sticky-contact" (click)="contactAuthor()">
+                <i class="fas fa-phone-alt"></i> Contacter
+            </button>
+        </div>
 
-        </article>
-    </main>
+        <!-- ═══════════ FULLSCREEN IMAGE OVERLAY ═══════════ -->
+        <div class="image-overlay-fullscreen" *ngIf="selectedImageUrl" (click)="closeImage()">
+            <button class="btn-close-overlay" (click)="closeImage()" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+            <img [src]="selectedImageUrl" class="fullscreen-image" (click)="$event.stopPropagation()">
+        </div>
+
+    </ng-container>
 </div>

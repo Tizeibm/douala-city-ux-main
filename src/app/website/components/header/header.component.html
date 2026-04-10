@@ -1,8 +1,8 @@
 <header class="header">
   <div class="container nav-wrapper">
     <!-- Brand (always visible) -->
-    <a routerLink="/accueil" class="brand">
-      <img src="favicon.ico" class="logo-img" alt="Douala City"> Douala City
+    <a routerLink="/accueil" class="brand" style="display: flex; align-items: center; gap: 10px;">
+      <img src="/favicon.ico" class="logo-img" alt="Douala City" style="height: 40px; border-radius: 5px;"> Douala City
     </a>
 
     <!-- Mobile toggle (visible on small screens) -->
@@ -62,7 +62,7 @@
           </a>
           <button *ngIf="utilisateur.role === 'USER'" (click)="logout()">Déconnexion</button>
         </div>
-        <app-notifications-center></app-notifications-center>
+        <app-notifications-center *ngIf="utilisateur"></app-notifications-center>
       </div>
     </div>
   </div>

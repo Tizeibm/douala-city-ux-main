@@ -1,185 +1,398 @@
-<section class="hero-section">
-  <div class="hero-content animate-fade-in">
-    <div class="hero-badge">Plateforme #1 à Douala</div>
-    <h1 class="hero-title">Découvrez le meilleur de <span class="highlight">Douala</span></h1>
-    <p class="hero-subtitle">Trouvez, contactez et visitez les commerces et services qui font battre le cœur de la ville.</p>
+<!-- ═══════════════════════════════════════════════════════════════
+     DOUALA CITY — HOME PAGE (REDESIGN 2026)
+     Inspired by: Yelp, Airbnb, TripAdvisor, PagesJaunes, Clutch.co
+     ═══════════════════════════════════════════════════════════════ -->
 
-    <div class="search-container glass-morphism">
-      <form class="search-form" (ngSubmit)="onSearch()">
-        <div class="input-group what">
-          <i class="fas fa-search input-icon"></i>
-          <input type="text" name="q" [(ngModel)]="searchQuery" placeholder="Quoi, qui ? (ex: Restaurant, Garage...)"
-            class="search-input">
+<!-- 1. 🔝 HERO — Luminous Mesh Gradient, Search-First -->
+<section class="hero-section" id="hero">
+  <div class="mesh-gradient-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="hero-content container">
+    <div class="hero-badge animate-fade-in">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>Douala — Capitale Économique du Cameroun</span>
+    </div>
+
+    <h1 class="hero-title animate-slide-up">
+      Trouvez tout ce dont <br>
+      <span class="text-gradient-hero">vous avez besoin.</span>
+    </h1>
+
+    <p class="hero-subtitle animate-fade-in">
+      L'annuaire intelligent de la ville. Commerces, services, santé, restaurants —
+      tout Douala en un clic.
+    </p>
+
+    <!-- Search-First Interface (Yelp/Airbnb Style) -->
+    <div class="search-wrapper-v2 animate-scale-up">
+      <form class="search-form-v2" (ngSubmit)="onSearch()">
+        <div class="search-group-v2">
+          <div class="search-label-v2">
+            <i class="fas fa-search"></i>
+            <span>Quoi ?</span>
+          </div>
+          <input type="text" name="q" [(ngModel)]="searchQuery" (input)="onSearchInput()"
+                 (blur)="hideSuggestions()" autocomplete="off"
+                 placeholder="Restaurant, Pharmacie, Hôtel..."
+                 class="search-input-v2" id="search-what">
+
+          <!-- Enhanced Suggestions Dropdown -->
+          <div class="suggestions-dropdown-v2" *ngIf="isSuggestionsVisible && suggestedStructures.length > 0">
+            <div class="sugg-header">
+              <i class="fas fa-bolt"></i> Résultats rapides
+            </div>
+            <div class="suggestion-item-v2" *ngFor="let structure of suggestedStructures; let i = index"
+                 (mousedown)="selectSuggestion(structure)" [style.animation-delay]="i * 50 + 'ms'">
+              <div class="sugg-avatar">
+                <i class="fas fa-store"></i>
+              </div>
+              <div class="sugg-info">
+                <span class="sugg-name">{{structure.nom}}</span>
+                <span class="sugg-meta">
+                  <i class="fas fa-tag"></i> {{structure.categorieNom}}
+                </span>
+              </div>
+              <i class="fas fa-chevron-right sugg-arrow"></i>
+            </div>
+          </div>
         </div>
-        <div class="divider"></div>
-        <div class="input-group where">
-          <i class="fas fa-map-marker-alt input-icon"></i>
-          <select name="zone" [(ngModel)]="searchZone" class="search-select">
-            <option value="">Où ? (Toute la ville)</option>
-            <option value="Akwa">Akwa</option>
-            <option value="Bonapriso">Bonapriso</option>
-            <option value="Bonamoussadi">Bonamoussadi</option>
-            <option value="Deïdo">Deïdo</option>
-            <option value="Logbessou">Logbessou</option>
-            <option value="Bali">Bali</option>
-            <option value="Koumassi">Koumassi</option>
-          </select>
+
+        <div class="search-divider-v2"></div>
+
+        <div class="search-group-v2">
+          <div class="search-label-v2">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Où ?</span>
+          </div>
+          <input list="neighborhoods" name="zone" [(ngModel)]="searchZone"
+                 placeholder="Akwa, Bonapriso, Deïdo..."
+                 class="search-input-v2" id="search-where">
+          <datalist id="neighborhoods">
+            <option value="Akwa">
+            <option value="Bonapriso">
+            <option value="Bonamoussadi">
+            <option value="Deïdo">
+            <option value="Logbessou">
+            <option value="Logpom">
+            <option value="Bali">
+          </datalist>
         </div>
-        <button type="submit" class="btn-search">
-          <span class="btn-text">Rechercher</span>
-          <i class="fas fa-arrow-right"></i>
+
+        <button type="submit" class="btn-search-v2" id="btn-search">
+          <i class="fas fa-search"></i>
+          <span>Rechercher</span>
         </button>
       </form>
     </div>
 
-    <div class="quick-categories">
-      <span>Recherches populaires :</span>
-      <div class="category-tags">
-        <a routerLink="/categories/restauration" class="tag">Restaurants</a>
-        <a routerLink="/categories/sante" class="tag">Pharmacies</a>
-        <a routerLink="/categories/hebergement" class="tag">Hôtels</a>
-        <a routerLink="/categories/services" class="tag">Coiffure</a>
-      </div>
+    <!-- Quick Categories (replaces "Populaire" pills) -->
+    <div class="quick-categories animate-fade-in">
+      <a *ngFor="let cat of quickCategories; let i = index"
+         [routerLink]="cat.route"
+         class="quick-cat-item"
+         [style.animation-delay]="(i * 80 + 400) + 'ms'">
+        <span class="quick-cat-emoji">{{cat.emoji}}</span>
+        <span class="quick-cat-label">{{cat.label}}</span>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- Featured Structures Section -->
-<section class="section featured-section">
+<!-- 2. ⭐ STRUCTURES EN VEDETTE — Carrousel Horizontal -->
+<section class="section featured-section-v2 scroll-section" id="featured">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header-v2">
       <div>
-        <h2 class="section-title">Établissements en vedette</h2>
-        <p class="section-subtitle">Les pépites locales recommandées par la communauté.</p>
+        <div class="section-eyebrow"><i class="fas fa-fire"></i> Populaire</div>
+        <h2 class="section-title-v2">Établissements en vedette</h2>
+        <p class="section-subtitle-v2">Les pépites locales recommandées par la communauté.</p>
       </div>
-      <a routerLink="/resultats" class="btn-view-all">Voir tout <i class="fas fa-chevron-right"></i></a>
+      <a routerLink="/resultats" class="btn-view-all-v2">
+        Voir tout <i class="fas fa-arrow-right"></i>
+      </a>
     </div>
 
-    <div class="grid cols-4 gaps-lg" *ngIf="!loading; else skeleton">
-      <app-structure-card *ngFor="let structure of featuredStructures" 
-                          [structure]="structure" 
-                          (view)="onViewStructure($event)"></app-structure-card>
+    <div class="featured-carousel" *ngIf="!loading; else skeleton">
+      <div class="carousel-track">
+        <app-structure-card *ngFor="let structure of featuredStructures"
+                            [structure]="structure"
+                            (view)="onViewStructure($event)"></app-structure-card>
+      </div>
     </div>
-    
+
     <ng-template #skeleton>
-      <div class="grid cols-4 gaps-lg">
-        <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+      <div class="featured-carousel">
+        <div class="carousel-track">
+          <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+        </div>
       </div>
     </ng-template>
-    
+
     <div class="empty-state" *ngIf="!loading && featuredStructures.length === 0">
+      <i class="fas fa-map-signs"></i>
       <p>Aucun établissement en vedette pour le moment.</p>
     </div>
   </div>
 </section>
 
-<!-- Categories Grid (Visual focus) -->
-<section class="section categories-section">
+<!-- 3. 🗂️ BENTO GRID — Immersif avec images -->
+<section class="section bento-section-v2 scroll-section" id="categories">
   <div class="container">
-    <h2 class="section-title centered">Parcourez par catégorie</h2>
-    <div class="categories-grid">
-      <a routerLink="/categories/commerces" class="cat-card">
-        <i class="fas fa-shopping-bag"></i>
-        <h3>Commerces</h3>
-      </a>
-      <a routerLink="/categories/restauration" class="cat-card">
-        <i class="fas fa-utensils"></i>
-        <h3>Restauration</h3>
-      </a>
-      <a routerLink="/categories/hebergement" class="cat-card">
-        <i class="fas fa-hotel"></i>
-        <h3>Hébergement</h3>
-      </a>
-      <a routerLink="/categories/sante" class="cat-card">
-        <i class="fas fa-heartbeat"></i>
-        <h3>Santé</h3>
-      </a>
-      <a routerLink="/categories/transport" class="cat-card">
-        <i class="fas fa-car"></i>
-        <h3>Transport</h3>
-      </a>
-      <a routerLink="/categories/loisirs" class="cat-card">
-        <i class="fas fa-glass-cheers"></i>
-        <h3>Loisirs</h3>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Recent Announcements Section -->
-<section class="section news-section glass-surface">
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Dernières Annonces & Bons Plans</h2>
-      <a routerLink="/annonces" class="btn-text-link">Toutes les annonces <i class="fas fa-arrow-right"></i></a>
+    <div class="section-header-v2 centered">
+      <div>
+        <div class="section-eyebrow"><i class="fas fa-compass"></i> Explorer</div>
+        <h2 class="section-title-v2">Explorez Douala par thématique</h2>
+        <p class="section-subtitle-v2">Plongez dans chaque univers pour des résultats ultra-précis.</p>
+      </div>
     </div>
 
-    <div class="grid cols-3 gaps-lg" *ngIf="!loading">
-      <div class="news-card" *ngFor="let annonce of recentAnnonces">
-        <div class="news-badge" [class.promo]="annonce.type === 'OFFRE'">{{ annonce.type }}</div>
-        <div class="news-image">
-           <img *ngIf="annonce.photos?.[0] as photo; else noPhoto" 
-                [src]="'http://localhost:8080/' + photo.filePath" alt="">
-           <ng-template #noPhoto>
-              <img src="assets/img/placeholder-news.jpg" alt="">
-           </ng-template>
+    <div class="bento-grid-v2">
+      <!-- Large: Restauration (with real image) -->
+      <a routerLink="/categories/restauration" class="bento-card bento-lg" id="bento-restauration">
+        <img src="assets/categories/restauration.png" alt="Restaurants à Douala" class="bento-img" loading="lazy">
+        <div class="bento-overlay"></div>
+        <div class="bento-card-content">
+          <span class="bento-tag">🍽️ Gastronomie</span>
+          <h3 class="bento-card-title">Saveurs & Gastronomie</h3>
+          <p class="bento-card-desc">Des échoppes locales aux tables étoilées de la ville.</p>
+          <span class="bento-cta">Explorer <i class="fas fa-arrow-right"></i></span>
         </div>
-        <div class="news-body">
-          <span class="news-date">{{ annonce.dateCreation | date:'dd MMM yyyy' }}</span>
-          <h3 class="news-title">{{ annonce.titre }}</h3>
-          <p class="news-excerpt">{{ annonce.description | slice:0:100 }}...</p>
-          <a [routerLink]="['/annonce', annonce.id]" class="btn-read-more">En savoir plus</a>
+      </a>
+
+      <!-- Medium: Santé (with real image) -->
+      <a routerLink="/categories/sante" class="bento-card bento-md" id="bento-sante">
+        <img src="assets/categories/sante.png" alt="Santé à Douala" class="bento-img" loading="lazy">
+        <div class="bento-overlay"></div>
+        <div class="bento-card-content">
+          <span class="bento-tag">🏥 Santé</span>
+          <h3 class="bento-card-title">Santé & Bien-être</h3>
+          <p class="bento-card-desc">Pharmacies, cliniques et centres de soins.</p>
+          <span class="bento-cta">Explorer <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- Small: Shopping (with real image) -->
+      <a routerLink="/categories/commerces" class="bento-card bento-sm" id="bento-shopping">
+        <img src="assets/categories/shopping.png" alt="Shopping à Douala" class="bento-img" loading="lazy">
+        <div class="bento-overlay"></div>
+        <div class="bento-card-content">
+          <span class="bento-tag">🛍️</span>
+          <h3 class="bento-card-title">Shopping</h3>
+          <span class="bento-cta">Explorer <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- Small: Transport (CSS gradient fallback) -->
+      <a routerLink="/categories/transport" class="bento-card bento-sm bento-gradient-transport" id="bento-transport">
+        <div class="bento-overlay"></div>
+        <div class="bento-card-content">
+          <span class="bento-tag">🚗</span>
+          <h3 class="bento-card-title">Transport</h3>
+          <span class="bento-cta">Explorer <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- Medium: Hébergement (CSS gradient fallback) -->
+      <a routerLink="/categories/hebergement" class="bento-card bento-md bento-gradient-hotel" id="bento-hotel">
+        <div class="bento-overlay"></div>
+        <div class="bento-card-content">
+          <span class="bento-tag">🏨 Séjour</span>
+          <h3 class="bento-card-title">Séjour & Hôtels</h3>
+          <p class="bento-card-desc">Trouvez le meilleur refuge pour vos nuits à Douala.</p>
+          <span class="bento-cta">Explorer <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- Medium: Services (CSS gradient fallback) -->
+      <a routerLink="/categories/services" class="bento-card bento-md bento-gradient-services" id="bento-services">
+        <div class="bento-overlay"></div>
+        <div class="bento-card-content">
+          <span class="bento-tag">💼 Pro</span>
+          <h3 class="bento-card-title">Services & Pro</h3>
+          <p class="bento-card-desc">Experts et solutions pour votre quotidien.</p>
+          <span class="bento-cta">Explorer <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 4. 📖 COMMENT ÇA MARCHE — 3 Steps -->
+<section class="section how-it-works-section scroll-section" id="how-it-works">
+  <div class="container">
+    <div class="section-header-v2 centered">
+      <div>
+        <div class="section-eyebrow"><i class="fas fa-lightbulb"></i> Simple & Rapide</div>
+        <h2 class="section-title-v2">Comment ça marche ?</h2>
+        <p class="section-subtitle-v2">Trouvez ce que vous cherchez en 3 étapes simples.</p>
+      </div>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card" *ngFor="let step of howItWorksSteps; let i = index">
+        <div class="step-number">{{i + 1}}</div>
+        <div class="step-icon-wrapper">
+          <i [class]="'fas ' + step.icon"></i>
+        </div>
+        <h3 class="step-title">{{step.title}}</h3>
+        <p class="step-desc">{{step.description}}</p>
+      </div>
+      <!-- Connection lines between steps -->
+      <div class="step-connector step-connector-1"></div>
+      <div class="step-connector step-connector-2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 📰 ACTUALITÉS & BONS PLANS -->
+<section class="section news-section-v2 scroll-section" id="news">
+  <div class="container">
+    <div class="section-header-v2">
+      <div>
+        <div class="section-eyebrow"><i class="fas fa-newspaper"></i> Actualités</div>
+        <h2 class="section-title-v2">Actualités & Bons Plans</h2>
+        <p class="section-subtitle-v2">Ne manquez rien des événements et promotions à Douala.</p>
+      </div>
+      <a routerLink="/annonces" class="btn-view-all-v2">
+        Toutes les annonces <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="news-grid-v2" *ngIf="!loading">
+      <div class="news-card-v2" *ngFor="let annonce of recentAnnonces; let i = index"
+           [style.animation-delay]="i * 100 + 'ms'">
+        <div class="news-image-wrap">
+          <div class="news-badge-v2" [class.promo]="annonce.type === 'OFFRE'">
+            <i [class]="annonce.type === 'OFFRE' ? 'fas fa-percent' : 'fas fa-bullhorn'"></i>
+            {{ annonce.type }}
+          </div>
+          <img *ngIf="annonce.photos?.[0] as photo; else noPhoto"
+               [src]="getPhotoUrl(photo)" [alt]="annonce.titre" class="news-img-v2">
+          <ng-template #noPhoto>
+            <div class="news-placeholder-v2">
+              <i class="fas fa-newspaper"></i>
+            </div>
+          </ng-template>
+        </div>
+        <div class="news-body-v2">
+          <span class="news-date-v2">
+            <i class="far fa-calendar-alt"></i>
+            {{ annonce.creationDate | date:'dd MMM yyyy' }}
+          </span>
+          <h3 class="news-title-v2">{{ annonce.titre || 'Annonce' }}</h3>
+          <p class="news-excerpt-v2">{{ annonce.description | slice:0:100 }}...</p>
+          <a [routerLink]="['/annonce', getAnnonceId(annonce)]" class="news-link-v2">
+            Lire la suite <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stats Section -->
-<section class="section stats-section">
-  <div class="container grid cols-3 text-center">
-    <div class="stat-item animate-up">
-      <div class="stat-number">500+</div>
-      <div class="stat-label">Entreprises référencées</div>
-    </div>
-    <div class="stat-item animate-up" style="animation-delay: 0.1s">
-      <div class="stat-number">1k+</div>
-      <div class="stat-label">Utilisateurs actifs</div>
-    </div>
-    <div class="stat-item animate-up" style="animation-delay: 0.2s">
-      <div class="stat-number">50+</div>
-      <div class="stat-label">Nouveaux avis / mois</div>
-    </div>
-  </div>
-</section>
-
-<!-- Call to Action Section -->
-<section class="section cta-section">
+<!-- 6. 📊 LA COMMUNAUTÉ — Stats + Témoignages -->
+<section class="section community-section scroll-section" id="community">
   <div class="container">
-    <div class="cta-inner animate-zoom-in">
-      <h2>Vous avez un business à Douala ?</h2>
-      <p>Augmentez votre visibilité et attirez de nouveaux clients en rejoignant DoualaCity dès aujourd'hui.</p>
-      <div class="cta-btns">
-        <a routerLink="/inscription" class="cta cta-primary shadow-coral">Référencer mon entreprise</a>
-        <a routerLink="/contact" class="cta cta-outline">Nous contacter</a>
+    <div class="section-header-v2 centered light-text">
+      <div>
+        <div class="section-eyebrow light"><i class="fas fa-heart"></i> Communauté</div>
+        <h2 class="section-title-v2">Rejoignez la communauté DoualaCity</h2>
+        <p class="section-subtitle-v2">Des milliers de Doualais nous font confiance chaque jour.</p>
+      </div>
+    </div>
+
+    <div class="community-stats-grid">
+      <div class="community-stat-card" *ngFor="let stat of communityStats; let i = index"
+           [style.animation-delay]="i * 150 + 'ms'">
+        <div class="stat-icon-circle">
+          <i [class]="'fas ' + stat.icon"></i>
+        </div>
+        <div class="stat-value-v2">{{stat.value}}</div>
+        <div class="stat-label-v2">{{stat.label}}</div>
+      </div>
+    </div>
+
+    <!-- Trust Badges -->
+    <div class="trust-badges">
+      <div class="trust-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Données vérifiées</span>
+      </div>
+      <div class="trust-badge">
+        <i class="fas fa-sync-alt"></i>
+        <span>Mis à jour en continu</span>
+      </div>
+      <div class="trust-badge">
+        <i class="fas fa-lock"></i>
+        <span>100% Gratuit</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Emergency Numbers (Modernized) -->
-<section class="section emergency-section">
+<!-- 7. 🚀 CTA BANNER — Redesigné -->
+<section class="section cta-section-v2 scroll-section" id="cta">
   <div class="container">
-    <div class="emergency-wrapper">
-      <div class="emergency-info">
-        <h3>Numéros d'Urgence SMS</h3>
-        <p>Gardez ces numéros à portée de main pour toute assistance rapide à Douala.</p>
+    <div class="cta-banner-v2">
+      <div class="cta-pattern"></div>
+      <div class="cta-content-v2">
+        <h2 class="cta-title-v2">Propulsez votre business<br> à Douala</h2>
+        <p class="cta-desc-v2">Rejoignez la plus grande communauté de commerces et services de la capitale économique. Visibilité garantie.</p>
+        <div class="cta-actions-v2">
+          <a routerLink="/inscription" class="btn-cta-primary-v2">
+            <i class="fas fa-rocket"></i>
+            Référencer mon entreprise
+          </a>
+          <a routerLink="/contact" class="btn-cta-secondary-v2">
+            <i class="fas fa-info-circle"></i>
+            En savoir plus
+          </a>
+        </div>
       </div>
-      <div class="emergency-grid-mini">
-        <a href="tel:117" class="e-item"><span>117</span> Police</a>
-        <a href="tel:118" class="e-item"><span>118</span> Pompiers</a>
-        <a href="tel:119" class="e-item"><span>119</span> SAMU</a>
-        <a href="tel:113" class="e-item"><span>113</span> Gendarmerie</a>
+      <div class="cta-visual">
+        <div class="cta-float-card cta-float-1">
+          <i class="fas fa-star"></i> 4.8/5 de satisfaction
+        </div>
+        <div class="cta-float-card cta-float-2">
+          <i class="fas fa-chart-line"></i> +200% visibilité
+        </div>
+        <div class="cta-float-card cta-float-3">
+          <i class="fas fa-users"></i> 12k+ visiteurs/mois
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. 🚨 URGENCE — Compact Banner -->
+<section class="emergency-banner-v2" id="emergency">
+  <div class="container">
+    <div class="emergency-inner-v2">
+      <div class="emergency-left">
+        <div class="emergency-pulse"></div>
+        <h3 class="emergency-title-v2">Numéros d'urgence</h3>
+      </div>
+      <div class="emergency-pills-v2">
+        <a href="tel:117" class="e-pill-v2">
+          <span class="e-number">117</span>
+          <span class="e-label">Police</span>
+        </a>
+        <a href="tel:118" class="e-pill-v2">
+          <span class="e-number">118</span>
+          <span class="e-label">Pompiers</span>
+        </a>
+        <a href="tel:119" class="e-pill-v2">
+          <span class="e-number">119</span>
+          <span class="e-label">SAMU</span>
+        </a>
+        <a href="tel:113" class="e-pill-v2">
+          <span class="e-number">113</span>
+          <span class="e-label">Gendarmerie</span>
+        </a>
       </div>
     </div>
   </div>

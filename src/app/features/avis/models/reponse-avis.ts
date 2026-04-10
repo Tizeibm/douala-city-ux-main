@@ -3,7 +3,7 @@ export interface ReponseAvis {
     contenu: string;
     visible?: boolean;
     dateCreation?: string | Date;
-    typeRepondant?: 'USER' | 'STRUCTURE' | 'ADMIN';
+    typeRepondant?: 'UTILISATEUR' | 'STRUCTURE' | 'ADMIN';
 
     // Helper fields
     avisId?: string;

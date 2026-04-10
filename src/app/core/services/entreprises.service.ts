@@ -143,11 +143,8 @@ export class EntrepriseService {
     return this.http.post<Photo>(`${environment.apiUrl}/photos/${targetId}/upload`, formData);
   }
 
-  updateMainPhoto(file: File, token: any, structureId: string): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file);
-    // Guessing endpoint based on naming or common practice
-    return this.http.post<any>(`${environment.apiUrl}/photos/${structureId}/main`, formData);
+  updateMainPhoto(photoId: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/photos/${photoId}/main`, {});
   }
   removePhoto(id: string, token: any, structureId: string): Observable<void> {
     return this.http.delete<void>(`${environment.apiUrl}/photos/${id}`);
@@ -164,7 +161,7 @@ export class EntrepriseService {
     return this.http.delete<void>(`${environment.apiUrl}/horaires/${structureId}/${id}`);
   }
 
-  searchEntreprises(query: string, zone?: string, page: number = 0, size: number = 10): Observable<any> {
+  searchEntreprises(query: string, zone?: string, page: number = 0, size: number = 10, lat?: number, lng?: number, rayon?: number): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -172,6 +169,9 @@ export class EntrepriseService {
     const body: any = {};
     if (query) body.nom = query;
     if (zone) body.quartier = zone;
+    if (lat) body.latitude = lat;
+    if (lng) body.longitude = lng;
+    if (rayon) body.rayonKm = rayon;
 
     return this.http.post<any>(`${this.publicUrl}/search`, body, { params });
   }
@@ -191,10 +191,13 @@ export class EntrepriseService {
 
   // --- MISSING ENDPOINTS (Admin & Fine-Tuned Data) ---
 
-  // Admin: Get structures for a specific user
-  getStructuresByUser(userId: string): Observable<Entreprise[]> {
-    const params = new HttpParams().set('userId', userId);
-    return this.http.get<Entreprise[]>(`${this.apiUrl}/users`, { params });
+  /**
+   * @deprecated Backend has no /api/structures/users endpoint.
+   * Use getMesEntreprises() instead — returns structures for the currently authenticated user.
+   */
+  getStructuresByUser(_userId: string): Observable<Entreprise[]> {
+    console.warn('[EntrepriseService] getStructuresByUser is deprecated — no backend endpoint exists. Falling back to getMesEntreprises().');
+    return this.getMesEntreprises();
   }
 
   getPublicServices(structureId: string): Observable<ServiceOffert[]> {

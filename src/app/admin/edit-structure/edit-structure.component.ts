@@ -38,7 +38,6 @@ export class EditStructureComponent implements OnInit {
   }
 
 
-  backendUrl = "http://localhost:8080/";
   structureForm!: FormGroup;
   localisations: any[] = [];
   successMessage = '';
@@ -592,8 +591,14 @@ export class EditStructureComponent implements OnInit {
 
         // Handle main photo if changed
         if (this.pendingMainPhoto) {
-          this.entreprisesService.updateMainPhoto(this.pendingMainPhoto, token, id).subscribe({
-            next: (res: any) => console.log('Photo principale mise à jour'),
+          this.entreprisesService.savePhoto(this.pendingMainPhoto, token, id).subscribe({
+            next: (res) => {
+              if (res.id) {
+                this.entreprisesService.updateMainPhoto(res.id).subscribe();
+              }
+              this.photoState.addphotos(res);
+              this.pendingMainPhoto = null;
+            },
             error: (err: any) => console.error('Erreur update photo principale', err)
           });
         }

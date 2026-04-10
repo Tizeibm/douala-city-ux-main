@@ -10,11 +10,15 @@ export enum AnnonceType {
 
 export interface Annonce {
     id?: string;
-    titre?: string;
     type: AnnonceType | string;
     description: string;
-    dateCreation?: string;
+    creationDate?: string;       // Backend field name (AnnonceReponse)
     structureId?: string;
     user?: any;
     photos?: any[];
+
+    /** @deprecated Frontend-only display field — NOT persisted by backend. Derive from type/description. */
+    titre?: string;
+    /** @deprecated Use creationDate instead */
+    dateCreation?: string;
 }

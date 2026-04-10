@@ -27,6 +27,11 @@ import { VueEnsembleComponent } from './features/dashboard/dashboard-user/vue-en
 import { MesAnnoncesComponent } from './features/annonces/annonces/components/mes-annonces/mes-annonces.component';
 import { DashboardClientComponent } from './features/dashboard/dashboard-client/dashboard-client.component';
 import { StructureEditPageComponent } from './features/dashboard/dashboard-user/structure-edit-page/structure-edit-page.component';
+import { NotFoundComponent } from './website/pages/not-found/not-found.component';
+import { AboutPageComponent } from './website/pages/a-propos/about.component';
+import { ContactPageComponent } from './website/pages/contact/contact.component';
+import { PrivacyPageComponent } from './website/pages/confidentialite/privacy.component';
+import { LegalPageComponent } from './website/pages/mentions-legales/legal.component';
 
 
 const routes: Routes = [
@@ -136,6 +141,26 @@ const routes: Routes = [
       { path: 'transport', redirectTo: 'categories/transport', pathMatch: 'full' },
       { path: 'hebergement', redirectTo: 'categories/hebergement', pathMatch: 'full' },
       {
+        path: 'a-propos',
+        component: AboutPageComponent,
+        title: 'À propos - Douala-city'
+      },
+      {
+        path: 'contact',
+        component: ContactPageComponent,
+        title: 'Contact - Douala-city'
+      },
+      {
+        path: 'confidentialite',
+        component: PrivacyPageComponent,
+        title: 'Confidentialité - Douala-city'
+      },
+      {
+        path: 'mentions-legales',
+        component: LegalPageComponent,
+        title: 'Mentions Légales - Douala-city'
+      },
+      {
         path: 'resultats',
         component: ResultatsComponent,
         title: 'Résultats de recherche - Douala-city'
@@ -225,8 +250,12 @@ const routes: Routes = [
             title: 'Mon Profil - Douala-city'
           }
         ]
+      },
+      {
+        path: '**',
+        component: NotFoundComponent,
+        title: '404 - Page non trouvée - Douala-city'
       }
-
     ]
   }
 

@@ -97,13 +97,25 @@ export class CarteComponent implements AfterViewInit, OnChanges {
     this.markers = [];
 
     const L = this.leaflet;
+    const bounds = new L.LatLngBounds([]);
 
     this.locations.forEach((loc, i) => {
       if (loc.latitude && loc.longitude) {
         const marker = L.marker([loc.latitude, loc.longitude]).addTo(this.map);
         marker.bindPopup(`<b>${loc.quartier || 'Localisation'}</b>`);
         this.markers.push(marker);
+        bounds.extend([loc.latitude, loc.longitude]);
       }
     });
+
+    if (this.markers.length > 0) {
+      if (this.markers.length === 1) {
+        this.map.setView(bounds.getCenter(), 15);
+      } else {
+        this.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+      }
+    } else {
+      this.map.setView([4.05, 9.7], 13);
+    }
   }
 }

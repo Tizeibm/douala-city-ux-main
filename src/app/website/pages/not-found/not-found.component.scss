@@ -1,0 +1,66 @@
+@use "variables" as *;
+
+.not-found-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
+
+  .content {
+    max-width: 600px;
+  }
+
+  .error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, $brand-primary 0%, $brand-secondary 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    letter-spacing: -5px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: $heading-color;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    font-size: 1.15rem;
+    color: $text-secondary;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+
+  .city-skyline {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    height: 100px;
+    opacity: 0.1;
+
+    .building {
+      background: $text-light;
+      border-radius: 4px 4px 0 0;
+    }
+    .building-1 { width: 40px; height: 60px; }
+    .building-2 { width: 60px; height: 100px; }
+    .building-3 { width: 30px; height: 80px; }
+  }
+}

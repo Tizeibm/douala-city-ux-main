@@ -75,7 +75,13 @@ export class LoginLogoutComponent {
         this.authService.login(this.utilisateur.email, this.utilisateur.motDePasse).subscribe({
           next: (loginRes) => {
             this.authService.connecter(loginRes.user, loginRes.token);
-            this.router.navigate(['/dashboard-user']);
+            
+            // Redirect based on role
+            if (loginRes.user.role === 'USER') {
+              this.router.navigate(['/dashboard-client']);
+            } else {
+              this.router.navigate(['/dashboard-user']);
+            }
           },
           error: () => {
             this.messageErreur = 'Erreur lors de la connexion automatique';

@@ -1,0 +1,30 @@
+<div class="mobile-nav-container">
+  <nav class="mobile-nav">
+    <a routerLink="/accueil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+      <div class="icon-wrapper">
+        <i class="fas fa-home"></i>
+      </div>
+      <span class="nav-label">Accueil</span>
+    </a>
+
+    <a routerLink="/categories/commerces" routerLinkActive="active" class="nav-item">
+      <div class="icon-wrapper">
+        <i class="fas fa-compass"></i>
+      </div>
+      <span class="nav-label">Explorer</span>
+    </a>
+
+    <a routerLink="/dashboard-user/structures/nouveau" routerLinkActive="active" class="nav-item add-btn">
+      <div class="icon-wrapper primary">
+        <i class="fas fa-plus"></i>
+      </div>
+    </a>
+
+    <a [routerLink]="isLoggedIn ? '/dashboard-user' : '/login'" routerLinkActive="active" class="nav-item">
+      <div class="icon-wrapper">
+        <i class="fas fa-user"></i>
+      </div>
+      <span class="nav-label">Mon Profil</span>
+    </a>
+  </nav>
+</div>

@@ -1,0 +1,233 @@
+@use "sass:color";
+@use "../../../../variables" as *;
+
+.ultra-premium-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: #f8fafc; // Light Foundation
+  overflow: hidden;
+  color: $text-main;
+}
+
+// Pastel Aurora Animated Background
+.aurora-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  
+  .aurora {
+    position: absolute;
+    width: 150vw;
+    height: 150vh;
+    filter: blur(120px);
+    opacity: 0.3; // More visible in light theme
+    animation: aurora-flow 25s infinite alternate cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  }
+  
+  .aurora-1 { background: radial-gradient(circle, rgba($brand-primary, 0.15) 0%, transparent 70%); top: -50%; left: -20%; }
+  .aurora-2 { background: radial-gradient(circle, rgba($brand-secondary, 0.1) 0%, transparent 70%); bottom: -50%; right: -20%; animation-delay: -7s; }
+  .aurora-3 { background: radial-gradient(circle, rgba(#0ea5e9, 0.1) 0%, transparent 60%); top: 20%; left: 30%; animation-delay: -14s; }
+}
+
+@keyframes aurora-flow {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate(5%, 10%) rotate(5deg) scale(1.05); }
+  100% { transform: translate(-3%, -5%) rotate(-3deg) scale(0.95); }
+}
+
+.bento-header {
+  position: relative;
+  z-index: 1;
+  text-align: left;
+  padding-top: 80px;
+
+  .badge-premium {
+    display: inline-block;
+    padding: 8px 18px;
+    background: rgba($brand-primary, 0.08);
+    border: 1px solid rgba($brand-primary, 0.15);
+    color: $brand-primary;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba($brand-primary, 0.05);
+  }
+
+  .display-text {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 950;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+    color: #0f172a;
+    
+    .accent { 
+      color: $brand-primary; 
+      font-style: italic; 
+      font-family: serif;
+      position: relative;
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        height: 15px;
+        background: rgba($brand-primary, 0.08);
+        z-index: -1;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .text-muted { font-size: 1.2rem; color: #64748b; max-width: 550px; line-height: 1.6; }
+}
+
+// Bento Grid System - Light
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 240px;
+  gap: 28px;
+  position: relative;
+  z-index: 1;
+  padding-bottom: 80px;
+
+  @media (max-width: $bp-lg) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: $bp-sm) { grid-template-columns: 1fr; grid-auto-rows: auto; }
+}
+
+.bento-card {
+  padding: 36px;
+  border-radius: 36px;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  // White Glassmorphism
+  &.glass-glossy {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      0 10px 30px rgba(0,0,0,0.03), 
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba($brand-primary, 0.3);
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 
+        0 30px 60px rgba(0,0,0,0.06), 
+        0 0 0 1px rgba($brand-primary, 0.05);
+      
+      .bento-icon i { transform: scale(1.1) rotate(5deg); color: $brand-primary; }
+    }
+  }
+
+  // Bento Positioning
+  &.bento-small { grid-column: span 1; }
+  &.bento-wide { grid-column: span 2; }
+  &.bento-tall { grid-row: span 2; }
+  &.bento-large { grid-column: span 2; grid-row: span 2; }
+
+  @media (max-width: $bp-sm) { grid-column: span 1 !important; grid-row: span 1 !important; }
+
+  .bento-icon i { 
+    font-size: 1.6rem; 
+    color: #94a3b8; 
+    transition: all 0.4s;
+  }
+
+  h2, h3 { color: #1e293b; margin-bottom: 12px; }
+  h2 { font-size: 2.5rem; font-weight: 850; letter-spacing: -0.03em; }
+  h3 { font-size: 1.35rem; font-weight: 800; }
+  p { color: #64748b; line-height: 1.7; font-size: 1rem; }
+}
+
+// Featured Styling Light
+.featured {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba($brand-primary, 0.05) 100%) !important;
+  border-color: rgba($brand-primary, 0.1) !important;
+  
+  .featured-badge {
+    position: absolute;
+    top: 36px;
+    right: 36px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: $brand-primary;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 14px;
+    background: rgba($brand-primary, 0.05);
+    border: 1px solid rgba($brand-primary, 0.1);
+    border-radius: 50px;
+  }
+
+  .meta-list {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    .meta-item {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      span { font-weight: 850; color: #1e293b; display: block; margin-bottom: 2px; }
+    }
+  }
+}
+
+.copyright-seal {
+  margin-top: auto;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-flex {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  height: 100%;
+  .flex-icon { font-size: 2.8rem; color: rgba($brand-primary, 0.1); }
+}
+
+.accent-card {
+  background: white !important;
+  border: 2px solid $brand-primary !important;
+  h3 { color: $brand-primary; }
+  p { color: #475569; font-weight: 600; }
+  .btn-minimal {
+    margin-top: 24px;
+    color: $brand-primary;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    &:hover {
+      text-decoration-color: color.adjust($brand-primary, $lightness: -10%);
+      i { transform: translate(4px, -4px); }
+    }
+  }
+}
+
+.tag-meta {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: $brand-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

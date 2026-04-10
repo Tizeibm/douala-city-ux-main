@@ -5,6 +5,8 @@
   min-height: 100vh;
   background-color: $bg-alt;
   padding-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- Header Section --- */
@@ -16,8 +18,9 @@
   margin-bottom: 2rem;
 
   .header-container {
-    max-width: 1280px;
+    max-width: 100%;
     margin: 0 auto;
+    padding: 0 2rem 0 calc(260px + 3rem);
   }
 
   .breadcrumb-nav {
@@ -74,14 +77,16 @@
 
 /* --- Main Layout Grid --- */
 .main-content {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
+  padding: 0 2rem 0 0;
+  flex: 1;
 }
 
 .layout-grid {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 2.5rem;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
   align-items: start;
 
   @media (max-width: $bp-lg) {
@@ -91,18 +96,30 @@
 
 /* --- Sidebar & Filters --- */
 .sidebar-wrapper {
+  background: white;
+  border-right: 1px solid $border-color;
+  min-height: calc(100vh - 120px);
+  padding: 1.5rem;
+
   .sticky-sidebar {
     position: sticky;
     top: 2rem;
   }
+
+  @media (max-width: $bp-lg) {
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid $border-color;
+    padding: 1rem;
+  }
 }
 
 .filter-card {
-  background: white;
-  border-radius: $radius-lg;
-  padding: 1.5rem;
-  box-shadow: $shadow-soft;
-  border: 1px solid rgba($border-color, 0.5);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
 
   .filter-header {
     display: flex;
@@ -219,6 +236,8 @@
 /* --- Results Area --- */
 .results-wrapper {
   min-width: 0;
+  padding: 0 2rem;
+  max-width: 1200px;
 }
 
 .results-toolbar {
@@ -254,7 +273,7 @@
 
 .structures-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1.5rem;
 }
 
