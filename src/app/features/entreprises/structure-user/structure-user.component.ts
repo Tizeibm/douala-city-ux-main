@@ -42,7 +42,7 @@ export class StructureUserComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.loading = true;
       const token: String | null = localStorage.getItem('token');
-      this.structureService.getMesEntreprisesValides(token).subscribe({
+      this.structureService.getMesEntreprisesValides().subscribe({
         next: (data: any) => {
           this.structures = data;
           this.structService.setEntreprises(this.filtered);

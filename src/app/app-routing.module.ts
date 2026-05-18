@@ -32,7 +32,7 @@ import { AboutPageComponent } from './website/pages/a-propos/about.component';
 import { ContactPageComponent } from './website/pages/contact/contact.component';
 import { PrivacyPageComponent } from './website/pages/confidentialite/privacy.component';
 import { LegalPageComponent } from './website/pages/mentions-legales/legal.component';
-
+import { MesFavorisComponent } from './features/dashboard/dashboard-user/mes-favoris/mes-favoris.component';
 
 const routes: Routes = [
 
@@ -248,6 +248,11 @@ const routes: Routes = [
             path: 'profil',
             component: ProfileSettingsComponent,
             title: 'Mon Profil - Douala-city'
+          },
+          {
+            path: 'mes-favoris',
+            component: MesFavorisComponent,
+            title: 'Mes Favoris - Douala-city'
           }
         ]
       },

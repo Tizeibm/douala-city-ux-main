@@ -1,1 +1,102 @@
 @use "../admin-shared" as *;
+
+/* Confirmation Modal */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-modal {
+  background: white;
+  border-radius: $radius-lg;
+  padding: 2.5rem;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalIn 0.25s ease-out;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: $heading-color;
+    margin: 1rem 0 0.5rem;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.confirm-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 1.5rem;
+
+  &.validate {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+  }
+  &.reject {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.btn-cancel {
+  padding: 10px 24px;
+  border: 1px solid $border-color;
+  border-radius: $radius-full;
+  background: white;
+  color: $text-main;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: $font-family;
+
+  &:hover { background: $bg-alt; }
+}
+
+.btn-confirm {
+  padding: 10px 24px;
+  border: none;
+  border-radius: $radius-full;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-family: $font-family;
+
+  &.validate { background: #22c55e; &:hover { background: #16a34a; } }
+  &.reject { background: #ef4444; &:hover { background: #dc2626; } }
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

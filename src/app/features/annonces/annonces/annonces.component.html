@@ -16,6 +16,26 @@
     </div>
   </header>
 
+  <!-- Filters & Search Bar -->
+  <section class="container mt-md">
+    <div class="annonces-toolbar">
+      <div class="toolbar-search">
+        <i class="fas fa-search"></i>
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+               placeholder="Rechercher dans les annonces...">
+      </div>
+      <div class="toolbar-chips">
+        <button class="type-chip" [class.active]="!activeTypeFilter" (click)="filterByType('')">
+          Toutes <span class="chip-count">{{allAnnonces.length}}</span>
+        </button>
+        <button *ngFor="let type of annonceTypes" class="type-chip"
+                [class.active]="activeTypeFilter === type" (click)="filterByType(type)">
+          <i class="fas" [ngClass]="getAnnonceIcon(type)"></i> {{type}}
+        </button>
+      </div>
+    </div>
+  </section>
+
   <section class="annonces-grid container mt-lg">
     <div *ngIf="loading" class="loading-state p-xl text-center">
       <i class="fas fa-spinner fa-spin fa-3x primary"></i>
@@ -27,6 +47,15 @@
       <h2>Pas d'annonces pour le moment</h2>
       <p>Revenez plus tard ou soyez le premier à publier une actualité !</p>
       <button *ngIf="isLoggedIn" class="btn btn-primary mt-md" routerLink="creer">Créer la première annonce</button>
+    </div>
+
+    <!-- Results count -->
+    <div *ngIf="!loading && annonces.length > 0" class="results-info mb-md">
+      <span class="results-badge">{{totalItems}}</span> annonce(s) trouvée(s)
+      <span *ngIf="activeTypeFilter" class="active-filter-label">
+        — filtre: <strong>{{activeTypeFilter}}</strong>
+        <button class="btn-clear-filter" (click)="filterByType('')"><i class="fas fa-times"></i></button>
+      </span>
     </div>
 
     <div *ngIf="!loading && annonces.length > 0" class="cards-layout">
@@ -62,6 +91,17 @@
           <span class="date">{{a.dateCreation | date:'dd MMM yyyy'}}</span>
         </div>
       </article>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-bar mt-xl" *ngIf="totalPages > 1 && !loading">
+      <button class="btn-page" (click)="previousPage()" [disabled]="currentPage === 1">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="page-info">Page <strong>{{currentPage}}</strong> sur <strong>{{totalPages}}</strong></span>
+      <button class="btn-page" (click)="nextPage()" [disabled]="currentPage === totalPages">
+        <i class="fas fa-chevron-right"></i>
+      </button>
     </div>
   </section>
 </main>

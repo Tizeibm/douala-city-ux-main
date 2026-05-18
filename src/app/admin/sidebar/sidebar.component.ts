@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,10 +9,19 @@ import { Component } from '@angular/core';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
+  isCollapsed = false;
 
-  isCollapsed= false;
-  toggleSidebar(){
- this.isCollapsed = !this.isCollapsed;
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
   }
 
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/admin/login']);
+  }
 }

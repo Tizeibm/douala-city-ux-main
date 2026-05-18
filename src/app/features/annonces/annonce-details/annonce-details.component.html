@@ -55,7 +55,7 @@
 
                 <!-- Type Badge -->
                 <div class="hero-tags">
-                    <span class="tag type-tag" [ngClass]="annonce.type?.toLowerCase() || 'autres'">
+                    <span class="tag type-tag" [ngClass]="annonce.type.toLowerCase() || 'autres'">
                         <i [class]="getAnnonceIcon(annonce.type)"></i>
                         {{ getTypeLabel(annonce.type) }}
                     </span>
@@ -147,7 +147,7 @@
                             <i class="fas fa-tag"></i> {{ linkedStructure.categorieNom }}
                         </span>
                         <span class="slc-address" *ngIf="linkedStructure.localisations?.[0]?.adresse">
-                            <i class="fas fa-map-pin"></i> {{ linkedStructure.localisations[0].adresse }}
+                            <i class="fas fa-map-pin"></i> {{ linkedStructure.localisations?.[0]?.adresse }}
                         </span>
                     </div>
                     <div class="slc-arrow">

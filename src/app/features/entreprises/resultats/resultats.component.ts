@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { AnnonceService } from '../../annonces/annonces/services/annonce.service';
 import { Entreprise } from '../../../shared/models/entreprise';
 import { Annonce } from '../../annonces/annonces/models/annonce';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-resultats',
@@ -12,7 +13,9 @@ import { forkJoin } from 'rxjs';
   templateUrl: './resultats.component.html',
   styleUrl: './resultats.component.scss'
 })
-export class ResultatsComponent implements OnInit {
+export class ResultatsComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   searchQuery: string = '';
   searchZone: string = '';
 
@@ -30,17 +33,21 @@ export class ResultatsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       this.searchQuery = params['q'] || '';
       this.searchZone = params['zone'] || '';
       this.performSearch();
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   performSearch() {
     this.loading = true;
 
-    // Search structures only (annonce search not available in API)
     this.entrepriseService.searchEntreprises(this.searchQuery, this.searchZone, 0, 10).subscribe({
       next: (res: any) => {
         this.structures = res.content || res;
@@ -48,7 +55,7 @@ export class ResultatsComponent implements OnInit {
         this.loading = false;
       },
       error: (err: any) => {
-        console.error('Search error', err);
+        console.error('Erreur de recherche', err);
         this.loading = false;
       }
     });

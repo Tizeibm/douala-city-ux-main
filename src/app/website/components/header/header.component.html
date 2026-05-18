@@ -52,15 +52,21 @@
         </div>
 
         <div *ngIf="utilisateur" class="user-info">
-          <a routerLink="/dashboard-user" routerLinkActive="active" (click)="toggleMobile()">
+          <!-- Lien pour les simples utilisateurs -->
+          <a *ngIf="utilisateur.role === 'USER'" routerLink="/dashboard-client" routerLinkActive="active" (click)="toggleMobile()">
             <i class="fas fa-user-circle"></i>
             {{utilisateur.nom}}
           </a>
-          <a *ngIf="utilisateur.role === 'ADMIN'" routerLink="/admin" routerLinkActive="active"
-            (click)="toggleMobile()">
+          <!-- Lien pour les entreprises et admins -->
+          <a *ngIf="utilisateur.role === 'ENTREPRISE' || utilisateur.role === 'ADMIN'" routerLink="/dashboard-user" routerLinkActive="active" (click)="toggleMobile()">
+            <i class="fas fa-building"></i>
+            {{utilisateur.nom}}
+          </a>
+          <a *ngIf="utilisateur.role === 'ADMIN'" routerLink="/admin" routerLinkActive="active" (click)="toggleMobile()">
             🛠️ Admin
           </a>
-          <button *ngIf="utilisateur.role === 'USER'" (click)="logout()">Déconnexion</button>
+          <!-- Bouton déconnexion commun (ou on garde juste dans le menu déroulant, mais ici on remet le bouton simple) -->
+          <button (click)="logout()">Déconnexion</button>
         </div>
         <app-notifications-center *ngIf="utilisateur"></app-notifications-center>
       </div>

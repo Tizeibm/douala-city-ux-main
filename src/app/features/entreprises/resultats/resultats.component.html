@@ -57,7 +57,7 @@
               </div>
               <div class="card-content">
                 <div class="card-meta">{{a.type}} • {{a.dateCreation | date:'shortDate'}}</div>
-                <h3 class="card-title">{{a.description}}</h3>
+                <h3 class="card-title">{{a.titre || a.description}}</h3>
               </div>
               <div class="card-action">
                 <button class="btn btn-sm secondary">Voir</button>

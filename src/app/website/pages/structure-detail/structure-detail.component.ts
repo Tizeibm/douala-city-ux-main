@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, AfterViewInit, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
@@ -13,6 +13,7 @@ import { HorairesService } from '../../../core/services/horaires.service';
 import { PhotosService } from '../../../core/services/photos.service';
 import { CookieConsentService } from '../../../shared/services/cookie-consent.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { FavorisService } from '../../../core/services/favoris.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -21,7 +22,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './structure-detail.component.html',
   styleUrls: ['./structure-detail.component.scss']
 })
-export class StructureDetailComponent implements OnInit {
+export class StructureDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   structure!: Entreprise;
   moyenneAvis = 0;
   totalAvis = 0;
@@ -30,6 +31,15 @@ export class StructureDetailComponent implements OnInit {
   apiUrl = environment.apiUrl;
   mode: 'public' | 'owner' | 'admin' = 'public';
   selectedImageUrl: string | null = null;
+  similarStructures: Entreprise[] = [];
+  isOpen = false;
+  descriptionExpanded = false;
+  activeTab = 'about';
+  private observer: IntersectionObserver | null = null;
+  estFavori = false;
+  estConnecte = false;
+  isClientUser = false;
+  favoriEnCours = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +53,7 @@ export class StructureDetailComponent implements OnInit {
     private photosService: PhotosService,
     private cookieConsentService: CookieConsentService,
     private authService: AuthService,
+    private favorisService: FavorisService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
@@ -58,6 +69,8 @@ export class StructureDetailComponent implements OnInit {
         const visitorHash = this.cookieConsentService.getVisitorHash() || undefined;
         this.coreEntrepriseService.recordView(struct.id!, undefined, visitorHash).subscribe();
         this.loadAvisStats(id);
+        this.loadSimilarStructures(struct);
+        this.checkOpenStatus();
 
         if (this.mode !== 'public') {
           this.entrepriseService.setEntreprise(struct);
@@ -75,6 +88,51 @@ export class StructureDetailComponent implements OnInit {
       },
       error: (err: any) => console.error('[StructureDetail] Error:', err)
     });
+
+    this.authService.estConnecte$.subscribe(c => this.estConnecte = c);
+    this.authService.utilisateur$.subscribe(u => {
+      this.isClientUser = u?.role === 'USER';
+    });
+    
+    this.favorisService.favorisIds$.subscribe(ids => {
+      if (this.structure?.id) {
+        this.estFavori = ids.has(this.structure.id);
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.setupIntersectionObserver();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  setupIntersectionObserver(): void {
+    const options = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.activeTab = entry.target.id;
+        }
+      });
+    }, options);
+
+    const sections = ['about', 'gallery', 'services', 'location', 'hours', 'reviews'];
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) this.observer?.observe(el);
+    });
   }
 
   loadAvisStats(structureId: string) {
@@ -86,6 +144,55 @@ export class StructureDetailComponent implements OnInit {
           const sum = data.reduce((acc: any, curr: any) => acc + curr.note, 0);
           this.moyenneAvis = parseFloat((sum / this.totalAvis).toFixed(1));
         }
+      }
+    });
+  }
+
+  loadSimilarStructures(current: Entreprise) {
+    if (!current.categorieNom) return;
+    this.coreEntrepriseService.getByCategorie(current.categorieNom, 0, 5).subscribe({
+      next: (res: any) => {
+        const all = res.content || res || [];
+        this.similarStructures = all.filter((s: Entreprise) => s.id !== current.id).slice(0, 4);
+      }
+    });
+  }
+
+  checkOpenStatus(): void {
+    if (!this.structure?.horaires || this.structure.horaires.length === 0) {
+      this.isOpen = false;
+      return;
+    }
+    const now = new Date();
+    const days = ['DIMANCHE', 'LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI'];
+    const todayName = days[now.getDay()];
+    const todayH = this.structure.horaires.find(h => h.jourSemaine?.toUpperCase() === todayName);
+    if (!todayH?.heureDeDebut || !todayH?.heureDeFin) { this.isOpen = false; return; }
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const [sH, sM] = todayH.heureDeDebut.split(':').map(Number);
+    const [eH, eM] = todayH.heureDeFin.split(':').map(Number);
+    this.isOpen = mins >= (sH * 60 + sM) && mins <= (eH * 60 + eM);
+  }
+
+  toggleDescription(): void {
+    this.descriptionExpanded = !this.descriptionExpanded;
+  }
+
+  viewStructure(structure: Entreprise) {
+    this.router.navigate(['/structdet', structure.id]);
+  }
+
+  toggleFavori(): void {
+    if (!this.estConnecte || !this.structure?.id || this.favoriEnCours) return;
+
+    this.favoriEnCours = true;
+    this.estFavori = !this.estFavori; // Optimistic
+
+    this.favorisService.toggleFavori(this.structure.id).subscribe({
+      complete: () => { this.favoriEnCours = false; },
+      error: () => {
+        this.estFavori = !this.estFavori; // Rollback
+        this.favoriEnCours = false;
       }
     });
   }

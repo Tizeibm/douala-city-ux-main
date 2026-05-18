@@ -14,17 +14,24 @@
       <span class="nav-label">Explorer</span>
     </a>
 
-    <a routerLink="/dashboard-user/structures/nouveau" routerLinkActive="active" class="nav-item add-btn">
+    <a [routerLink]="isLoggedIn ? '/dashboard-user/structures/ajout' : '/login'" class="nav-item add-btn">
       <div class="icon-wrapper primary">
         <i class="fas fa-plus"></i>
       </div>
+    </a>
+
+    <a routerLink="/annonces" routerLinkActive="active" class="nav-item">
+      <div class="icon-wrapper">
+        <i class="fas fa-bullhorn"></i>
+      </div>
+      <span class="nav-label">Annonces</span>
     </a>
 
     <a [routerLink]="isLoggedIn ? '/dashboard-user' : '/login'" routerLinkActive="active" class="nav-item">
       <div class="icon-wrapper">
         <i class="fas fa-user"></i>
       </div>
-      <span class="nav-label">Mon Profil</span>
+      <span class="nav-label">Profil</span>
     </a>
   </nav>
 </div>

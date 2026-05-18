@@ -8,6 +8,18 @@
         <div class="card-overlay">
             <span class="category-tag">{{structure.categorieNom}}</span>
         </div>
+
+        <!-- Bouton Favori -->
+        <button *ngIf="estConnecte"
+            class="btn-favori"
+            [class.active]="estFavori"
+            [class.animating]="favoriEnCours"
+            (click)="toggleFavori($event)"
+            [attr.aria-label]="estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+            [title]="estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+            <i class="fas fa-heart" *ngIf="estFavori"></i>
+            <i class="far fa-heart" *ngIf="!estFavori"></i>
+        </button>
     </div>
 
     <div class="card-content">

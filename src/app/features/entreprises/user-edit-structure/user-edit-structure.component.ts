@@ -9,6 +9,7 @@ import { HorairesService } from '../../../core/services/horaires.service';
 import { PhotosService } from '../../../core/services/photos.service';
 import { HapticService } from '../../../core/services/haptic.service';
 import { FeedbackService } from '../../../shared/feedback.service';
+import { CategoriesService } from '../../../core/services/categories.service';
 
 @Component({
   selector: 'app-user-edit-structure',
@@ -26,71 +27,22 @@ export class UserEditStructureComponent implements OnInit {
 
   step = 1;
 
-  categories: { nom: string; sousCategories: string[] }[] =
-    [
-      {
-        nom: 'Commerce',
-        sousCategories:
-          ["Alimentation", "Vêtements", "Électronique", "Meubles", "Livres"]
-      },
-      {
-        nom: 'Autres',
-        sousCategories:
-          ["Autre"]
-      },
-      {
-        nom: 'transport',
-        sousCategories:
-          ["Agence de voyage", "Location de voitures", "Taxi", "Transport en commun"]
-      },
-      {
-        nom: 'Hébergement',
-        sousCategories:
-          ["Hôtel", "Auberge", "Chambre d'hôtes", "Camping"]
-      },
-      {
-        nom: 'Loisirs',
-        sousCategories:
-          ["Cinéma", "Salle de sport", "Parc d'attractions", "Musée"]
-      },
-      {
-        nom: 'Restauration',
-        sousCategories:
-          ["Restaurant", "Café", "Fast-food", "Boulangerie"]
-      },
-      {
-        nom: 'Education',
-        sousCategories:
-          ["École", "Université", "Centre de formation"]
-      },
-      {
-        nom: 'Santé',
-        sousCategories:
-          ["Pharmacie", "Clinique", "Hôpital", "Laboratoire"]
-      },
-      {
-        nom: 'services',
-        sousCategories:
-          ["coiffure", "Mécanique", "Plomberie", "électricité", "nettoyage"]
-      }
-
-    ];
+  categories: { nom: string; sousCategories: string[] }[] = [];
 
   getCategories(): string[] {
-    return this.categories.map(c => c.nom);
+    return this.categoriesService.getNomsCategories();
   }
 
   getSousCategories(): string[] {
-
-    const cat = this.categories.find(c => c.nom === this.structureForm.value.categorieNom)
-    return cat ? cat.sousCategories : [];
+    const categorieNom = this.structureForm.value.categorieNom;
+    return this.categoriesService.getSousCategories(categorieNom);
   }
 
 
   async next() {
     this.haptic.stepChange();
 
-    // Save current step data before moving next
+    // Sauvegarder les données de l'étape actuelle avant de continuer
     const success = await this.saveStep(this.step);
     if (success) {
       this.step++;
@@ -106,7 +58,7 @@ export class UserEditStructureComponent implements OnInit {
       this.feedback.showLoader();
 
       if (step === 1) {
-        // Step 1: Info General & Photos
+        // Étape 1 : Informations générales & Photos
         const structureData = {
           nom: formValue.nom,
           description: formValue.description,
@@ -125,7 +77,7 @@ export class UserEditStructureComponent implements OnInit {
                     this.entreprisesService.updateMainPhoto(res.id).subscribe();
                   }
                   this.photoState.addphotos(res);
-                  this.pendingMainPhoto = null; // Clear after success
+                  this.pendingMainPhoto = null; // Nettoyer après le succès
                 }
               });
             }
@@ -139,12 +91,12 @@ export class UserEditStructureComponent implements OnInit {
           }
         });
       } else if (step === 2) {
-        // Step 2: Horaires
-        const mappedHoraires = formValue.horaires.map((h: any) => ({
+        // Étape 2 : Horaires
+      const mappedHoraires = formValue.horaires.map((h: Horaire) => ({
           id: h.id,
           jourSemaine: h.jourSemaine,
-          heureDeDebut: h.heureDeDebut.includes(':') && h.heureDeDebut.split(':').length === 2 ? h.heureDeDebut + ':00' : h.heureDeDebut,
-          heureDeFin: h.heureDeFin.includes(':') && h.heureDeFin.split(':').length === 2 ? h.heureDeFin + ':00' : h.heureDeFin
+          heureDeDebut: h.heureDeDebut?.includes(':') && h.heureDeDebut.split(':').length === 2 ? h.heureDeDebut + ':00' : h.heureDeDebut,
+          heureDeFin: h.heureDeFin?.includes(':') && h.heureDeFin.split(':').length === 2 ? h.heureDeFin + ':00' : h.heureDeFin
         }));
 
         this.entreprisesService.saveHorairesBatch(mappedHoraires, id).subscribe({
@@ -159,7 +111,7 @@ export class UserEditStructureComponent implements OnInit {
           }
         });
       } else if (step === 3) {
-        // Step 3: Services
+        // Étape 3 : Services
         this.entreprisesService.saveServicesBatch(formValue.services, id).subscribe({
           next: () => {
             this.feedback.hideLoader();
@@ -178,8 +130,8 @@ export class UserEditStructureComponent implements OnInit {
     });
   }
 
-  saveNewPhotos(token: any, id: string) {
-    const photosNonSavees = this.photos.value.map((photo: any, index: number) => ({ photo, index })).filter((item: any) => !item.photo.id);
+  saveNewPhotos(token: string | null, id: string) {
+    const photosNonSavees = this.photos.value.map((photo: Photo, index: number) => ({ photo, index })).filter((item: { photo: Photo; index: number }) => !item.photo.id);
     photosNonSavees.forEach((item: any) => {
       const file = this.pendingFiles.get(item.index);
       if (file) {
@@ -208,7 +160,8 @@ export class UserEditStructureComponent implements OnInit {
     private photoState: PhotosService,
     private cdr: ChangeDetectorRef,
     private haptic: HapticService,
-    private feedback: FeedbackService
+    private feedback: FeedbackService,
+    private categoriesService: CategoriesService
   ) { }
 
   joursSemaine = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'];
@@ -223,6 +176,7 @@ export class UserEditStructureComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.categories = this.categoriesService.getCategories().map(c => ({ nom: c.nom, sousCategories: c.sousCategories }));
     this.localisationState.localisations$.subscribe({
       next: (locs) => (this.localisations = locs)
     });
@@ -297,9 +251,8 @@ export class UserEditStructureComponent implements OnInit {
         next: () => {
           this.servstate.deleteService(serviceId);
           this.services.removeAt(i);
-
         },
-        error: (err: any) => console.error('Erreur suppression localisation', err)
+        error: (err: Error) => console.error('Erreur suppression service', err)
       });
 
 
@@ -313,10 +266,8 @@ export class UserEditStructureComponent implements OnInit {
     const token = localStorage.getItem('token');
     const structureId = this.route.snapshot.paramMap.get('id') || '';
     const horaire = this.horaires.at(i);
-    console.log(horaire);
     const horaireId = horaire.value.id;
     if (horaireId) {
-      console.log(horaireId);
       this.entreprisesService.removeHoraire(horaireId, token, structureId).subscribe({
         next: () => {
           this.horaires.removeAt(i);
@@ -324,7 +275,7 @@ export class UserEditStructureComponent implements OnInit {
 
 
         },
-        error: (err: any) => console.error('Erreur suppression horaire', err)
+        error: (err: Error) => console.error('Erreur suppression horaire', err)
       });
 
 
@@ -340,14 +291,13 @@ export class UserEditStructureComponent implements OnInit {
     const photo = this.photos.at(i);
     const photoId = photo.value.id;
     if (photoId) {
-      console.log(photoId);
       this.entreprisesService.removePhoto(photoId, token, structureId).subscribe({
         next: () => {
           this.photoState.deletePhoto(photoId);
           this.photos.removeAt(i);
 
         },
-        error: (err: any) => console.error('Erreur suppression photo', err)
+        error: (err: Error) => console.error('Erreur suppression photo', err)
       });
 
 
@@ -392,21 +342,12 @@ export class UserEditStructureComponent implements OnInit {
 
     const reader = new FileReader();
     reader.onload = () => {
-
       const newPhotop = reader.result as string;
-      console.log(newPhotop);
-
-
-
-
-      console.log('📸 Photo ajoutée:', newPhotop);
 
       this.structureForm.patchValue({
         photoPrincipale: newPhotop
       });
       this.pendingMainPhoto = file;
-
-
     };
     reader.readAsDataURL(file);
 
@@ -472,14 +413,13 @@ export class UserEditStructureComponent implements OnInit {
     const loc = this.localisation.at(i);
     const localisationId = loc.value.id;
     if (localisationId) {
-      console.log(localisationId);
       this.entreprisesService.removeLocalisation(localisationId, token, structureId).subscribe({
         next: () => {
           this.localisationState.deleteLocalisation(localisationId);
           this.localisation.removeAt(i);
 
         },
-        error: (err: any) => console.error('Erreur suppression localisation', err)
+        error: (err: Error) => console.error('Erreur suppression localisation', err)
       });
 
 
@@ -493,22 +433,13 @@ export class UserEditStructureComponent implements OnInit {
 
   onLocationSelected(location: { latitude: number; longitude: number }, index?: number) {
     if (index !== undefined) {
-      console.log('📍 Coordonnées reçues de la carte :', location, 'Index :', index);
-
       const locGroup = this.localisation.at(index);
       if (locGroup) {
-
-        console.log(locGroup);
-
         locGroup.patchValue({
           latitude: location.latitude,
           longitude: location.longitude
         }, { emitEvent: false });
-
-      } else {
-        console.warn('⚠️ Aucun groupe trouvé pour la localisation', index);
       }
-
     }
   }
 
@@ -552,8 +483,8 @@ export class UserEditStructureComponent implements OnInit {
     const token = localStorage.getItem('token');
     const id = this.route.snapshot.paramMap.get('id') || '';
 
-    // Final save for localization
-    const mappedLocalisations = this.localisation.value.map((loc: any) => ({
+    // Sauvegarde finale pour la localisation
+    const mappedLocalisations = this.localisation.value.map((loc: Localisation) => ({
       id: loc.id,
       address: loc.address,
       quartier: loc.quartier,
@@ -567,10 +498,10 @@ export class UserEditStructureComponent implements OnInit {
         this.feedback.success('Structure mise à jour avec succès');
         this.feedback.hideLoader();
         this.haptic.success();
-        // Emit updated structure (fetch fresh data if needed, but for now emit original with some updates)
+        // Émettre la structure mise à jour
         this.structureUpdated.emit(this.structureForm.value);
       },
-      error: (err: any) => {
+      error: (err: Error) => {
         this.feedback.error('Erreur lors de la sauvegarde finale des localisations');
         this.feedback.hideLoader();
         console.error('Erreur update localisation batch', err);
@@ -578,12 +509,13 @@ export class UserEditStructureComponent implements OnInit {
     });
   }
 
-  addPhoto(event: any): void {
+  addPhoto(event: Event): void {
     if (this.photos.length >= 2) {
       this.feedback.error('Vous ne pouvez pas ajouter plus de 2 photos.');
       return;
     }
-    const file: File = event.target.files[0];
+    const input = event.target as HTMLInputElement;
+    const file: File | undefined = input.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
@@ -601,12 +533,10 @@ export class UserEditStructureComponent implements OnInit {
 
       this.photos.push(this.createPhoto(newPhoto));
       this.pendingFiles.set(this.photos.length - 1, file);
-
-      console.log('📸 Photo ajoutée:', newPhoto);
     };
 
     reader.readAsDataURL(file);
-    (event.target as HTMLInputElement).value = ''; // Réinitialiser l’input
+    if (input) input.value = '';
   }
 
   private generateStoredFileName(originalName: string): string {
@@ -624,7 +554,6 @@ export class UserEditStructureComponent implements OnInit {
         latitude: Number(loc.latitude),
         longitude: Number(loc.longitude),
       });
-      console.log(`📍 Localisation ${index} mise à jour`);
     }
   }
 

@@ -80,9 +80,9 @@ export class AccueilComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // ─── Community Stats ────────────────────────────────────────
   communityStats: CommunityStat[] = [
-    { icon: 'fa-store', value: '500+', label: 'Entreprises locales' },
-    { icon: 'fa-users', value: '12k+', label: 'Visiteurs mensuels' },
-    { icon: 'fa-star', value: '2.5k', label: 'Avis vérifiés' }
+    { icon: 'fa-store', value: '—', label: 'Entreprises locales' },
+    { icon: 'fa-users', value: '—', label: 'Visiteurs mensuels' },
+    { icon: 'fa-star', value: '—', label: 'Avis vérifiés' }
   ];
 
   // ─── Scroll Observer ────────────────────────────────────────
@@ -187,6 +187,20 @@ export class AccueilComponent implements OnInit, OnDestroy, AfterViewInit {
       error: (err: any) => {
         console.error('Error fetching annonces', err);
         this.loading = false;
+      }
+    });
+
+    // Load dynamic stats
+    this.entrepriseService.getStructures(0, 1).subscribe({
+      next: (res: any) => {
+        const total = res.totalElements || 0;
+        this.communityStats[0].value = total > 0 ? total.toLocaleString('fr-FR') + '+' : '0';
+      }
+    });
+    this.annonceService.getAnnonces(0, 1).subscribe({
+      next: (res: any) => {
+        const total = res.totalElements || 0;
+        this.communityStats[2].value = total > 0 ? total.toLocaleString('fr-FR') : '0';
       }
     });
   }

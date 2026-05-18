@@ -1,8 +1,7 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +14,10 @@ export class NotificationService {
 
   constructor(
     private http: HttpClient, 
-    private zone: NgZone,
-    @Inject(PLATFORM_ID) private platformId: any
+    private zone: NgZone
   ) {}
 
   subscribeToNotifications(): void {
-    // Robust environment check for SSR and non-browser contexts
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined' || typeof EventSource === 'undefined') {
-      return;
-    }
-
-    if (!isPlatformBrowser(this.platformId)) return;
-
     if (this.eventSource) {
       this.eventSource.close();
     }
@@ -45,11 +36,11 @@ export class NotificationService {
       };
 
       this.eventSource.onerror = (error) => {
-        console.error('SSE Error:', error);
+        console.error('Erreur SSE :', error);
         this.eventSource?.close();
       };
     } catch (e) {
-      console.error('Failed to create EventSource', e);
+      console.error('Impossible de créer l\'EventSource', e);
     }
   }
 

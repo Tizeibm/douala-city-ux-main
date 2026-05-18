@@ -44,7 +44,7 @@ export class StructureEditPageComponent implements OnInit {
         this.entrepriseService.getEntreprisesById(null, id).subscribe({
             next: (struct) => {
                 this.structure = struct;
-                // Populate state services for the child edit component
+                // Initialiser les services d'état pour le composant enfant d'édition
                 this.entrepriseService.setEntreprises([struct]);
                 this.localisationState.setLocalisations(struct.localisation || []);
                 this.servState.setServices(struct.services || []);

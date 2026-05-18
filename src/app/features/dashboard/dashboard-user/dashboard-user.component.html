@@ -9,6 +9,14 @@
         <h1>Tableau de Bord</h1>
         <p>Bienvenue, <span>{{ utilisateur?.nom }}</span>. Retrouvez ici la gestion de vos structures.</p>
       </div>
+      <div class="action-section" style="display: flex; gap: 10px;">
+        <a routerLink="/dashboard-user/structures/ajout" class="btn-sm" style="background: var(--brand-primary); color: white; border-radius: 8px; text-decoration: none; padding: 10px 16px; font-weight: 600;">
+          <i class="fas fa-plus"></i> Nouvelle Structure
+        </a>
+        <a routerLink="/annonces/creer" class="btn-sm" style="background: white; color: var(--text-main); border: 1px solid var(--border-color); border-radius: 8px; text-decoration: none; padding: 10px 16px; font-weight: 600;">
+          <i class="fas fa-bullhorn"></i> Nouvelle Annonce
+        </a>
+      </div>
     </header>
 
     <div class="content-body glass-surface">

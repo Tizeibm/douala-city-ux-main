@@ -1,7 +1,7 @@
 import { ChatService } from './core/services/chat.service';
 import { ChatbotComponent } from './website/components/chatbot/chatbot.component';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -59,6 +59,7 @@ import { ContactPageComponent } from './website/pages/contact/contact.component'
 import { PrivacyPageComponent } from './website/pages/confidentialite/privacy.component';
 import { LegalPageComponent } from './website/pages/mentions-legales/legal.component';
 import { MobileNavbar } from './website/components/mobile-navbar/mobile-navbar';
+import { MesFavorisComponent } from './features/dashboard/dashboard-user/mes-favoris/mes-favoris.component';
 
 
 
@@ -102,7 +103,8 @@ import { MobileNavbar } from './website/components/mobile-navbar/mobile-navbar';
     ContactPageComponent,
     PrivacyPageComponent,
     LegalPageComponent,
-    MobileNavbar
+    MobileNavbar,
+    MesFavorisComponent
 
 
 
@@ -118,10 +120,9 @@ import { MobileNavbar } from './website/components/mobile-navbar/mobile-navbar';
     SharedModule
   ],
   providers: [
-    provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(), withInterceptors([apiInterceptor])),
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

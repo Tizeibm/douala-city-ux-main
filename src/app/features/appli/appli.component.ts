@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-appli',
@@ -8,17 +9,24 @@ import { filter } from 'rxjs/operators';
   templateUrl: './appli.component.html',
   styleUrl: './appli.component.scss'
 })
-export class AppliComponent implements OnInit {
+export class AppliComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   isDashboard: boolean = false;
 
   constructor(private router: Router) { }
 
   ngOnInit() {
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
     ).subscribe((event: any) => {
       const url = event.urlAfterRedirects || event.url;
       this.isDashboard = url.includes('/dashboard-user') || url.includes('/admin');
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

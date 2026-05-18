@@ -59,3 +59,21 @@
    <i class="fas fa-clipboard-check"></i>
    <p>Aucune structure en attente de validation.</p>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="confirm-overlay" *ngIf="confirmAction" (click)="cancelAction()">
+   <div class="confirm-modal" (click)="$event.stopPropagation()">
+      <div class="confirm-icon" [class.validate]="confirmAction.type === 'valider'" [class.reject]="confirmAction.type === 'rejeter'">
+         <i class="fas" [ngClass]="confirmAction.type === 'valider' ? 'fa-check-circle' : 'fa-times-circle'"></i>
+      </div>
+      <h3>{{confirmAction.type === 'valider' ? 'Approuver' : 'Rejeter'}} cette structure ?</h3>
+      <p>Vous êtes sur le point de <strong>{{confirmAction.type}}</strong> la structure <strong>«&nbsp;{{confirmAction.name}}&nbsp;»</strong>.</p>
+      <div class="confirm-actions">
+         <button class="btn-cancel" (click)="cancelAction()">Annuler</button>
+         <button class="btn-confirm" [class.validate]="confirmAction.type === 'valider'" [class.reject]="confirmAction.type === 'rejeter'" (click)="executeAction()">
+            <i class="fas" [ngClass]="confirmAction.type === 'valider' ? 'fa-check' : 'fa-times'"></i>
+            Confirmer
+         </button>
+      </div>
+   </div>
+</div>

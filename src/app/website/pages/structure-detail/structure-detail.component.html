@@ -8,7 +8,9 @@
       <nav class="breadcrumb-trail">
         <a routerLink="/">Accueil</a>
         <i class="fas fa-chevron-right"></i>
-        <span>{{structure.categorieNom}}</span>
+        <a [routerLink]="['/categories', structure.categorieNom.toLowerCase()]">{{structure.categorieNom}}</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>{{structure.nom}}</span>
       </nav>
 
       <div class="hero-title-block">
@@ -22,7 +24,9 @@
           <span class="tag rating-tag" *ngIf="totalAvis > 0">
             <i class="fas fa-star"></i> {{moyenneAvis}} · {{totalAvis}} avis
           </span>
-          <span class="tag status-tag open"><span class="dot"></span> Ouvert</span>
+          <span class="tag status-tag" [ngClass]="isOpen ? 'open' : 'closed'">
+            <span class="dot"></span> {{isOpen ? 'Ouvert' : 'Fermé'}}
+          </span>
         </div>
       </div>
 
@@ -32,6 +36,9 @@
         </button>
         <button class="btn-hero primary" (click)="goToEdit()" *ngIf="mode !== 'public'">
           <i class="fas fa-edit"></i> Modifier
+        </button>
+        <button class="btn-hero glass" [class.active-favori]="estFavori" (click)="toggleFavori()" *ngIf="estConnecte && isClientUser && mode === 'public'" [disabled]="favoriEnCours">
+          <i class="fas" [ngClass]="estFavori ? 'fa-heart text-danger' : 'fa-heart'"></i> {{ estFavori ? 'En favoris' : 'Ajouter aux Favoris' }}
         </button>
         <button class="btn-hero glass" (click)="share()">
           <i class="fas fa-share-alt"></i> Partager
@@ -43,12 +50,12 @@
   <!-- ═══════════ TAB NAVIGATION ═══════════ -->
   <nav class="tab-navigation sticky-tabs">
     <div class="container tabs-row">
-      <a (click)="scrollTo('about')" class="tab-item">À propos</a>
-      <a (click)="scrollTo('gallery')" class="tab-item" *ngIf="structure.photos && structure.photos.length > 0">Photos</a>
-      <a (click)="scrollTo('services')" class="tab-item" *ngIf="structure.services && structure.services.length > 0">Services</a>
-      <a (click)="scrollTo('location')" class="tab-item" *ngIf="structure.localisations && structure.localisations.length > 0">Localisation</a>
-      <a (click)="scrollTo('hours')" class="tab-item" *ngIf="structure.horaires && structure.horaires.length > 0">Horaires</a>
-      <a (click)="scrollTo('reviews')" class="tab-item">Avis</a>
+      <a (click)="scrollTo('about')" [class.active]="activeTab === 'about'" class="tab-item">À propos</a>
+      <a (click)="scrollTo('gallery')" [class.active]="activeTab === 'gallery'" class="tab-item" *ngIf="structure.photos && structure.photos.length > 0">Photos</a>
+      <a (click)="scrollTo('services')" [class.active]="activeTab === 'services'" class="tab-item" *ngIf="structure.services && structure.services.length > 0">Services</a>
+      <a (click)="scrollTo('location')" [class.active]="activeTab === 'location'" class="tab-item" *ngIf="structure.localisations && structure.localisations.length > 0">Localisation</a>
+      <a (click)="scrollTo('hours')" [class.active]="activeTab === 'hours'" class="tab-item" *ngIf="structure.horaires && structure.horaires.length > 0">Horaires</a>
+      <a (click)="scrollTo('reviews')" [class.active]="activeTab === 'reviews'" class="tab-item">Avis</a>
     </div>
   </nav>
 
@@ -60,7 +67,13 @@
       <section id="about" class="section-block">
         <h2 class="section-heading"><i class="fas fa-info-circle"></i> À propos</h2>
         <div class="info-card glass">
-          <p class="about-text">{{structure.description}}</p>
+          <div class="about-text-wrapper" [class.expanded]="descriptionExpanded">
+            <p class="about-text">{{structure.description}}</p>
+          </div>
+          <button *ngIf="structure.description && structure.description.length > 250"
+                  class="btn-read-more" (click)="toggleDescription()">
+            {{descriptionExpanded ? 'Voir moins' : 'Lire plus'}} <i class="fas" [ngClass]="descriptionExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </button>
 
           <div class="quick-info-grid" *ngIf="structure.localisations?.[0] || structure.email || structure.website">
             <div class="qi-item" *ngIf="structure.localisations?.[0]?.telephone">
@@ -196,6 +209,23 @@
       </section>
 
     </div>
+
+    <!-- ═══════════ SIMILAR STRUCTURES ═══════════ -->
+    <section class="similar-structures-section" *ngIf="similarStructures.length > 0">
+      <div class="container">
+        <div class="section-header-flex">
+          <h2 class="section-heading"><i class="fas fa-compass"></i> Vous pourriez aussi aimer</h2>
+          <a [routerLink]="['/categories', structure.categorieNom.toLowerCase()]" class="btn-see-all">
+            Voir tout <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        <div class="similar-grid">
+          <app-structure-card *ngFor="let s of similarStructures" [structure]="s"
+            (view)="viewStructure($event)"></app-structure-card>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ═══════════ IMAGE FULLSCREEN OVERLAY ═══════════ -->

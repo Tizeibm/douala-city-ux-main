@@ -1,19 +1,88 @@
-<main class="section">
-  <div class="container">
-    <h1>Recherche intelligente (IA)</h1>
-    <p class="small">Décrivez votre besoin en langage naturel, l’IA propose des résultats pertinents.</p>
-    <form class="grid" style="grid-template-columns:1fr auto;gap:.6rem">
-      <input class="input" name="prompt" placeholder="Ex. Je cherche une école bilingue performante à Bonamoussadi">
-      <button class="btn" routerLink="/resultats">Lancer</button>
-    </form>
+<main class="ai-search-page">
+  <!-- Hero Section -->
+  <div class="ai-hero">
+    <div class="ai-hero-bg"></div>
+    <div class="container ai-hero-content">
+      <div class="ai-badge"><i class="fas fa-robot"></i> Propulsé par l'IA</div>
+      <h1>Recherche Intelligente</h1>
+      <p class="ai-subtitle">Décrivez votre besoin en langage naturel.<br>L'IA analyse et vous propose les meilleurs résultats à Douala.</p>
 
-    <div class="section">
-      <h2>Exemples</h2>
-      <ul>
-        <li>“Je veux un pédiatre disponible aujourd’hui près de Deïdo.”</li>
-        <li>“Boulangerie ouverte avant 6h à Akwa.”</li>
-        <li>“Quelles pièces pour déclarer un nouvel employé aux impôts ?”</li>
-      </ul>
+      <form class="ai-search-form" (ngSubmit)="onSearch()">
+        <div class="search-input-group">
+          <i class="fas fa-sparkles"></i>
+          <input type="text" [(ngModel)]="prompt" name="prompt"
+                 placeholder="Ex: Je cherche un dentiste pas cher à Akwa ouvert le samedi..."
+                 autocomplete="off">
+          <button type="submit" class="btn-ai-search" [disabled]="loading || !prompt.trim()">
+            <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+            <span>Rechercher</span>
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <div class="container ai-content">
+    <!-- Examples (before search) -->
+    <section class="examples-section" *ngIf="!hasSearched">
+      <h2><i class="fas fa-lightbulb"></i> Essayez ces exemples</h2>
+      <div class="examples-grid">
+        <button *ngFor="let ex of exampleQueries" class="example-card" (click)="useExample(ex)">
+          <i class="fas fa-quote-left"></i>
+          <span>{{ ex }}</span>
+          <i class="fas fa-arrow-right arrow"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <div class="ai-loading" *ngIf="loading">
+      <div class="ai-thinking">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <p>L'IA analyse votre demande...</p>
+    </div>
+
+    <!-- AI Response -->
+    <section class="ai-response-section" *ngIf="!loading && hasSearched">
+      <!-- Text Response -->
+      <div class="ai-text-response" *ngIf="aiResponse">
+        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+        <div class="response-bubble">
+          <p>{{ aiResponse }}</p>
+        </div>
+      </div>
+
+      <!-- Structure Results -->
+      <div class="ai-results-grid" *ngIf="aiResults.length > 0">
+        <h3><i class="fas fa-map-marker-alt"></i> Résultats trouvés</h3>
+        <div class="results-cards">
+          <article *ngFor="let r of aiResults" class="ai-result-card" (click)="viewStructure(r)">
+            <div class="result-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <div class="result-info">
+              <h4>{{ r.nom }}</h4>
+              <p class="result-desc" *ngIf="r.description">{{ r.description | slice:0:100 }}</p>
+              <div class="result-meta">
+                <span *ngIf="r.categorieNom" class="meta-tag"><i class="fas fa-tag"></i> {{ r.categorieNom }}</span>
+                <span *ngIf="r.address" class="meta-tag"><i class="fas fa-map-pin"></i> {{ r.address }}</span>
+              </div>
+            </div>
+            <div class="result-action">
+              <i class="fas fa-chevron-right"></i>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div class="ai-no-results" *ngIf="aiResults.length === 0 && !aiResponse">
+        <i class="fas fa-search-minus"></i>
+        <p>Aucun résultat trouvé. Essayez de reformuler votre demande.</p>
+      </div>
+    </section>
   </div>
 </main>

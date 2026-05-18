@@ -24,20 +24,20 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  role = authService.getRole() || "USER"; // Default to USER if not set
+  role = authService.getRole() || "USER"; // Par défaut 'USER' si non défini
 
   const expectedRoles: string[] = route.data?.['expectedRoles'] || [];
 
   if (expectedRoles.length > 0 && !expectedRoles.includes(role)) {
     console.log(`Access denied for role: ${role}. Expected: ${expectedRoles}`);
     if (role === 'USER') {
-      router.navigate(['/accueil']); // Regular users go to home
+      router.navigate(['/accueil']); // Les utilisateurs réguliers sont redirigés vers l'accueil
     } else {
       router.navigate(['/login']);
     }
     return false;
   }
 
-  // Handle specific redirects based on role if needed, but return true if access is allowed
+  // Gérer les redirections spécifiques selon le rôle si nécessaire, mais autoriser l'accès par défaut
   return true;
 };

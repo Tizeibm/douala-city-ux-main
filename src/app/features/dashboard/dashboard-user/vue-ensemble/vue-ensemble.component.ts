@@ -34,7 +34,7 @@ export class VueEnsembleComponent implements OnInit {
 
   chargerStructures(): void {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    this.entrepriseService.getMesEntreprisesValides(token).subscribe({
+    this.entrepriseService.getMesEntreprisesValides().subscribe({
       next: (data: any) => {
         this.structures = data;
         this.chargerStatistiques();
@@ -58,7 +58,7 @@ export class VueEnsembleComponent implements OnInit {
         this.entrepriseService.getStructureStats(struct.id).subscribe({
           next: (stats) => {
             this.statsMap.set(struct.id!, stats);
-            // Aggregate stats
+            // Agréger les statistiques
             this.aggregateStats.totalViews += (stats.totalViews || 0);
             this.aggregateStats.monthlyViews += (stats.monthlyViews || 0);
             this.aggregateStats.uniqueVisitors += (stats.uniqueVisitors || 0);

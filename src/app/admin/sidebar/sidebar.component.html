@@ -1,7 +1,7 @@
 <aside class="sidebar">
    <div class="sidebar-brand">
       <img src="assets/doualacity.jpg" alt="Douala City" class="logo">
-      <span>Business</span>
+      <span>Admin</span>
    </div>
 
    <div class="sidebar-back-link">
@@ -14,6 +14,12 @@
    <nav>
       <ul>
          <li>
+            <a routerLink="/admin/statistiques" routerLinkActive="active">
+               <i class="fas fa-chart-line"></i>
+               <span>Tableau de bord</span>
+            </a>
+         </li>
+         <li>
             <a routerLink="/admin/structures" routerLinkActive="active">
                <i class="fas fa-layer-group"></i>
                <span>Entreprises</span>
@@ -23,12 +29,6 @@
             <a routerLink="/admin/validation" routerLinkActive="active">
                <i class="fas fa-user-check"></i>
                <span>Validation</span>
-            </a>
-         </li>
-         <li>
-            <a routerLink="/admin/statistiques" routerLinkActive="active">
-               <i class="fas fa-chart-line"></i>
-               <span>Statistiques</span>
             </a>
          </li>
          <li>
@@ -47,7 +47,7 @@
 
       <ul class="footer-nav">
          <li>
-            <a routerLink="/admin/login" class="logout-btn">
+            <a (click)="logout()" class="logout-btn" style="cursor: pointer;">
                <i class="fas fa-sign-out-alt"></i>
                <span>Déconnexion</span>
             </a>

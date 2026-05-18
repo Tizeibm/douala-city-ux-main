@@ -1,5 +1,4 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Entreprise } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { InscriptionService, Utilisateur } from '../../auth/registration/services/inscription.service';
@@ -7,6 +6,8 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { EntreprisesService } from '../../../admin/services/entreprises.service';
 import { HapticService } from '../../../core/services/haptic.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-entreprise',
@@ -14,7 +15,8 @@ import { HapticService } from '../../../core/services/haptic.service';
   templateUrl: './entreprise.component.html',
   styleUrl: './entreprise.component.scss'
 })
-export class EntrepriseComponent {
+export class EntrepriseComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   utilisateur: Utilisateur | null = null;
   estConnecte: boolean = false;
@@ -35,8 +37,7 @@ export class EntrepriseComponent {
     private structureService: InscriptionService,
     private authService: AuthService,
     private router: Router,
-    private haptic: HapticService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private haptic: HapticService
   ) { }
 
   logout() {
@@ -47,8 +48,8 @@ export class EntrepriseComponent {
   loading = true;
 
   ngOnInit(): void {
-    this.authService.estConnecte$.subscribe((etat) => this.estConnecte = etat);
-    this.authService.utilisateur$.subscribe(u => {
+    this.authService.estConnecte$.pipe(takeUntil(this.destroy$)).subscribe((etat) => this.estConnecte = etat);
+    this.authService.utilisateur$.pipe(takeUntil(this.destroy$)).subscribe(u => {
       this.utilisateur = u;
     });
     this.authService.chargerUtilisateurDepuisStorage();
@@ -57,37 +58,37 @@ export class EntrepriseComponent {
     this.chargerEntreprises();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   chargerEntreprises(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const utilisateurStr = localStorage.getItem('utilisateur');
-      const token = localStorage.getItem('token');
+    const utilisateurStr = localStorage.getItem('utilisateur');
+    const token = localStorage.getItem('token');
 
-      if (utilisateurStr) {
-        const utilisateur = JSON.parse(utilisateurStr);
-        const utilisateurId: string | undefined = utilisateur?.id;
+    if (utilisateurStr) {
+      const utilisateur = JSON.parse(utilisateurStr);
+      const utilisateurId: string | undefined = utilisateur?.id;
 
-        if (utilisateurId !== undefined) {
-          this.entrepriseService.getMesEntreprises(token).subscribe({
-            next: (data: Entreprise[]) => {
-              this.entreprises = data;
-              this.structService.setEntreprises(this.filtered);
-              console.log('Entreprises chargées:', this.filtered);
-              this.loading = false;
-            },
-            error: (err: any) => {
-              console.error('Erreur lors du chargement des entreprises :', err);
-              this.loading = false;
-            }
-          });
-        } else {
-          console.error('ID utilisateur non disponible');
-          this.loading = false;
-        }
+      if (utilisateurId !== undefined) {
+        this.entrepriseService.getMesEntreprises().subscribe({
+          next: (data: Entreprise[]) => {
+            this.entreprises = data;
+            this.structService.setEntreprises(this.filtered);
+            this.loading = false;
+          },
+          error: (err: any) => {
+            console.error('Erreur lors du chargement des entreprises :', err);
+            this.loading = false;
+          }
+        });
       } else {
-        console.error('Utilisateur non trouvé dans le storage');
+        console.error('ID utilisateur non disponible');
         this.loading = false;
       }
     } else {
+      console.error('Utilisateur non trouvé dans le storage');
       this.loading = false;
     }
   }
@@ -154,12 +155,10 @@ export class EntrepriseComponent {
   }
 
   supprimer(id: any) {
-    if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('token');
-      this.structService.deleteEntreprise(token, id).subscribe(() => {
-        this.chargerEntreprises();
-        this.updatePaginatedStructures();
-      });
-    }
+    const token = localStorage.getItem('token');
+    this.structService.deleteEntreprise(token, id).subscribe(() => {
+      this.chargerEntreprises();
+      this.updatePaginatedStructures();
+    });
   }
 }

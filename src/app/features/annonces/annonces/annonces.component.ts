@@ -12,9 +12,19 @@ import { environment } from '../../../../environments/environment';
 })
 export class AnnoncesComponent implements OnInit {
   annonces: Annonce[] = [];
+  allAnnonces: Annonce[] = [];
   loading: boolean = true;
   isLoggedIn: boolean = false;
   apiUrl = environment.apiUrl;
+
+  currentPage = 1;
+  itemsPerPage = 12;
+  totalPages = 0;
+  totalItems = 0;
+  activeTypeFilter = '';
+  searchQuery = '';
+
+  annonceTypes = ['VENTE', 'PROMOTION', 'IMMOBILIER', 'EVENEMENT', 'SERVICES', 'EMPLOI', 'AUTRES'];
 
   constructor(
     private annonceService: AnnonceService,
@@ -28,9 +38,11 @@ export class AnnoncesComponent implements OnInit {
 
   loadAnnonces() {
     this.loading = true;
-    this.annonceService.getAnnonces(0, 50).subscribe({
+    this.annonceService.getAnnonces(0, 200).subscribe({
       next: (res) => {
-        this.annonces = res.content || res; // Handle different API shapes
+        this.allAnnonces = res.content || res;
+        this.totalItems = this.allAnnonces.length;
+        this.applyFilters();
         this.loading = false;
       },
       error: (err: any) => {
@@ -38,6 +50,52 @@ export class AnnoncesComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  applyFilters() {
+    let filtered = [...this.allAnnonces];
+
+    if (this.activeTypeFilter) {
+      filtered = filtered.filter(a => a.type === this.activeTypeFilter);
+    }
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(a =>
+        (a.titre?.toLowerCase().includes(q) || a.description?.toLowerCase().includes(q))
+      );
+    }
+
+    this.totalItems = filtered.length;
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+    this.currentPage = Math.min(this.currentPage, this.totalPages || 1);
+
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    this.annonces = filtered.slice(start, start + this.itemsPerPage);
+  }
+
+  filterByType(type: string) {
+    this.activeTypeFilter = this.activeTypeFilter === type ? '' : type;
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  onSearchChange() {
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.applyFilters();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.applyFilters();
+    }
   }
 
   getAnnonceIcon(type: string): string {

@@ -1,10 +1,11 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnnonceService } from '../annonces/services/annonce.service';
 import { Annonce } from '../annonces/models/annonce';
 import { HapticService } from '../../../core/services/haptic.service';
-import { Location, isPlatformBrowser } from '@angular/common';
+import { Location } from '@angular/common';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
+import { Entreprise } from '../../../shared/models/entreprise';
 import { environment } from '../../../../environments/environment';
 import { Title } from '@angular/platform-browser';
 
@@ -25,7 +26,7 @@ export class AnnonceDetailsComponent implements OnInit {
   selectedImageUrl: string | null = null;
 
   // Structure liée
-  linkedStructure: any = null;
+  linkedStructure: Entreprise | null = null;
   loadingStructure: boolean = false;
 
   constructor(
@@ -35,8 +36,7 @@ export class AnnonceDetailsComponent implements OnInit {
     private entrepriseService: EntrepriseService,
     private haptic: HapticService,
     private location: Location,
-    private titleService: Title,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private titleService: Title
   ) { }
 
   ngOnInit(): void {
@@ -90,7 +90,7 @@ export class AnnonceDetailsComponent implements OnInit {
 
   loadLinkedStructure(structureId: string): void {
     this.loadingStructure = true;
-    this.entrepriseService.getStructureById(null, structureId).subscribe({
+    this.entrepriseService.getStructureById(structureId).subscribe({
       next: (struct) => {
         this.linkedStructure = struct;
         this.loadingStructure = false;
@@ -192,17 +192,15 @@ export class AnnonceDetailsComponent implements OnInit {
 
   share(): void {
     this.haptic.tap();
-    if (isPlatformBrowser(this.platformId)) {
-      if (navigator.share) {
-        navigator.share({
-          title: this.annonce?.titre || 'Annonce sur Douala City',
-          text: this.annonce?.description || 'Découvrez cette annonce.',
-          url: window.location.href
-        }).catch(console.error);
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert('Lien copié !');
-      }
+    if (navigator.share) {
+      navigator.share({
+        title: this.annonce?.titre || 'Annonce sur Douala City',
+        text: this.annonce?.description || 'Découvrez cette annonce.',
+        url: window.location.href
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Lien copié !');
     }
   }
 
@@ -224,7 +222,7 @@ export class AnnonceDetailsComponent implements OnInit {
     } else {
       if (this.annonce.structureId) {
         this.loading = true;
-        this.entrepriseService.getStructureById(null, this.annonce.structureId).subscribe({
+        this.entrepriseService.getStructureById(this.annonce.structureId).subscribe({
           next: (struct) => {
             this.loading = false;
             const tel = struct.localisation?.[0]?.telephone || struct.telephone;

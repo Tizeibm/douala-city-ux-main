@@ -110,7 +110,7 @@ export class FiltrerStructuresComponent {
   }
   loadStructures() {
     const token: String | null = localStorage.getItem('token');
-    this.structureService.getMesEntreprisesValides(token).subscribe({
+    this.structureService.getMesEntreprisesValides().subscribe({
       next: (data: any) => {
         this.allStructures = data;
         console.log(this.allStructures);

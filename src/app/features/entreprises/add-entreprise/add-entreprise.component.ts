@@ -1,11 +1,13 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { Entreprise, Horaire, Localisation } from '../../../shared/models/entreprise';
+import { Component, OnInit } from '@angular/core';
+import { Entreprise, Horaire, Localisation, ServiceOffert, Photo } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { Utilisateur } from '../../auth/registration/services/inscription.service';
 import { environment } from '../../../../environments/environment';
 import type * as Leaflet from 'leaflet';
-import { isPlatformBrowser } from '@angular/common';
 import { FeedbackService } from '../../../shared/feedback.service';
+import { CategoriesService } from '../../../core/services/categories.service';
+import { forkJoin, of, from } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 
 export enum jours {
 
@@ -31,10 +33,10 @@ export enum jours {
 
 export class AddEntrepriseComponent implements OnInit {
   currentStep = 1;
-  user: any = {};
+  user: Utilisateur | null = null;
   token: string | null = null;
   structureId: string | null = null;
-  uploadedPhotos: any[] = [];
+  uploadedPhotos: Photo[] = [];
   isUploading = false;
 
   entreprise: Entreprise = {
@@ -49,36 +51,25 @@ export class AddEntrepriseComponent implements OnInit {
     localisation: []
   };
 
-  newService = { nom: '', description: '', prix: 0 };
+  newService: ServiceOffert = { nom: '', description: '', prix: 0 };
   newHoraire: Horaire = { jourSemaine: 'LUNDI', heureDeDebut: '08:00', heureDeFin: '18:00' };
   newLocalisation: Localisation = { adresse: '', quartier: '', telephone: '', latitude: 4.0511, longitude: 9.7679 };
 
-  categories: { nom: string; sousCategories: string[] }[] = [
-    { nom: 'Commerce', sousCategories: ["Alimentation", "Vêtements", "Électronique", "Meubles", "Livres", "Tous", "autres"] },
-    { nom: 'Autres', sousCategories: ["Autre"] },
-    { nom: 'transport', sousCategories: ["Agence de voyage", "Location de voitures", "Taxi", "Transport en commun"] },
-    { nom: 'Hébergement', sousCategories: ["Hôtel", "Auberge", "Chambre d'hôtes", "Camping"] },
-    { nom: 'Loisirs', sousCategories: ["Cinéma", "Salle de sport", "Parc d'attractions", "Musée", "autres"] },
-    { nom: 'Restauration', sousCategories: ["Restaurant", "Café", "Fast-food", "Boulangerie"] },
-    { nom: 'Education', sousCategories: ["École", "Université", "Centre de formation"] },
-    { nom: 'Santé', sousCategories: ["Pharmacie", "Clinique", "Hôpital", "Laboratoire"] },
-    { nom: 'services', sousCategories: ["coiffure", "Mécanique", "Plomberie", "électricité", "nettoyage", "informatique"] },
-    { nom: 'institutions', sousCategories: ["mairie", "poste", "commissariat", "Sapeurs-pompiers", "préfecture"] }
-  ];
+  categories: { nom: string; sousCategories: string[] }[] = [];
 
   joursSemaine = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE'];
 
   constructor(
     private entrepriseService: EntrepriseService,
     private feedback: FeedbackService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private categoriesService: CategoriesService
   ) { }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.user = JSON.parse(localStorage.getItem('utilisateur') || '{}');
-      this.token = localStorage.getItem('token');
-    }
+    this.categories = this.categoriesService.getCategories().map(c => ({ nom: c.nom, sousCategories: c.sousCategories }));
+    const stored = localStorage.getItem('utilisateur');
+    this.user = stored ? JSON.parse(stored) : null;
+    this.token = localStorage.getItem('token');
     this.resetEntreprise();
   }
 
@@ -108,7 +99,7 @@ export class AddEntrepriseComponent implements OnInit {
 
   addHoraire() {
     this.entreprise.horaires?.push({ ...this.newHoraire });
-    // Cycle to next day for convenience
+    // Passer au jour suivant pour plus de commodité
     const currentIndex = this.joursSemaine.indexOf(this.newHoraire.jourSemaine || 'LUNDI');
     if (currentIndex < 6) {
       this.newHoraire.jourSemaine = this.joursSemaine[currentIndex + 1];
@@ -160,20 +151,20 @@ export class AddEntrepriseComponent implements OnInit {
 
   pendingPhotos: { file: File, url: string }[] = [];
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file: File | undefined = input.files?.[0];
     if (file) {
-      // Create local preview
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.pendingPhotos.push({ file: file, url: e.target.result });
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.pendingPhotos.push({ file: file, url: e.target?.result as string });
       };
       reader.readAsDataURL(file);
     }
-    event.target.value = ''; // Reset input
+    if (input) input.value = '';
   }
 
-  getPhotoUrl(photo: any): string {
+  getPhotoUrl(photo: { url?: string; id?: string }): string {
     return photo.url || `${environment.apiUrl}/photos/public/${photo.id}/image`;
   }
 
@@ -182,19 +173,19 @@ export class AddEntrepriseComponent implements OnInit {
        this.pendingPhotos.splice(index, 1);
        return;
     }
-    // Logic for existing remote photos (if editing later)
+    // Logique pour les photos distantes existantes (si modification ultérieure)
   }
 
   finishStep5() {
     this.feedback.showLoader();
 
-    // 1. Create Structure
+    // 1. Créer la structure
     this.entrepriseService.ajouterEntreprise(this.entreprise).subscribe({
       next: (res) => {
         const id = res.id as string;
         this.structureId = id;
         
-        // Prepare Batches
+        // Préparer les lots (batches)
         const horaires = this.entreprise.horaires || [];
         const mappedHoraires = horaires.map(h => {
           const debut = h.heureDeDebut || '08:00';
@@ -218,22 +209,19 @@ export class AddEntrepriseComponent implements OnInit {
           longitude: loc.longitude
         }));
 
-        import('rxjs').then(({ forkJoin, of, from }) => {
-          import('rxjs/operators').then(({ concatMap }) => {
-            
-            const reqHoraires = mappedHoraires.length > 0 ? this.entrepriseService.saveHorairesBatch(mappedHoraires, id) : of(null);
+        const reqHoraires = mappedHoraires.length > 0 ? this.entrepriseService.saveHorairesBatch(mappedHoraires, id) : of(null);
             const reqServices = services.length > 0 ? this.entrepriseService.saveServicesBatch(services, id) : of(null);
             const reqLocs = mappedLocalisations.length > 0 ? this.entrepriseService.saveLocalisationsBatch(mappedLocalisations, id) : of(null);
 
             forkJoin([reqHoraires, reqServices, reqLocs]).subscribe({
               next: () => {
-                // Upload pending photos sequentially if any
+                // Envoyer les photos en attente séquentiellement s'il y en a
                 if (this.pendingPhotos.length > 0) {
                    from(this.pendingPhotos).pipe(
                      concatMap(photo => this.entrepriseService.savePhoto(photo.file, this.token, id))
                    ).subscribe({
                      next: () => {},
-                     error: () => console.error('Photo upload error'),
+                     error: () => console.error('Erreur envoi photo'),
                      complete: () => {
                        this.feedback.hideLoader();
                        this.feedback.success('Structure créée avec succès !');
@@ -252,8 +240,6 @@ export class AddEntrepriseComponent implements OnInit {
                 this.onBack();
               }
             });
-          });
-        });
 
       },
       error: (err: any) => {

@@ -47,8 +47,8 @@
         <div class="form-group">
           <label>Téléphone</label>
           <div class="input-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="telephone" placeholder="6........" [(ngModel)]="utilisateur.telephone" name="Téléphone" />
+            <i class="fas fa-phone"></i>
+            <input type="tel" placeholder="6........" [(ngModel)]="utilisateur.telephone" name="telephone" />
           </div>
         </div>
 
@@ -67,7 +67,7 @@
 
       <div class="checkbox-group">
         <input id="cgu" type="checkbox" />
-        <label for="cgu">J'accepte les <a href="#">Conditions Générales d'Utilisation</a></label>
+        <label for="cgu">J'accepte les <a routerLink="/mentions-legales">Conditions Générales d'Utilisation</a></label>
       </div>
 
       <div class="form-actions">

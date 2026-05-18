@@ -1,0 +1,64 @@
+<div class="mes-favoris-page">
+  <div class="page-header">
+    <div class="header-info">
+      <h2><i class="fas fa-heart"></i> Mes Lieux Favoris</h2>
+      <p class="subtitle" *ngIf="!loading">{{ favoris.length }} lieu{{ favoris.length > 1 ? 'x' : '' }} sauvegardé{{ favoris.length > 1 ? 's' : '' }}</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="skeleton-grid">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text short"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && favoris.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="far fa-heart"></i>
+    </div>
+    <h3>Aucun favori pour le moment</h3>
+    <p>Explorez les structures de Douala et cliquez sur le cœur <i class="fas fa-heart" style="color: #ef4444;"></i> pour les ajouter à vos favoris.</p>
+    <a routerLink="/accueil" class="btn-explore">
+      <i class="fas fa-compass"></i> Explorer Douala
+    </a>
+  </div>
+
+  <!-- Liste -->
+  <div *ngIf="!loading && favoris.length > 0" class="favoris-grid">
+    <div *ngFor="let f of favoris; let i = index"
+         class="favori-card animate-slide-up"
+         [style.animation-delay]="i * 0.06 + 's'"
+         (click)="consulter(f.structureId)">
+
+      <div class="favori-media">
+        <img *ngIf="f.photoPrincipal" [src]="getPhotoUrl(f.photoPrincipal)" [alt]="f.structureNom">
+        <div *ngIf="!f.photoPrincipal" class="favori-placeholder">
+          <i class="fas fa-building"></i>
+        </div>
+        <span class="favori-tag" *ngIf="f.categorieNom">{{ f.categorieNom }}</span>
+        <button class="btn-remove" (click)="retirerFavori(f.structureId, $event)" title="Retirer des favoris">
+          <i class="fas fa-heart-broken"></i>
+        </button>
+      </div>
+
+      <div class="favori-info">
+        <h4>{{ f.structureNom }}</h4>
+        <span class="favori-date">
+          <i class="far fa-clock"></i> Ajouté le {{ f.createdAt | date:'dd MMM yyyy' }}
+        </span>
+      </div>
+
+      <div class="favori-action">
+        <button class="btn-voir">
+          Voir <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

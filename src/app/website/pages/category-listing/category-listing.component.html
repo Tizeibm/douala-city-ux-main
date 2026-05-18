@@ -6,13 +6,13 @@
         <nav class="breadcrumb-nav">
           <a routerLink="/accueil" class="back-link"><i class="fas fa-arrow-left"></i> Accueil</a>
           <span class="separator">/</span>
-          <span class="current">{{categoryConfig.name}}</span>
+          <span class="current">{{categoryConfig.nom}}</span>
         </nav>
 
         <div class="title-area">
           <h1 class="page-title">
-            <i [class]="categoryConfig.icon + ' title-icon text-primary'"></i>
-            {{categoryConfig.title}}
+            <i [class]="categoryConfig.icone + ' title-icon text-primary'"></i>
+            {{categoryConfig.titre}}
           </h1>
         </div>
       </div>
@@ -53,7 +53,7 @@
                 <button class="filter-chip" [class.active]="!filters.sousCategorie" (click)="filterBySubCategorie('')">
                   Tout voir
                 </button>
-                <button *ngFor="let c of categoryConfig.subCategories" class="filter-chip"
+                <button *ngFor="let c of categoryConfig.sousCategories" class="filter-chip"
                   [class.active]="filters.sousCategorie === c" (click)="filterBySubCategorie(c)">
                   {{c}}
                 </button>
@@ -84,6 +84,34 @@
             <span class="count-text">résultat(s) trouvé(s) <span *ngIf="filters.sousCategorie"
                 class="text-primary font-semibold">« {{filters.sousCategorie}} »</span></span>
           </div>
+
+          <div class="toolbar-controls">
+            <!-- Open Now Toggle -->
+            <button class="filter-chip" [class.active]="openNowOnly" (click)="toggleOpenNow()">
+              <span class="dot-indicator" [class.live]="openNowOnly"></span>
+              Ouvert maintenant
+            </button>
+
+            <!-- Sort -->
+            <div class="sort-group">
+              <label class="sort-label"><i class="fas fa-sort-amount-down"></i></label>
+              <select class="sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+                <option value="pertinence">Pertinence</option>
+                <option value="note">Meilleure note</option>
+                <option value="recent">Plus récent</option>
+              </select>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="view-toggle">
+              <button class="toggle-btn" [class.active]="viewMode === 'list'" (click)="toggleView('list')" aria-label="Vue liste">
+                <i class="fas fa-th-large"></i>
+              </button>
+              <button class="toggle-btn" [class.active]="viewMode === 'map'" (click)="toggleView('map')" aria-label="Vue carte">
+                <i class="fas fa-map-marked-alt"></i>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Loading State -->
@@ -102,10 +130,15 @@
         </div>
 
         <!-- Grid Results -->
-        <div class="structures-grid" *ngIf="!loading && filteredStructures.length > 0">
+        <div class="structures-grid" *ngIf="!loading && filteredStructures.length > 0 && viewMode === 'list'">
           <app-structure-card *ngFor="let s of filteredStructures; let i = index" [structure]="s"
             (view)="consulter($any($event))" class="animate-slide-up" [style.animation-delay]="i * 0.05 + 's'">
           </app-structure-card>
+        </div>
+
+        <!-- Map View -->
+        <div class="map-view-container" *ngIf="!loading && filteredStructures.length > 0 && viewMode === 'map'">
+          <div id="category-map" class="category-map-canvas"></div>
         </div>
 
         <!-- Pagination -->

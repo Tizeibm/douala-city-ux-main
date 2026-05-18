@@ -1,7 +1,7 @@
-import { Component, HostListener, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Utilisateur } from '../../../features/auth/registration/services/inscription.service';
 
 @Component({
@@ -10,10 +10,12 @@ import { Utilisateur } from '../../../features/auth/registration/services/inscri
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
 
   menuOuvert = false;
   isMobile = false;
+  searchQuery = '';
+  isAccueil = false;
 
   utilisateur: Utilisateur | null = null;
   estConnecte: boolean = false;
@@ -21,6 +23,7 @@ export class HeaderComponent implements OnInit {
 
   isAnnuaireOpen = false;
   isBrowser: boolean;
+  private routerSub: any;
 
   constructor(
     private authService: AuthService,
@@ -48,6 +51,22 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.checkViewport();
     this.mettreAJourHeader();
+    this.routerSub = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isAccueil = event.urlAfterRedirects === '/accueil' || event.urlAfterRedirects === '/';
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSub) this.routerSub.unsubscribe();
+  }
+
+  onHeaderSearch() {
+    if (!this.searchQuery.trim()) return;
+    this.router.navigate(['/resultats'], { queryParams: { q: this.searchQuery } });
+    this.searchQuery = '';
+    this.closeMenu();
   }
 
   @HostListener('window: resize')
@@ -65,7 +84,6 @@ export class HeaderComponent implements OnInit {
   toggleMenu(e?: Event): void {
     if (e) e.stopPropagation();
     this.menuOuvert = !this.menuOuvert;
-    console.log('menuOuvert =', this.menuOuvert);
   }
 
   closeMenu(): void {

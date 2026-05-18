@@ -37,6 +37,14 @@
   --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-blur: blur(16px);
   --premium-gradient: linear-gradient(135deg, #{$brand-primary} 0%, #{$brand-dark} 100%);
+
+  /* Unified Theme Colors (DoualaCity V2) */
+  --dc-brand: #3B6D11;
+  --dc-brand-mid: #639922;
+  --dc-brand-light: #EAF3DE;
+  --dc-brand-text: #27500A;
+  --dc-brand-bg-btn: #3B6D11;
+  --color-border-tertiary: #e5e7eb;
 }
 
 /* 2. Reset & Base */

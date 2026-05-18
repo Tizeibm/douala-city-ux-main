@@ -1,15 +1,8 @@
-import { inject, PLATFORM_ID } from '@angular/core';
-import { HttpRequest, HttpHandlerFn, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
-import { Observable, throwError, timeout, catchError } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { throwError, timeout, catchError } from 'rxjs';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
-    const platformId = inject(PLATFORM_ID);
-
-    let token: string | null = null;
-    if (isPlatformBrowser(platformId)) {
-        token = localStorage.getItem('token');
-    }
+    const token = localStorage.getItem('token');
 
     const isApiRequest = req.url.includes('/api/') || req.url.includes('localhost:8080');
     const isAuthRequest = req.url.includes('/auth/');
@@ -25,17 +18,18 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
         });
     }
 
+    // Timeout adapté : 60s pour les uploads de fichiers, 30s pour les autres requêtes
+    const isUpload = clonedReq.body instanceof FormData;
+    const requestTimeout = isUpload ? 60000 : 30000;
+
     return next(clonedReq).pipe(
-        timeout(10000),
+        timeout(requestTimeout),
         catchError(err => {
             if (err.status === 401) {
-                // Token expiré ou invalide : on nettoie et on redirige
-                if (isPlatformBrowser(platformId)) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('utilisateur');
-                    localStorage.removeItem('role');
-                    window.location.href = '/login';
-                }
+                localStorage.removeItem('token');
+                localStorage.removeItem('utilisateur');
+                localStorage.removeItem('role');
+                window.location.href = '/login';
             }
             return throwError(() => err);
         })

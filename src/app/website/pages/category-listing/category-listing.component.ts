@@ -1,16 +1,13 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, AfterViewChecked, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Entreprise } from '../../../shared/models/entreprise';
+import { Entreprise, Localisation } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { HapticService } from '../../../core/services/haptic.service';
+import { CategoriesService, CategorieConfig } from '../../../core/services/categories.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-interface CategoryConfig {
-    name: string;
-    title: string;
-    icon: string;
-    subCategories: string[];
-}
+
 
 @Component({
     selector: 'app-category-listing',
@@ -18,14 +15,16 @@ interface CategoryConfig {
     templateUrl: './category-listing.component.html',
     styleUrl: './category-listing.component.scss'
 })
-export class CategoryListingComponent implements OnInit {
+export class CategoryListingComponent implements OnInit, AfterViewChecked, OnDestroy {
+    private destroy$ = new Subject<void>();
 
     currentPage = 1;
     itemsPerPage = 12;
     totalPages = 0;
     totalItems = 0;
     loading: boolean = false;
-    isBrowser: boolean;
+    private map: any = null;
+    private mapInitialized = false;
 
     filters = {
         nom: '',
@@ -34,98 +33,55 @@ export class CategoryListingComponent implements OnInit {
         quartier: ''
     };
 
-    categoryConfig: CategoryConfig | null = null;
+    openNowOnly = false;
+    sortBy: 'pertinence' | 'note' | 'recent' = 'pertinence';
 
-    configs: { [key: string]: CategoryConfig } = {
-        'education': {
-            name: 'Education',
-            title: 'Écoles & Universités',
-            icon: 'fas fa-graduation-cap',
-            subCategories: ["École", "Université", "Centre de formation"]
-        },
-        'sante': {
-            name: 'Santé',
-            title: 'Santé & Bien-être',
-            icon: 'fas fa-heartbeat',
-            subCategories: ["Pharmacie", "Clinique", "Hôpital", "Laboratoire"]
-        },
-        'loisirs': {
-            name: 'Loisirs',
-            title: 'Loisirs & Divertissement',
-            icon: 'fas fa-smile',
-            subCategories: ["Cinéma", "Salle de sport", "Parc d'attractions", "Musée", "autres"]
-        },
-        'restauration': {
-            name: 'Restauration',
-            title: 'Restauration',
-            icon: 'fas fa-utensils',
-            subCategories: ["Restaurant", "Café", "Fast-food", "Boulangerie"]
-        },
-        'commerces': {
-            name: 'Commerce',
-            title: 'Commerces',
-            icon: 'fas fa-shopping-bag',
-            subCategories: ["Alimentation", "Vêtements", "Électronique", "Meubles", "Livres", "autres"]
-        },
-        'transport': {
-            name: 'transport',
-            title: 'Transport',
-            icon: 'fas fa-bus',
-            subCategories: ["Agence de voyage", "Location de voitures", "Taxi", "Transport en commun"]
-        },
-        'hebergement': {
-            name: 'Hébergement',
-            title: 'Hébergement',
-            icon: 'fas fa-bed',
-            subCategories: ["Hôtel", "Auberge", "Chambre d'hôtes", "Camping"]
-        },
-        'institutions': {
-            name: 'institutions',
-            title: 'Institutions & Services Publics',
-            icon: 'fas fa-landmark',
-            subCategories: ["mairie", "poste", "commissariat", "Sapeurs-pompiers", "préfecture"]
-        },
-        'services': {
-            name: 'services',
-            title: 'Services de Proximité',
-            icon: 'fas fa-tools',
-            subCategories: ["coiffure", "Mécanique", "Plomberie", "électricité", "nettoyage", "informatique"]
-        }
-    };
+    categoryConfig: CategorieConfig | null = null;
+
+
 
     allStructures: Entreprise[] = [];
     filteredStructures: Entreprise[] = [];
+
+    viewMode: 'list' | 'map' = 'list';
 
     constructor(
         private entrepriseService: EntrepriseService,
         private router: Router,
         private route: ActivatedRoute,
         private haptic: HapticService,
-        @Inject(PLATFORM_ID) platformId: Object
-    ) {
-        this.isBrowser = isPlatformBrowser(platformId);
-    }
+        private categoriesService: CategoriesService
+    ) {}
 
     ngOnInit(): void {
-        this.route.params.subscribe(params => {
+        this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
             const catKey = params['category'];
-            if (this.configs[catKey]) {
-                this.categoryConfig = this.configs[catKey];
-                this.filters.categorie = this.categoryConfig.name;
+            const config = this.categoriesService.getCategorieConfigParCle(catKey);
+            if (config) {
+                this.categoryConfig = config;
+                this.filters.categorie = config.nom;
                 this.reset();
                 this.loadStructures();
             } else {
-                // Fallback or redirect if category not found
                 this.router.navigate(['/accueil']);
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+        if (this.map) {
+            this.map.remove();
+            this.map = null;
+        }
     }
 
     loadStructures() {
         if (!this.categoryConfig) return;
 
         this.loading = true;
-        this.entrepriseService.getByCategorie(this.categoryConfig.name, this.currentPage - 1, this.itemsPerPage).subscribe({
+        this.entrepriseService.getByCategorie(this.categoryConfig.nom, this.currentPage - 1, this.itemsPerPage).subscribe({
             next: (data: any) => {
                 this.allStructures = data.content || data;
                 this.totalItems = data.totalElements || this.allStructures.length;
@@ -134,8 +90,8 @@ export class CategoryListingComponent implements OnInit {
                 this.loading = false;
                 this.applyFilters();
             },
-            error: (err: any) => {
-                console.error(`Erreur lors du chargement de la catégorie ${this.categoryConfig?.name}`, err);
+            error: (err: Error) => {
+                console.error(`Erreur lors du chargement de la catégorie ${this.categoryConfig?.nom}`, err);
                 this.loading = false;
             }
         });
@@ -143,15 +99,32 @@ export class CategoryListingComponent implements OnInit {
 
     applyFilters(): void {
         this.haptic.tap();
-        this.filteredStructures = this.allStructures.filter(s => {
+        let results = this.allStructures.filter(s => {
             return (
                 s.nom.toLowerCase().includes(this.filters.nom.toLowerCase()) &&
                 (this.filters.categorie ? s.categorieNom === this.filters.categorie : true) &&
                 (this.filters.sousCategorie ? s.sousCategorie === this.filters.sousCategorie : true) &&
-                (this.filters.quartier ? s.localisation ? s.localisation.some((l: any) => l.quartier?.toLowerCase().includes(this.filters.quartier.toLowerCase())) : false : true)
+                (this.filters.quartier ? s.localisation ? s.localisation.some((l: Localisation) => l.quartier?.toLowerCase().includes(this.filters.quartier.toLowerCase())) : false : true)
             );
         });
 
+        // Open Now filter
+        if (this.openNowOnly) {
+            results = results.filter(s => this.isStructureOpenNow(s));
+        }
+
+        // Sort
+        if (this.sortBy === 'note') {
+            results.sort((a, b) => (b.noteMoyenne || 0) - (a.noteMoyenne || 0));
+        } else if (this.sortBy === 'recent') {
+            results.sort((a, b) => {
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateB - dateA;
+            });
+        }
+
+        this.filteredStructures = results;
         this.entrepriseService.setEntreprises(this.filteredStructures);
         this.totalPages = this.filteredStructures.length ? Math.ceil(this.filteredStructures.length / this.itemsPerPage) : 0;
         this.currentPage = 1;
@@ -160,18 +133,41 @@ export class CategoryListingComponent implements OnInit {
         this.loading = false;
     }
 
+    toggleOpenNow(): void {
+        this.openNowOnly = !this.openNowOnly;
+        this.applyFilters();
+    }
+
+    onSortChange(sort: 'pertinence' | 'note' | 'recent'): void {
+        this.sortBy = sort;
+        this.applyFilters();
+    }
+
+    private isStructureOpenNow(s: Entreprise): boolean {
+        if (!s.horaires || s.horaires.length === 0) return false;
+        const now = new Date();
+        const days = ['DIMANCHE', 'LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI'];
+        const todayName = days[now.getDay()];
+        const todayHoraire = s.horaires.find(h => h.jourSemaine?.toUpperCase() === todayName);
+        if (!todayHoraire || !todayHoraire.heureDeDebut || !todayHoraire.heureDeFin) return false;
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const [startH, startM] = todayHoraire.heureDeDebut.split(':').map(Number);
+        const [endH, endM] = todayHoraire.heureDeFin.split(':').map(Number);
+        return currentMinutes >= (startH * 60 + startM) && currentMinutes <= (endH * 60 + endM);
+    }
+
     filterBySubCategorie(subCat: string): void {
         this.filters.sousCategorie = subCat;
         this.applyFilters();
     }
 
     updatePaginatedStructures(): void {
-        this.entrepriseService.page$.subscribe((page: any) => {
+        this.entrepriseService.page$.pipe(takeUntil(this.destroy$)).subscribe((page: number) => {
             this.currentPage = page || 1;
         });
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
-        this.entrepriseService.ent$.subscribe((data: any) => {
+        this.entrepriseService.ent$.pipe(takeUntil(this.destroy$)).subscribe((data: Entreprise[]) => {
             if (data) {
                 this.filteredStructures = data;
                 this.filteredStructures = this.filteredStructures.slice(startIndex, endIndex);
@@ -207,5 +203,57 @@ export class CategoryListingComponent implements OnInit {
         if (this.allStructures.length > 0) {
             this.applyFilters();
         }
+    }
+
+    toggleView(mode: 'list' | 'map') {
+        this.viewMode = mode;
+        if (mode === 'map') {
+            this.mapInitialized = false;
+        }
+    }
+
+    ngAfterViewChecked() {
+        if (this.viewMode === 'map' && !this.mapInitialized) {
+            const el = document.getElementById('category-map');
+            if (el) {
+                this.mapInitialized = true;
+                this.initMap();
+            }
+        }
+    }
+
+    private async initMap() {
+        const L = await import('leaflet');
+
+        if (this.map) {
+            this.map.remove();
+        }
+
+        this.map = L.map('category-map').setView([4.0511, 9.7679], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(this.map);
+
+        const defaultIcon = L.icon({
+            iconUrl: 'assets/leaflet/marker-icon.png',
+            shadowUrl: 'assets/leaflet/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+
+        this.filteredStructures.forEach(s => {
+            const locs = s.localisations || s.localisation || [];
+            locs.forEach((loc: Localisation) => {
+                if (loc.latitude && loc.longitude) {
+                    L.marker([loc.latitude, loc.longitude], { icon: defaultIcon })
+                        .addTo(this.map)
+                        .bindPopup(`<strong>${s.nom}</strong><br>${loc.adresse || loc.address || ''}`)
+                        .on('click', () => this.consulter(s));
+                }
+            });
+        });
+
+        setTimeout(() => this.map?.invalidateSize(), 200);
     }
 }

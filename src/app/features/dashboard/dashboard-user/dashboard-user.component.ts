@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { InscriptionService, Utilisateur } from '../../auth/registration/services/inscription.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard-user',
@@ -8,14 +10,12 @@ import { InscriptionService, Utilisateur } from '../../auth/registration/service
   templateUrl: './dashboard-user.component.html',
   styleUrl: './dashboard-user.component.scss'
 })
-export class DashboardUserComponent implements OnInit {
-
+export class DashboardUserComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   utilisateur: Utilisateur | null = null;
   estConnecte: boolean = false;
   utilisateurNom: string | null = null;
-
-
 
   utilisateurId!: string;
   structures: any[] = [];
@@ -27,17 +27,18 @@ export class DashboardUserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    this.authService.estConnecte$.subscribe((etat) => this.estConnecte = etat);
-    this.authService.utilisateur$.subscribe(u => {
+    this.authService.estConnecte$.pipe(takeUntil(this.destroy$)).subscribe((etat) => this.estConnecte = etat);
+    this.authService.utilisateur$.pipe(takeUntil(this.destroy$)).subscribe(u => {
       this.utilisateur = u;
     });
     this.authService.chargerUtilisateurDepuisStorage();
     this.utilisateurId = this.authService.getUtilisateurId();
     this.nomUtilisateur = this.authService.getNomUtilisateur();
+  }
 
-    // this.structureService.getStructuresUtilisateur(this.utilisateurId)
-    //   .subscribe(data => this.structures = data);
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   logout() {
