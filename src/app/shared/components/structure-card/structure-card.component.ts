@@ -118,6 +118,30 @@ export class StructureCardComponent implements OnInit, OnDestroy {
         return now >= openDate && now <= closeDate;
     }
 
+    getInitials(): string {
+        const nom = this.structure.nom || 'E';
+        return nom.substring(0, 2).toUpperCase();
+    }
+
+    getAvatarColor(): string {
+        const colors = ['#fcd34d', '#fca5a5', '#6ee7b7', '#93c5fd', '#c4b5fd', '#fbcfe8', '#a7f3d0'];
+        const nom = this.structure.nom || 'E';
+        const charCode = nom.charCodeAt(0) || 0;
+        return colors[charCode % colors.length];
+    }
+
+    getSemanticIcon(): string {
+        const cat = this.structure.categorieNom?.toLowerCase() || '';
+        if (cat.includes('restaura')) return 'fas fa-utensils';
+        if (cat.includes('hôt') || cat.includes('heberg')) return 'fas fa-bed';
+        if (cat.includes('sant') || cat.includes('hopital') || cat.includes('pharmacie')) return 'fas fa-heartbeat';
+        if (cat.includes('commerce') || cat.includes('shop')) return 'fas fa-shopping-bag';
+        if (cat.includes('transport')) return 'fas fa-car';
+        if (cat.includes('sport')) return 'fas fa-dumbbell';
+        if (cat.includes('beauté')) return 'fas fa-spa';
+        return 'fas fa-store';
+    }
+
     onView() {
         this.view.emit(this.structure);
     }

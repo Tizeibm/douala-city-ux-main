@@ -20,13 +20,15 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="container main-content">
-    <div class="layout-grid">
+  <main class="main-content-split">
+    <div class="split-layout-grid">
 
-      <!-- Interactive Sidebar -->
-      <aside class="sidebar-wrapper">
-        <div class="sticky-sidebar">
-
+      <!-- Left Column (100%) -->
+      <div class="left-column">
+        <!-- Header Area (Moved inside left column or kept above? The prompt says reduce padding, let's keep it above but adjust padding in CSS) -->
+        
+        <!-- Filters (Compact Horizontal) -->
+        <aside class="sidebar-wrapper">
           <div class="filter-card">
             <div class="filter-header">
               <h3><i class="fas fa-sliders-h"></i> Filtres</h3>
@@ -36,22 +38,31 @@
               </button>
             </div>
 
-            <!-- Search Global -->
-            <div class="filter-group">
-              <label>Rechercher</label>
-              <div class="search-input-wrapper">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" [(ngModel)]="filters.nom" (ngModelChange)="applyFilters()"
-                  placeholder="Rechercher par nom...">
+            <div class="filters-grid">
+              <!-- Search Global -->
+              <div class="filter-group">
+                <div class="search-input-wrapper">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" [(ngModel)]="filters.nom" (ngModelChange)="applyFilters()"
+                    placeholder="Rechercher par nom...">
+                </div>
+              </div>
+
+              <!-- Quartier -->
+              <div class="filter-group">
+                <div class="search-input-wrapper">
+                  <i class="fas fa-map-marker-alt search-icon"></i>
+                  <input type="text" [(ngModel)]="filters.quartier" (ngModelChange)="applyFilters()"
+                    placeholder="Quartier (ex: Akwa)">
+                </div>
               </div>
             </div>
 
             <!-- Sous-Catégories interactives -->
-            <div class="filter-group mt-4">
-              <label>Spécialités / Niveaux</label>
+            <div class="filter-group mt-3">
               <div class="chips-container">
                 <button class="filter-chip" [class.active]="!filters.sousCategorie" (click)="filterBySubCategorie('')">
-                  Tout voir
+                  Tout
                 </button>
                 <button *ngFor="let c of categoryConfig.sousCategories" class="filter-chip"
                   [class.active]="filters.sousCategorie === c" (click)="filterBySubCategorie(c)">
@@ -59,102 +70,78 @@
                 </button>
               </div>
             </div>
+          </div>
+        </aside>
 
-            <!-- Quartier -->
-            <div class="filter-group mt-4">
-              <label>Quartier</label>
-              <div class="search-input-wrapper">
-                <i class="fas fa-map-marker-alt search-icon"></i>
-                <input type="text" [(ngModel)]="filters.quartier" (ngModelChange)="applyFilters()"
-                  placeholder="Ex: Akwa, Deido...">
+        <!-- Results Area -->
+        <section class="results-wrapper">
+
+          <!-- Results Header -->
+          <div class="results-toolbar">
+            <div class="results-count animate-fade-in">
+              <span class="count-badge">{{totalItems}}</span>
+              <span class="count-text">résultat(s) <span *ngIf="filters.sousCategorie"
+                  class="text-primary font-semibold">« {{filters.sousCategorie}} »</span></span>
+            </div>
+
+            <div class="toolbar-controls">
+
+              <!-- Open Now Toggle -->
+              <button class="filter-chip" [class.active]="openNowOnly" (click)="toggleOpenNow()">
+                <span class="dot-indicator" [class.live]="openNowOnly"></span>
+                Ouvert maintenant
+              </button>
+
+              <!-- Sort -->
+              <div class="sort-group">
+                <label class="sort-label"><i class="fas fa-sort-amount-down"></i></label>
+                <select class="sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+                  <option value="pertinence">Pertinence</option>
+                  <option value="note">Meilleure note</option>
+                  <option value="recent">Plus récent</option>
+                </select>
               </div>
             </div>
           </div>
 
-        </div>
-      </aside>
-
-      <!-- Results Area -->
-      <section class="results-wrapper">
-
-        <!-- Results Header -->
-        <div class="results-toolbar">
-          <div class="results-count animate-fade-in">
-            <span class="count-badge">{{totalItems}}</span>
-            <span class="count-text">résultat(s) trouvé(s) <span *ngIf="filters.sousCategorie"
-                class="text-primary font-semibold">« {{filters.sousCategorie}} »</span></span>
+          <!-- Loading State -->
+          <div *ngIf="loading" class="loading-state py-xl flex-col items-center text-center">
+            <i class="fas fa-spinner fa-spin fa-3x text-primary mb-3"></i>
+            <p class="text-secondary font-medium">Recherche en cours...</p>
           </div>
 
-          <div class="toolbar-controls">
-            <!-- Open Now Toggle -->
-            <button class="filter-chip" [class.active]="openNowOnly" (click)="toggleOpenNow()">
-              <span class="dot-indicator" [class.live]="openNowOnly"></span>
-              Ouvert maintenant
+          <!-- Empty State -->
+          <div *ngIf="!loading && filteredStructures.length === 0" class="empty-state animate-fade-in py-xl text-center">
+            <div class="empty-icon text-gray-300 text-6xl mb-md"><i class="fas fa-search"></i></div>
+            <h3 class="text-xl font-bold text-gray-800 mb-sm">Aucun résultat trouvé</h3>
+            <p class="text-secondary max-w-md mx-auto">Nous n'avons trouvé aucun établissement correspondant à vos critères.</p>
+            <button class="btn btn-outline mt-3" (click)="reset()">Réinitialiser</button>
+          </div>
+
+          <!-- Grid Results -->
+          <div class="structures-grid" *ngIf="!loading && filteredStructures.length > 0">
+            <app-structure-card *ngFor="let s of filteredStructures; let i = index" [structure]="s"
+              (view)="consulter($any($event))" class="animate-slide-up" [style.animation-delay]="i * 0.05 + 's'">
+            </app-structure-card>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination-premium mt-xl" *ngIf="totalPages > 1 && !loading">
+            <button class="btn-page-nav" (click)="previousPage()" [disabled]="currentPage === 1">
+              <i class="fas fa-chevron-left"></i>
             </button>
-
-            <!-- Sort -->
-            <div class="sort-group">
-              <label class="sort-label"><i class="fas fa-sort-amount-down"></i></label>
-              <select class="sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
-                <option value="pertinence">Pertinence</option>
-                <option value="note">Meilleure note</option>
-                <option value="recent">Plus récent</option>
-              </select>
+            <div class="page-numbers">
+              <span class="page-info">Page <strong>{{currentPage}}</strong> sur <strong>{{totalPages}}</strong></span>
             </div>
-
-            <!-- View Toggle -->
-            <div class="view-toggle">
-              <button class="toggle-btn" [class.active]="viewMode === 'list'" (click)="toggleView('list')" aria-label="Vue liste">
-                <i class="fas fa-th-large"></i>
-              </button>
-              <button class="toggle-btn" [class.active]="viewMode === 'map'" (click)="toggleView('map')" aria-label="Vue carte">
-                <i class="fas fa-map-marked-alt"></i>
-              </button>
-            </div>
+            <button class="btn-page-nav" (click)="nextPage()" [disabled]="currentPage === totalPages">
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
-        </div>
 
-        <!-- Loading State -->
-        <div *ngIf="loading" class="loading-state py-xl flex-col items-center text-center">
-          <i class="fas fa-spinner fa-spin fa-3x text-primary mb-3"></i>
-          <p class="text-secondary font-medium">Recherche en cours...</p>
-        </div>
+        </section>
+      </div>
 
-        <!-- Empty State -->
-        <div *ngIf="!loading && filteredStructures.length === 0" class="empty-state animate-fade-in py-xl text-center">
-          <div class="empty-icon text-gray-300 text-6xl mb-md"><i class="fas fa-search"></i></div>
-          <h3 class="text-xl font-bold text-gray-800 mb-sm">Aucun résultat trouvé</h3>
-          <p class="text-secondary max-w-md mx-auto">Nous n'avons trouvé aucun établissement correspondant à vos
-            critères actuels.</p>
-          <button class="btn btn-outline mt-3" (click)="reset()">Réinitialiser les filtres</button>
-        </div>
-
-        <!-- Grid Results -->
-        <div class="structures-grid" *ngIf="!loading && filteredStructures.length > 0 && viewMode === 'list'">
-          <app-structure-card *ngFor="let s of filteredStructures; let i = index" [structure]="s"
-            (view)="consulter($any($event))" class="animate-slide-up" [style.animation-delay]="i * 0.05 + 's'">
-          </app-structure-card>
-        </div>
-
-        <!-- Map View -->
-        <div class="map-view-container" *ngIf="!loading && filteredStructures.length > 0 && viewMode === 'map'">
-          <div id="category-map" class="category-map-canvas"></div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination-premium mt-xl" *ngIf="totalPages > 1 && !loading">
-          <button class="btn-page-nav" (click)="previousPage()" [disabled]="currentPage === 1">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="page-numbers">
-            <span class="page-info">Page <strong>{{currentPage}}</strong> sur <strong>{{totalPages}}</strong></span>
-          </div>
-          <button class="btn-page-nav" (click)="nextPage()" [disabled]="currentPage === totalPages">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-
-      </section>
     </div>
   </main>
+
 </div>

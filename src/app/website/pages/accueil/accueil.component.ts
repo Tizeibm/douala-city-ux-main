@@ -10,7 +10,7 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 interface QuickCategory {
-  emoji: string;
+  icon: string;
   label: string;
   route: string;
 }
@@ -49,14 +49,14 @@ export class AccueilComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // ─── Quick Categories Data ──────────────────────────────────
   quickCategories: QuickCategory[] = [
-    { emoji: '🍽️', label: 'Restaurants', route: '/categories/restauration' },
-    { emoji: '🏥', label: 'Santé', route: '/categories/sante' },
-    { emoji: '🛍️', label: 'Shopping', route: '/categories/commerces' },
-    { emoji: '🚗', label: 'Transport', route: '/categories/transport' },
-    { emoji: '🏨', label: 'Hôtels', route: '/categories/hebergement' },
-    { emoji: '💼', label: 'Services', route: '/categories/services' },
-    { emoji: '🎓', label: 'Éducation', route: '/categories/education' },
-    { emoji: '🎭', label: 'Loisirs', route: '/categories/loisirs' }
+    { icon: 'fas fa-utensils', label: 'Restaurants', route: '/categories/restauration' },
+    { icon: 'fas fa-heartbeat', label: 'Santé', route: '/categories/sante' },
+    { icon: 'fas fa-shopping-bag', label: 'Shopping', route: '/categories/commerces' },
+    { icon: 'fas fa-car', label: 'Transport', route: '/categories/transport' },
+    { icon: 'fas fa-bed', label: 'Hôtels', route: '/categories/hebergement' },
+    { icon: 'fas fa-briefcase', label: 'Services', route: '/categories/services' },
+    { icon: 'fas fa-graduation-cap', label: 'Éducation', route: '/categories/education' },
+    { icon: 'fas fa-ticket-alt', label: 'Loisirs', route: '/categories/loisirs' }
   ];
 
   // ─── How It Works Steps ─────────────────────────────────────
@@ -67,7 +67,7 @@ export class AccueilComponent implements OnInit, OnDestroy, AfterViewInit {
       description: 'Tapez ce que vous cherchez et laissez-nous trouver les meilleurs résultats à Douala.'
     },
     {
-      icon: 'fa-balance-scale',
+      icon: 'fa-star-half-alt',
       title: 'Comparez',
       description: 'Comparez les avis, photos et informations pour faire le meilleur choix.'
     },

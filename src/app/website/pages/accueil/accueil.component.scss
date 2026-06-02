@@ -301,40 +301,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   flex-wrap: wrap;
 
-  .quick-cat-item {
-    display: flex;
-    flex-direction: column;
+  .pill-btn {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 12px 16px;
-    border-radius: 16px;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: white;
+    color: $text-main;
+    border-radius: $radius-full;
+    box-shadow: $shadow-sm;
     text-decoration: none;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     animation: catFadeIn 0.5s ease backwards;
 
     &:hover {
-      background: white;
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-
-      .quick-cat-emoji { transform: scale(1.2); }
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .quick-cat-emoji {
-      font-size: 1.6rem;
-      display: block;
-      transition: transform 0.3s;
+    .pill-icon {
+      font-size: 1rem;
+      color: $brand-primary;
     }
 
-    .quick-cat-label {
-      font-size: 0.75rem;
+    .pill-label {
+      font-size: 0.85rem;
       font-weight: 700;
-      color: $text-secondary;
-      white-space: nowrap;
     }
   }
 }
@@ -487,7 +483,8 @@
       text-decoration: none;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
       transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
                   box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -519,6 +516,10 @@
         position: relative;
         z-index: 3;
         padding: 28px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         .bento-tag {
           display: inline-block;
@@ -598,19 +599,6 @@
 
         .bento-card-content { padding: 22px; }
         .bento-card-title { font-size: 1.15rem; }
-      }
-
-      // Gradient fallbacks for categories without photos
-      &.bento-gradient-transport {
-        background: linear-gradient(135deg, #1e3a5f 0%, #0ea5e9 50%, #38bdf8 100%);
-      }
-
-      &.bento-gradient-hotel {
-        background: linear-gradient(135deg, #312e81 0%, #6366f1 50%, #818cf8 100%);
-      }
-
-      &.bento-gradient-services {
-        background: linear-gradient(135deg, #581c87 0%, #a855f7 50%, #c084fc 100%);
       }
     }
   }
@@ -700,7 +688,7 @@
 
     .step-connector {
       position: absolute;
-      top: 50%;
+      top: 0;
       height: 2px;
       background: repeating-linear-gradient(
         90deg,

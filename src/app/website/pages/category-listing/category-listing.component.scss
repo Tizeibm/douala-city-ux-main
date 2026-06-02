@@ -12,15 +12,15 @@
 /* --- Header Section --- */
 .category-header {
   background: white;
-  padding: 2.5rem 0 2rem;
+  padding: 1rem 0;
   border-bottom: 1px solid $border-color;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 
   .header-container {
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 2rem 0 calc(260px + 3rem);
+    padding: 0 2rem;
   }
 
   .breadcrumb-nav {
@@ -76,72 +76,41 @@
 }
 
 /* --- Main Layout Grid --- */
-.main-content {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 2rem 0 0;
+.main-content-split {
+  width: 100%;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.layout-grid {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 0;
-  align-items: start;
+.split-layout-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
-  @media (max-width: $bp-lg) {
-    grid-template-columns: 1fr;
+  .left-column {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 4rem;
   }
 }
 
 /* --- Sidebar & Filters --- */
 .sidebar-wrapper {
   background: white;
-  border-right: 1px solid $border-color;
-  min-height: calc(100vh - 120px);
-  padding: 1.5rem;
-
-  .sticky-sidebar {
-    position: sticky;
-    top: 2rem;
-  }
-
-  @media (max-width: $bp-lg) {
-    min-height: auto;
-    border-right: none;
-    border-bottom: 1px solid $border-color;
-    padding: 1rem 1.5rem;
-
-    .sticky-sidebar {
-      position: static;
-    }
-
-    .filter-card {
-      .filter-header {
-        margin-bottom: 0.75rem;
-      }
-
-      // Make filter groups horizontal
-      .filter-group {
-        margin-top: 0.75rem !important;
-      }
-    }
-
-    // Horizontal chips scroll
-    .chips-container {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
-
-      &::-webkit-scrollbar { display: none; }
-    }
-  }
+  border-bottom: 1px solid $border-color;
+  padding: 1.5rem 2rem;
 
   @media (max-width: $bp-sm) {
-    padding: 0.75rem 1rem;
+    padding: 1rem;
   }
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .filter-card {
@@ -155,8 +124,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid $border-color;
 
     h3 {
@@ -187,20 +156,10 @@
   }
 
   .filter-group {
-    margin-bottom: 1.5rem;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin-bottom: 0;
 
     label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: $text-main;
-      margin-bottom: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      display: none;
     }
 
     .search-input-wrapper {
@@ -265,9 +224,7 @@
 
 /* --- Results Area --- */
 .results-wrapper {
-  min-width: 0;
-  padding: 0 2rem;
-  max-width: 1200px;
+  padding: 1.5rem 2rem;
 }
 
 .results-toolbar {
@@ -384,7 +341,7 @@
 
 .structures-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: 1.5rem;
 }
 
@@ -493,23 +450,5 @@
       background: $bg-alt;
       color: $text-main;
     }
-  }
-}
-
-/* ───── Map View ───── */
-.map-view-container {
-  border-radius: $radius-lg;
-  overflow: hidden;
-  border: 1px solid $border-color;
-  box-shadow: $shadow-soft;
-}
-
-.category-map-canvas {
-  width: 100%;
-  height: 550px;
-  background: $bg-alt;
-
-  @media (max-width: $bp-sm) {
-    height: 400px;
   }
 }

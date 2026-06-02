@@ -93,10 +93,10 @@
     <div class="quick-categories animate-fade-in">
       <a *ngFor="let cat of quickCategories; let i = index"
          [routerLink]="cat.route"
-         class="quick-cat-item"
+         class="pill-btn"
          [style.animation-delay]="(i * 80 + 400) + 'ms'">
-        <span class="quick-cat-emoji">{{cat.emoji}}</span>
-        <span class="quick-cat-label">{{cat.label}}</span>
+        <i [class]="cat.icon + ' pill-icon'"></i>
+        <span class="pill-label">{{cat.label}}</span>
       </a>
     </div>
   </div>
@@ -186,8 +186,9 @@
         </div>
       </a>
 
-      <!-- Small: Transport (CSS gradient fallback) -->
-      <a routerLink="/categories/transport" class="bento-card bento-sm bento-gradient-transport" id="bento-transport">
+      <!-- Small: Transport -->
+      <a routerLink="/categories/transport" class="bento-card bento-sm" id="bento-transport">
+        <img src="assets/categories/transport.png" alt="Transport à Douala" class="bento-img" loading="lazy" onerror="this.src='assets/categories/restauration.png'">
         <div class="bento-overlay"></div>
         <div class="bento-card-content">
           <span class="bento-tag">🚗</span>
@@ -196,8 +197,9 @@
         </div>
       </a>
 
-      <!-- Medium: Hébergement (CSS gradient fallback) -->
-      <a routerLink="/categories/hebergement" class="bento-card bento-md bento-gradient-hotel" id="bento-hotel">
+      <!-- Medium: Hébergement -->
+      <a routerLink="/categories/hebergement" class="bento-card bento-md" id="bento-hotel">
+        <img src="assets/categories/hotel.png" alt="Séjour & Hôtels à Douala" class="bento-img" loading="lazy" onerror="this.src='assets/categories/sante.png'">
         <div class="bento-overlay"></div>
         <div class="bento-card-content">
           <span class="bento-tag">🏨 Séjour</span>
@@ -207,8 +209,9 @@
         </div>
       </a>
 
-      <!-- Medium: Services (CSS gradient fallback) -->
-      <a routerLink="/categories/services" class="bento-card bento-md bento-gradient-services" id="bento-services">
+      <!-- Medium: Services -->
+      <a routerLink="/categories/services" class="bento-card bento-md" id="bento-services">
+        <img src="assets/categories/services.png" alt="Services & Pro à Douala" class="bento-img" loading="lazy" onerror="this.src='assets/categories/restauration.png'">
         <div class="bento-overlay"></div>
         <div class="bento-card-content">
           <span class="bento-tag">💼 Pro</span>

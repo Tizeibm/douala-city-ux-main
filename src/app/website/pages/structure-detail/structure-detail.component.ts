@@ -268,12 +268,14 @@ export class StructureDetailComponent implements OnInit, AfterViewInit, OnDestro
   getHeroImageUrl(): string {
     if (!this.structure?.photoPrincipal) return '/assets/images/placeholder.jpg';
     if (this.structure.photoPrincipal.startsWith('http')) return this.structure.photoPrincipal;
-    // If it's a UUID (new system)
     if (this.structure.photoPrincipal.length > 20) {
       return `${this.apiUrl}/photos/public/${this.structure.photoPrincipal}/image`;
     }
-    // Fallback for old system or direct filename
     return `http://localhost:8080/${this.structure.photoPrincipal}`;
+  }
+
+  hasImage(): boolean {
+    return !!this.structure?.photoPrincipal;
   }
 
   getPhotoUrl(photo: any): string {

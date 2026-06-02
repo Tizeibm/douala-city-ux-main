@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Entreprise, Localisation } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
@@ -7,15 +7,13 @@ import { CategoriesService, CategorieConfig } from '../../../core/services/categ
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-
-
 @Component({
     selector: 'app-category-listing',
     standalone: false,
     templateUrl: './category-listing.component.html',
     styleUrl: './category-listing.component.scss'
 })
-export class CategoryListingComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class CategoryListingComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
 
     currentPage = 1;
@@ -23,8 +21,6 @@ export class CategoryListingComponent implements OnInit, AfterViewChecked, OnDes
     totalPages = 0;
     totalItems = 0;
     loading: boolean = false;
-    private map: any = null;
-    private mapInitialized = false;
 
     filters = {
         nom: '',
@@ -71,10 +67,6 @@ export class CategoryListingComponent implements OnInit, AfterViewChecked, OnDes
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-        if (this.map) {
-            this.map.remove();
-            this.map = null;
-        }
     }
 
     loadStructures() {
@@ -203,57 +195,5 @@ export class CategoryListingComponent implements OnInit, AfterViewChecked, OnDes
         if (this.allStructures.length > 0) {
             this.applyFilters();
         }
-    }
-
-    toggleView(mode: 'list' | 'map') {
-        this.viewMode = mode;
-        if (mode === 'map') {
-            this.mapInitialized = false;
-        }
-    }
-
-    ngAfterViewChecked() {
-        if (this.viewMode === 'map' && !this.mapInitialized) {
-            const el = document.getElementById('category-map');
-            if (el) {
-                this.mapInitialized = true;
-                this.initMap();
-            }
-        }
-    }
-
-    private async initMap() {
-        const L = await import('leaflet');
-
-        if (this.map) {
-            this.map.remove();
-        }
-
-        this.map = L.map('category-map').setView([4.0511, 9.7679], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(this.map);
-
-        const defaultIcon = L.icon({
-            iconUrl: 'assets/leaflet/marker-icon.png',
-            shadowUrl: 'assets/leaflet/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34]
-        });
-
-        this.filteredStructures.forEach(s => {
-            const locs = s.localisations || s.localisation || [];
-            locs.forEach((loc: Localisation) => {
-                if (loc.latitude && loc.longitude) {
-                    L.marker([loc.latitude, loc.longitude], { icon: defaultIcon })
-                        .addTo(this.map)
-                        .bindPopup(`<strong>${s.nom}</strong><br>${loc.adresse || loc.address || ''}`)
-                        .on('click', () => this.consulter(s));
-                }
-            });
-        });
-
-        setTimeout(() => this.map?.invalidateSize(), 200);
     }
 }

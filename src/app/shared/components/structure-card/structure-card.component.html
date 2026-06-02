@@ -2,8 +2,11 @@
     <div class="card-media">
         <img *ngIf="structure.photoPrincipal || structure.imageUrl"
             [src]="structure.photoPrincipal ? getPhotoPrincipalUrl() : structure.imageUrl" [alt]="structure.nom">
-        <div *ngIf="!structure.photoPrincipal && !structure.imageUrl" class="placeholder-icon">
-            <i class="fas fa-building"></i>
+        <div *ngIf="!structure.photoPrincipal && !structure.imageUrl" class="dynamic-avatar-container">
+            <div class="dynamic-avatar" [style.backgroundColor]="getAvatarColor()">
+                <span class="initials">{{getInitials()}}</span>
+                <i [class]="getSemanticIcon() + ' semantic-icon'"></i>
+            </div>
         </div>
         <div class="card-overlay">
             <span class="category-tag">{{structure.categorieNom}}</span>

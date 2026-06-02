@@ -1,9 +1,9 @@
 <div class="structure-page" *ngIf="structure">
 
   <!-- ═══════════ HERO BANNER ═══════════ -->
-  <header class="hero-banner">
-    <div class="hero-bg" [style.backgroundImage]="'url(' + getHeroImageUrl() + ')'" (click)="openImage(getHeroImageUrl())" style="cursor: pointer;"></div>
-    <div class="hero-gradient"></div>
+  <header class="hero-banner" [class.has-image]="hasImage()" [class.no-image]="!hasImage()">
+    <div class="hero-bg" *ngIf="hasImage()" [style.backgroundImage]="'url(' + getHeroImageUrl() + ')'" (click)="openImage(getHeroImageUrl())" style="cursor: pointer;"></div>
+    <div class="hero-overlay" *ngIf="hasImage()"></div>
     <div class="container hero-content">
       <nav class="breadcrumb-trail">
         <a routerLink="/">Accueil</a>
@@ -13,36 +13,38 @@
         <span>{{structure.nom}}</span>
       </nav>
 
-      <div class="hero-title-block">
-        <h1>
-          {{structure.nom}}
-          <span class="verified-badge" title="Vérifié par DoualaCity"><i class="fas fa-check-circle"></i></span>
-        </h1>
+      <div class="hero-main-row">
+        <div class="hero-title-block">
+          <h1>
+            {{structure.nom}}
+            <span class="verified-badge" title="Vérifié par DoualaCity"><i class="fas fa-check-circle"></i></span>
+          </h1>
 
-        <div class="hero-tags">
-          <span class="tag category"><i class="fas fa-tag"></i> {{structure.categorieNom}}</span>
-          <span class="tag rating-tag" *ngIf="totalAvis > 0">
-            <i class="fas fa-star"></i> {{moyenneAvis}} · {{totalAvis}} avis
-          </span>
-          <span class="tag status-tag" [ngClass]="isOpen ? 'open' : 'closed'">
-            <span class="dot"></span> {{isOpen ? 'Ouvert' : 'Fermé'}}
-          </span>
+          <div class="hero-tags">
+            <span class="tag category"><i class="fas fa-tag"></i> {{structure.categorieNom}}</span>
+            <span class="tag rating-tag" *ngIf="totalAvis > 0">
+              <i class="fas fa-star"></i> {{moyenneAvis}} · {{totalAvis}} avis
+            </span>
+            <span class="tag status-tag" [ngClass]="isOpen ? 'open' : 'closed'">
+              <span class="dot"></span> {{isOpen ? 'Ouvert' : 'Fermé'}}
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div class="hero-actions">
-        <button class="btn-hero primary" (click)="donnerAvis()" *ngIf="mode === 'public'">
-          <i class="fas fa-pen-fancy"></i> Écrire un avis
-        </button>
-        <button class="btn-hero primary" (click)="goToEdit()" *ngIf="mode !== 'public'">
-          <i class="fas fa-edit"></i> Modifier
-        </button>
-        <button class="btn-hero glass" [class.active-favori]="estFavori" (click)="toggleFavori()" *ngIf="estConnecte && isClientUser && mode === 'public'" [disabled]="favoriEnCours">
-          <i class="fas" [ngClass]="estFavori ? 'fa-heart text-danger' : 'fa-heart'"></i> {{ estFavori ? 'En favoris' : 'Ajouter aux Favoris' }}
-        </button>
-        <button class="btn-hero glass" (click)="share()">
-          <i class="fas fa-share-alt"></i> Partager
-        </button>
+        <div class="hero-actions">
+          <button class="btn-hero primary" (click)="donnerAvis()" *ngIf="mode === 'public'">
+            <i class="fas fa-pen-fancy"></i> Écrire un avis
+          </button>
+          <button class="btn-hero primary" (click)="goToEdit()" *ngIf="mode !== 'public'">
+            <i class="fas fa-edit"></i> Modifier
+          </button>
+          <button class="btn-hero glass" [class.active-favori]="estFavori" (click)="toggleFavori()" *ngIf="estConnecte && isClientUser && mode === 'public'" [disabled]="favoriEnCours">
+            <i class="fas" [ngClass]="estFavori ? 'fa-heart text-danger' : 'fa-heart'"></i> {{ estFavori ? 'En favoris' : 'Ajouter aux Favoris' }}
+          </button>
+          <button class="btn-hero glass" (click)="share()">
+            <i class="fas fa-share-alt"></i> Partager
+          </button>
+        </div>
       </div>
     </div>
   </header>
