@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/api' // Should be changed to production URL later
+  apiUrl: 'https://doualacity-api.onrender.com/api' // Replace with your actual Render deployment URL
 };
