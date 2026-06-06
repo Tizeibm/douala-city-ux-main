@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, Inject, PLATFORM_ID, OnChanges } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, AfterViewInit, Inject, PLATFORM_ID, OnChanges } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 
@@ -6,7 +6,8 @@ import type * as L from 'leaflet';
   selector: 'app-map',
   standalone: false,
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapComponent implements AfterViewInit, OnChanges {
 

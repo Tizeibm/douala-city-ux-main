@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Entreprise, ServiceOffert } from '../../../shared/models/entreprise';
 import { AuthService } from '../../../core/services/auth.service';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
@@ -8,7 +8,8 @@ import { InscriptionService, Utilisateur } from '../../auth/registration/service
   selector: 'app-user',
   standalone: false,
   templateUrl: './user.component.html',
-  styleUrl: './user.component.scss'
+  styleUrl: './user.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserComponent {
 

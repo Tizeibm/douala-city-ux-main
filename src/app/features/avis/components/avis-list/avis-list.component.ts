@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Avis } from '../../models/avis';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AvisService } from '../../services/avis.service';
@@ -7,7 +7,8 @@ import { AvisService } from '../../services/avis.service';
   selector: 'app-avis-list',
   standalone: false,
   templateUrl: './avis-list.component.html',
-  styleUrl: './avis-list.component.scss'
+  styleUrl: './avis-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AvisListComponent implements OnInit {
 

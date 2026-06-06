@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -6,7 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-edit-avis',
   standalone: false,
   templateUrl: './edit-avis.component.html',
-  styleUrl: './edit-avis.component.scss'
+  styleUrl: './edit-avis.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditAvisComponent {
 

@@ -15,7 +15,8 @@ import { CategoriesService } from '../../../core/services/categories.service';
   selector: 'app-user-edit-structure',
   standalone: false,
   templateUrl: './user-edit-structure.component.html',
-  styleUrl: './user-edit-structure.component.scss'
+  styleUrl: './user-edit-structure.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserEditStructureComponent implements OnInit {
 

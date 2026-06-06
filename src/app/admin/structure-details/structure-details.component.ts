@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
 import { Entreprise, Localisation } from '../../shared/models/entreprise';
 import { ActivatedRoute } from '@angular/router';
 import { EntreprisesService } from '../../core/services/entreprises.service';
@@ -12,7 +12,8 @@ import { PhotosService } from '../photos.service';
   selector: 'app-structure-details',
   standalone: false,
   templateUrl: './structure-details.component.html',
-  styleUrls: ['./structure-details.component.scss']
+  styleUrls: ['./structure-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StructureDetailsComponent implements OnInit {
 

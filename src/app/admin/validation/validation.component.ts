@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { EntreprisesService } from '../../admin/services/entreprises.service';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { EntrepriseService } from '../../core/services/entreprises.service';
 import { FeedbackService } from '../../shared/feedback.service';
 
 @Component({
   selector: 'app-validation',
   standalone: false,
   templateUrl: './validation.component.html',
-  styleUrl: './validation.component.scss'
+  styleUrl: './validation.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ValidationComponent implements OnInit {
 
@@ -14,7 +15,7 @@ export class ValidationComponent implements OnInit {
   loading: boolean = false;
   confirmAction: { type: 'valider' | 'rejeter', id: string, name: string } | null = null;
 
-  constructor(private entrepriseService: EntreprisesService, private feedback: FeedbackService) { }
+  constructor(private entrepriseService: EntrepriseService, private feedback: FeedbackService) { }
 
   ngOnInit(): void {
     this.loadEntreprises();

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-legal-page',
   standalone: false,
   templateUrl: './legal.component.html',
-  styleUrls: ['./legal.component.scss']
+  styleUrls: ['./legal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LegalPageComponent {}

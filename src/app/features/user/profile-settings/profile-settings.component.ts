@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
@@ -10,7 +10,8 @@ import { UserService } from '../../../core/services/user.service';
     selector: 'app-profile-settings',
     standalone: false,
     templateUrl: './profile-settings.component.html',
-    styleUrl: './profile-settings.component.scss'
+    styleUrl: './profile-settings.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileSettingsComponent implements OnInit {
     utilisateur: Utilisateur | null = null;

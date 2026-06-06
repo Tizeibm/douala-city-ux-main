@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { StatistiquesService } from '../../core/services/statistiques.service';
 
 @Component({
   selector: 'app-statistiques',
   standalone: false,
   templateUrl: './statistiques.component.html',
-  styleUrl: './statistiques.component.scss'
+  styleUrl: './statistiques.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatistiquesComponent implements OnInit {
 

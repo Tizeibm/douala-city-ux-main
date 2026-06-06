@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -7,7 +7,8 @@ import { Subject } from 'rxjs';
   selector: 'app-appli',
   standalone: false,
   templateUrl: './appli.component.html',
-  styleUrl: './appli.component.scss'
+  styleUrl: './appli.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppliComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

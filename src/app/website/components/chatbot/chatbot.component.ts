@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ViewChild, ElementRef, AfterViewChecked, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ChatService, ChatMessage } from '../../../core/services/chat.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -32,7 +32,8 @@ interface Message {
     selector: 'app-chatbot',
     templateUrl: './chatbot.component.html',
     styleUrls: ['./chatbot.component.scss'],
-    standalone: false
+    standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatbotComponent implements OnInit, AfterViewChecked {
     isOpen = false;

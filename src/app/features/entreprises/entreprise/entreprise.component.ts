@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { Entreprise } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { InscriptionService, Utilisateur } from '../../auth/registration/services/inscription.service';
@@ -13,7 +13,8 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'app-entreprise',
   standalone: false,
   templateUrl: './entreprise.component.html',
-  styleUrl: './entreprise.component.scss'
+  styleUrl: './entreprise.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntrepriseComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

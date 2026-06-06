@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { AnnonceService } from '../../annonces/annonces/services/annonce.service';
@@ -11,7 +11,8 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'app-resultats',
   standalone: false,
   templateUrl: './resultats.component.html',
-  styleUrl: './resultats.component.scss'
+  styleUrl: './resultats.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResultatsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

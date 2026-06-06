@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AnnonceService } from '../../services/annonce.service';
 import { Annonce } from '../../models/annonce';
 import { Router } from '@angular/router';
@@ -9,7 +9,8 @@ import { environment } from '../../../../../../environments/environment';
     selector: 'app-mes-annonces',
     templateUrl: './mes-annonces.component.html',
     styleUrls: ['./mes-annonces.component.scss'],
-    standalone: false
+    standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MesAnnoncesComponent implements OnInit {
     annonces: Annonce[] = [];

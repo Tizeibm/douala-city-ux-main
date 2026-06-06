@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
@@ -31,7 +31,8 @@ interface CommunityStat {
   selector: 'app-accueil',
   standalone: false,
   templateUrl: './accueil.component.html',
-  styleUrl: './accueil.component.scss'
+  styleUrl: './accueil.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccueilComponent implements OnInit, OnDestroy, AfterViewInit {
   searchQuery: string = '';

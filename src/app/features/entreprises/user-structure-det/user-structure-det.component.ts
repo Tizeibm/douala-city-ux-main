@@ -12,7 +12,8 @@ import { PhotosService } from '../admin/photos.service';
   selector: 'app-user-structure-det',
   standalone: false,
   templateUrl: './user-structure-det.component.html',
-  styleUrl: './user-structure-det.component.scss'
+  styleUrl: './user-structure-det.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserStructureDetComponent implements OnInit {
 

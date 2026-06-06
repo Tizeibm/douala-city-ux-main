@@ -7,7 +7,8 @@ import type * as L from 'leaflet';
   selector: 'app-cartes',
   standalone: false,
   templateUrl: './cartes.component.html',
-  styleUrl: './cartes.component.scss'
+  styleUrl: './cartes.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartesComponent implements AfterViewInit, OnChanges  {
 

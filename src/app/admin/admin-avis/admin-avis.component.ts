@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AvisService } from '../../features/avis/services/avis.service';
 import { Avis } from '../../features/avis/models/avis';
 import Swal from 'sweetalert2';
@@ -7,7 +7,8 @@ import Swal from 'sweetalert2';
   selector: 'app-admin-avis',
   standalone: false,
   templateUrl: './admin-avis.component.html',
-  styleUrls: ['./admin-avis.component.scss']
+  styleUrls: ['./admin-avis.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminAvisComponent implements OnInit {
   allAvis: Avis[] = [];

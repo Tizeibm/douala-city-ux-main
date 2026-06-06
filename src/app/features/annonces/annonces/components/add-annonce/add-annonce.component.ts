@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Annonce, AnnonceType } from '../../models/annonce';
 import { AnnonceService } from '../../services/annonce.service';
@@ -12,7 +12,8 @@ import { Photo } from '../../../../../shared/models/entreprise';
     selector: 'app-add-annonce',
     standalone: false,
     templateUrl: './add-annonce.component.html',
-    styleUrl: './add-annonce.component.scss'
+    styleUrl: './add-annonce.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAnnonceComponent implements OnInit {
     annonce: Annonce = {

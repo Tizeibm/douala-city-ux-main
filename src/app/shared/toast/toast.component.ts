@@ -6,7 +6,8 @@ import { Observable, Subscription, timer } from 'rxjs';
   selector: 'app-toast',
   standalone: false,
   templateUrl: './toast.component.html',
-  styleUrl: './toast.component.scss'
+  styleUrl: './toast.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToastComponent implements OnInit {
 

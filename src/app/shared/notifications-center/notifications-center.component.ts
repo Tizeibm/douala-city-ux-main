@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
@@ -97,7 +97,8 @@ import { NotificationService } from '../../core/services/notification.service';
     .empty-notif { text-align: center; padding: 50px 20px; color: #a0aec0; }
     .empty-notif i { font-size: 2.5rem; margin-bottom: 15px; display: block; opacity: 0.5; }
     .empty-notif p { margin: 0; font-weight: 500; }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationsCenterComponent implements OnInit {
   notifications$: Observable<string[]>;

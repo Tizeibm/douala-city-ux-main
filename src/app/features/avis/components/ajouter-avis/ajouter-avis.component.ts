@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { AvisService } from '../../services/avis.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,8 @@ import { Avis } from '../../models/avis';
   selector: 'app-ajouter-avis',
   standalone: false,
   templateUrl: './ajouter-avis.component.html',
-  styleUrl: './ajouter-avis.component.scss'
+  styleUrl: './ajouter-avis.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AjouterAvisComponent implements OnInit {
 

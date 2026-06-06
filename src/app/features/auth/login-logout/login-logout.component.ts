@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { InscriptionService } from '../registration/services/inscription.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
@@ -18,7 +18,8 @@ export enum ROLE {
   selector: 'app-login-logout',
   standalone: false,
   templateUrl: './login-logout.component.html',
-  styleUrl: './login-logout.component.scss'
+  styleUrl: './login-logout.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginLogoutComponent {
 

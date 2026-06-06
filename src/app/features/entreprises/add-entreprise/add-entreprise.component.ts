@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Entreprise, Horaire, Localisation, ServiceOffert, Photo } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
 import { Utilisateur } from '../../auth/registration/services/inscription.service';
@@ -24,7 +24,8 @@ export enum jours {
   selector: 'app-add-entreprise',
   standalone: false,
   templateUrl: './add-entreprise.component.html',
-  styleUrl: './add-entreprise.component.scss'
+  styleUrl: './add-entreprise.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 

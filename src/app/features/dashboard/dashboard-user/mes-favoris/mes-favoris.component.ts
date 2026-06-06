@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FavorisService, FavoriResponse } from '../../../../core/services/favoris.service';
 import { HapticService } from '../../../../core/services/haptic.service';
@@ -10,7 +10,8 @@ import { environment } from '../../../../../environments/environment';
   selector: 'app-mes-favoris',
   standalone: false,
   templateUrl: './mes-favoris.component.html',
-  styleUrls: ['./mes-favoris.component.scss']
+  styleUrls: ['./mes-favoris.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MesFavorisComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

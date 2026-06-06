@@ -3,6 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export interface Toast {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  message: string;
+  duration?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +17,12 @@ export class NotificationService {
   private notificationSubject = new BehaviorSubject<string[]>([]);
   notifications$ = this.notificationSubject.asObservable();
 
+  private toastsSubject = new BehaviorSubject<Toast[]>([]);
+  toasts$ = this.toastsSubject.asObservable();
+
   private eventSource: EventSource | null = null;
+  private toastIdCounter = 0;
+  private readonly DEFAULT_TOAST_DURATION = 4000; // 4 seconds
 
   constructor(
     private http: HttpClient, 
@@ -56,5 +68,67 @@ export class NotificationService {
 
   clearNotifications(): void {
     this.notificationSubject.next([]);
+  }
+
+  // Toast notification methods (for error handling and user feedback)
+  showSuccess(message: string, duration: number = this.DEFAULT_TOAST_DURATION): void {
+    this.addToast({
+      id: this.generateToastId(),
+      type: 'success',
+      message,
+      duration
+    });
+  }
+
+  showError(message: string, duration: number = this.DEFAULT_TOAST_DURATION): void {
+    this.addToast({
+      id: this.generateToastId(),
+      type: 'error',
+      message,
+      duration
+    });
+  }
+
+  showWarning(message: string, duration: number = this.DEFAULT_TOAST_DURATION): void {
+    this.addToast({
+      id: this.generateToastId(),
+      type: 'warning',
+      message,
+      duration
+    });
+  }
+
+  showInfo(message: string, duration: number = this.DEFAULT_TOAST_DURATION): void {
+    this.addToast({
+      id: this.generateToastId(),
+      type: 'info',
+      message,
+      duration
+    });
+  }
+
+  private addToast(toast: Toast): void {
+    const current = this.toastsSubject.getValue();
+    this.toastsSubject.next([...current, toast]);
+
+    // Auto-remove after duration
+    if (toast.duration && toast.duration > 0) {
+      setTimeout(() => {
+        this.removeToast(toast.id);
+      }, toast.duration);
+    }
+  }
+
+  removeToast(id: string): void {
+    const current = this.toastsSubject.getValue();
+    this.toastsSubject.next(current.filter(t => t.id !== id));
+  }
+
+  clearToasts(): void {
+    this.toastsSubject.next([]);
+  }
+
+  private generateToastId(): string {
+    return `toast-${++this.toastIdCounter}-${Date.now()}`;
   }
 }

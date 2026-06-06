@@ -213,4 +213,41 @@ export class EntrepriseService {
   getPublicLocalisation(structureId: string): Observable<Localisation> {
     return this.http.get<Localisation>(`${environment.apiUrl}/localisation/public/${structureId}/location`);
   }
+
+  // Admin-specific methods for managing structure validation
+  getAllEntreprises(page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<any>(`${this.apiUrl}/public`, { params });
+  }
+
+  getEntreprisesEnAttente(page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams().set('s', 'EN_ATTENTE').set('page', page).set('size', size);
+    return this.http.get<any>(`${this.apiUrl}/status`, { params });
+  }
+
+  getAllEntreprisesValid(token?: any, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams().set('s', 'VALIDE').set('page', page).set('size', size);
+    return this.http.get<any>(`${this.apiUrl}/status`, { params });
+  }
+
+  updateEntreprise(id: string, entreprise: Entreprise): Observable<Entreprise> {
+    return this.http.put<Entreprise>(`${this.apiUrl}/${id}`, entreprise);
+  }
+
+  deleteEntreprise(token: any, id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  validerEntreprise(id: string): Observable<Entreprise> {
+    return this.http.patch<Entreprise>(`${this.apiUrl}/valider/${id}`, {});
+  }
+
+  rejeterEntreprise(id: string): Observable<Entreprise> {
+    return this.http.patch<Entreprise>(`${this.apiUrl}/rejeter/${id}`, {});
+  }
+
+  setEntreprise(structure: Entreprise | null) {
+    const structureSubject = new BehaviorSubject<Entreprise | null>(null);
+    structureSubject.next(structure);
+  }
 }

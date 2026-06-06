@@ -14,10 +14,7 @@ import { authGuard } from './core/auth.guard';
 import { AddEntrepriseComponent } from './features/entreprises/add-entreprise/add-entreprise.component';
 import { StructureUserComponent } from './features/entreprises/structure-user/structure-user.component';
 import { StructureDetailComponent } from './website/pages/structure-detail/structure-detail.component';
-import { AjouterAvisComponent } from './features/avis/components/ajouter-avis/ajouter-avis.component';
-import { AvisListComponent } from './features/avis/components/avis-list/avis-list.component';
-import { ReplyAvisComponent } from './features/avis/components/reply-avis/reply-avis.component';
-import { EditAvisComponent } from './features/avis/edit-avis/edit-avis.component';
+
 import { ProfileSettingsComponent } from './features/user/profile-settings/profile-settings.component';
 import { AddAnnonceComponent } from './features/annonces/annonces/components/add-annonce/add-annonce.component';
 import { AnnonceDetailsComponent } from './features/annonces/annonce-details/annonce-details.component';
@@ -59,25 +56,10 @@ const routes: Routes = [
         children: [
           {
             path: 'ajouterAvis',
-            component: AjouterAvisComponent
-          },
-          {
-            path: 'avisList',
-            component: AvisListComponent,
-            children: [
-              {
-                path: 'reply',
-                component: ReplyAvisComponent
-              },
-              {
-                path: 'edit',
-                component: EditAvisComponent
-              }
-            ]
+            loadChildren: () =>
+              import('./features/avis/avis.module').then(m => m.AvisModule)
           }
-
         ]
-
       },
 
       {

@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-dashboard-client',
     templateUrl: './dashboard-client.component.html',
     styleUrls: ['../dashboard-user/dashboard-user.component.scss'],
-    standalone: false
+    standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardClientComponent implements OnInit {
     utilisateur: any;

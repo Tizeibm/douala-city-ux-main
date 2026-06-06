@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Entreprise } from '../../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../../core/services/entreprises.service';
@@ -12,7 +12,8 @@ import { PhotosService } from '../../../../core/services/photos.service';
     selector: 'app-structure-edit-page',
     standalone: false,
     templateUrl: './structure-edit-page.component.html',
-    styleUrl: './structure-edit-page.component.scss'
+    styleUrl: './structure-edit-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StructureEditPageComponent implements OnInit {
     structure: Entreprise | null = null;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Entreprise, Localisation } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
@@ -11,7 +11,8 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-category-listing',
     standalone: false,
     templateUrl: './category-listing.component.html',
-    styleUrl: './category-listing.component.scss'
+    styleUrl: './category-listing.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategoryListingComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();

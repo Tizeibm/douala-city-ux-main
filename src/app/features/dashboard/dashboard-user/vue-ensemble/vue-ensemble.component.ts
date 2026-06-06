@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { EntrepriseService } from '../../../../core/services/entreprises.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Entreprise } from '../../../../shared/models/entreprise';
@@ -7,7 +7,8 @@ import { Entreprise } from '../../../../shared/models/entreprise';
   selector: 'app-vue-ensemble',
   standalone: false,
   templateUrl: './vue-ensemble.component.html',
-  styleUrl: './vue-ensemble.component.scss'
+  styleUrl: './vue-ensemble.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VueEnsembleComponent implements OnInit {
 

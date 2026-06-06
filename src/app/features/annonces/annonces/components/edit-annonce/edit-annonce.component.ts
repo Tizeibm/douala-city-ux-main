@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Annonce, AnnonceType } from '../../models/annonce';
 import { AnnonceService } from '../../services/annonce.service';
@@ -12,7 +12,8 @@ import { environment } from '../../../../../../environments/environment';
     selector: 'app-edit-annonce',
     standalone: false,
     templateUrl: './edit-annonce.component.html',
-    styleUrl: '../add-annonce/add-annonce.component.scss' // Reuse style
+    styleUrl: '../add-annonce/add-annonce.component.scss' // Reuse style,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditAnnonceComponent implements OnInit {
     annonce: Annonce | null = null;

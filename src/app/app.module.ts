@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccueilComponent } from './website/pages/accueil/accueil.component';
 import { HttpClientModule, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { apiInterceptor } from './core/api.interceptor';
+import { errorInterceptor } from './core/error.interceptor';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
 import { DashboardHomeComponent } from './admin/dashboard-home/dashboard-home.component';
 import { ValidationComponent } from './admin/validation/validation.component';
@@ -120,7 +121,7 @@ import { MesFavorisComponent } from './features/dashboard/dashboard-user/mes-fav
     SharedModule
   ],
   providers: [
-    provideHttpClient(withFetch(), withInterceptors([apiInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([apiInterceptor, errorInterceptor])),
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

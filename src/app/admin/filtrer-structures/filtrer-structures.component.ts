@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Entreprise } from '../../shared/models/entreprise';
 import { EntrepriseService } from '../../core/services/entreprises.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,8 @@ import { BehaviorSubject } from 'rxjs';
   selector: 'app-filtrer-structures',
   standalone: false,
   templateUrl: './filtrer-structures.component.html',
-  styleUrl: './filtrer-structures.component.scss'
+  styleUrl: './filtrer-structures.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FiltrerStructuresComponent {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { InscriptionService, Utilisateur } from '../../auth/registration/services/inscription.service';
 import { Subject } from 'rxjs';
@@ -8,7 +8,8 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'app-dashboard-user',
   standalone: false,
   templateUrl: './dashboard-user.component.html',
-  styleUrl: './dashboard-user.component.scss'
+  styleUrl: './dashboard-user.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardUserComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

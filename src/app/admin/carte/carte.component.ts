@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Inject, PLATFORM_ID, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, AfterViewInit, Inject, PLATFORM_ID, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type * as L from 'leaflet';
 
@@ -6,7 +6,8 @@ import type * as L from 'leaflet';
   selector: 'app-carte',
   standalone: false,
   templateUrl: './carte.component.html',
-  styleUrls: ['./carte.component.scss']
+  styleUrls: ['./carte.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CarteComponent implements AfterViewInit, OnChanges {
   @Input() locations: { latitude: number; longitude: number; quartier?: string; telephone?: string }[] = [];

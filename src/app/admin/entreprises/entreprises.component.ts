@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { EntreprisesService } from '../services/entreprises.service';
+import { Component, ChangeDetectionStrategy, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { EntrepriseService } from '../../core/services/entreprises.service';
 import { Entreprise } from '../../shared/models/entreprise';
 import { Router } from '@angular/router';
 import { HapticService } from '../../core/services/haptic.service';
@@ -9,7 +9,8 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-entreprises',
   standalone: false,
   templateUrl: './entreprises.component.html',
-  styleUrl: './entreprises.component.scss'
+  styleUrl: './entreprises.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntreprisesComponent implements OnInit {
 
@@ -23,7 +24,7 @@ export class EntreprisesComponent implements OnInit {
   totalPages = 0;
 
   constructor(
-    private entrepriseService: EntreprisesService,
+    private entrepriseService: EntrepriseService,
     private router: Router,
     private haptic: HapticService,
     @Inject(PLATFORM_ID) private platformId: Object

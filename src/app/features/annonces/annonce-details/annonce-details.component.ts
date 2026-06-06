@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnnonceService } from '../annonces/services/annonce.service';
 import { Annonce } from '../annonces/models/annonce';
@@ -13,7 +13,8 @@ import { Title } from '@angular/platform-browser';
   selector: 'app-annonce-details',
   standalone: false,
   templateUrl: './annonce-details.component.html',
-  styleUrls: ['./annonce-details.component.scss']
+  styleUrls: ['./annonce-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AnnonceDetailsComponent implements OnInit {
   annonce: Annonce | null = null;

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Entreprise } from '../../../shared/models/entreprise';
 import { environment } from '../../../../environments/environment';
 import { FavorisService } from '../../../core/services/favoris.service';
@@ -10,7 +10,8 @@ import { takeUntil } from 'rxjs/operators';
     selector: 'app-structure-card',
     standalone: false,
     templateUrl: './structure-card.component.html',
-    styleUrl: './structure-card.component.scss'
+    styleUrl: './structure-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StructureCardComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CookieConsentService } from '../../services/cookie-consent.service';
 
@@ -6,7 +6,8 @@ import { CookieConsentService } from '../../services/cookie-consent.service';
     selector: 'app-cookie-banner',
     templateUrl: './cookie-banner.component.html',
     styleUrls: ['./cookie-banner.component.scss'],
-    standalone: false
+    standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CookieBannerComponent {
     showBanner$: Observable<boolean>;

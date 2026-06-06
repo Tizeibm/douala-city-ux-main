@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService, ChatMessage } from '../../../core/services/chat.service';
 import { environment } from '../../../../environments/environment';
@@ -15,7 +15,8 @@ interface AiResult {
   selector: 'app-recherche',
   standalone: false,
   templateUrl: './recherche.component.html',
-  styleUrl: './recherche.component.scss'
+  styleUrl: './recherche.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RechercheComponent {
   prompt = '';

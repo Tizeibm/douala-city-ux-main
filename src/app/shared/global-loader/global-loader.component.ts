@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FeedbackService } from '../feedback.service';
 import { Observable } from 'rxjs';
 
@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
   selector: 'app-global-loader',
   standalone: false,
   templateUrl: './global-loader.component.html',
-  styleUrl: './global-loader.component.scss'
+  styleUrl: './global-loader.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalLoaderComponent implements OnInit {
 

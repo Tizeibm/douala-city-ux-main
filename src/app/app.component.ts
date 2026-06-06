@@ -1,10 +1,11 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   standalone: false,
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements AfterViewInit {
   title = 'doualacity';

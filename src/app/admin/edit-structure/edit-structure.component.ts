@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { Entreprise, Horaire, Localisation, Photo, ServiceOffert } from '../../shared/models/entreprise';
 import { EntrepriseService } from '../../core/services/entreprises.service';
@@ -17,7 +17,8 @@ import { FeedbackService } from '../../shared/feedback.service';
   selector: 'app-edit-structure',
   standalone: false,
   templateUrl: './edit-structure.component.html',
-  styleUrls: ['./edit-structure.component.scss']
+  styleUrls: ['./edit-structure.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditStructureComponent implements OnInit {
   @Input() structure!: Entreprise;

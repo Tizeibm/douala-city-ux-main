@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AvisService } from '../../services/avis.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -7,7 +7,8 @@ import { AuthService } from '../../../../core/services/auth.service';
   selector: 'app-reply-avis',
   standalone: false,
   templateUrl: './reply-avis.component.html',
-  styleUrl: './reply-avis.component.scss'
+  styleUrl: './reply-avis.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReplyAvisComponent implements OnInit {
 

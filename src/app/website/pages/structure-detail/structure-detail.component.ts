@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, Inject, PLATFORM_ID, AfterViewInit, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
@@ -20,7 +20,8 @@ import { environment } from '../../../../environments/environment';
   selector: 'app-structure-detail',
   standalone: false,
   templateUrl: './structure-detail.component.html',
-  styleUrls: ['./structure-detail.component.scss']
+  styleUrls: ['./structure-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StructureDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   structure!: Entreprise;

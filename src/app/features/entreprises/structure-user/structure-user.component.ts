@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Entreprise } from '../../../shared/models/entreprise';
 import { EntrepriseService } from '../../../core/services/entreprises.service';
@@ -10,7 +10,8 @@ import { HapticService } from '../../../core/services/haptic.service';
   selector: 'app-structure-user',
   standalone: false,
   templateUrl: './structure-user.component.html',
-  styleUrl: './structure-user.component.scss'
+  styleUrl: './structure-user.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StructureUserComponent implements OnInit {
 
